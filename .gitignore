@@ -398,3 +398,37 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# 🐍 Adições para projetos Python/Flask
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+
+# Ambiente virtual
+venv/
+env/
+.venv/
+ENV/
+
+# Flask instance folder
+instance/
+
+# Banco de dados local (ajuste o caminho se necessário)
+UPX-Back/database.db
+
+# 📦 Adições para projetos Node/React (Vite)
+UPX-Front/node_modules/
+UPX-Front/dist/
+
+# ⚙️ Arquivos de configuração locais do VSCode/IDE
+.vscode/
+.idea/
+.history/
+
+# 🍃 Extras que ajudam em cross-platform
+.DS_Store
+Thumbs.db
