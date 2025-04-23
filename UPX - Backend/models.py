@@ -15,3 +15,8 @@ class Veiculo:
 
 class Carona:
     id_carona = db.Column(db.Integer, primary_key=True)
+    origem = db.Column(db.String(100), nullable=False)
+    destino = db.Column(db.String(100), nullable=False)
+    horario = db.Column(db.String(4), nullable=False)
+    vagas = db.Column(db.integer, primary_key=True)
+    
