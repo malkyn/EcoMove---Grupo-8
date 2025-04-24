@@ -1,10 +1,16 @@
 from __init__ import db
+import enum
+
+class TipoPerfilEnum(enum.Enum):
+    CLIENTE = 1
+    MOTORISTA = 2
 
 class Usuario(db.Model):
     id_usuario = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     senha = db.Column(db.String(100), nullable=False)
+    id_perfil = db.Column(db.Enum(TipoPerfilEnum), nullable=False)
 
 class Veiculo(db.Model):
     id_veiculo = db.Column(db.Integer, primary_key=True)
@@ -17,5 +23,5 @@ class Carona(db.Model):
     id_carona = db.Column(db.Integer, primary_key=True)
     origem = db.Column(db.String(100), nullable=False)
     destino = db.Column(db.String(100), nullable=False)
-    horario = db.Column(db.String(4), nullable=False)
+    horario = db.Column(db.DateTime, nullable=False)
     vagas = db.Column(db.Integer, nullable=False)
