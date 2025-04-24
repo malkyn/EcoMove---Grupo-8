@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from models import Usuario
-from app import db
+from __init__ import db
 
 usuarios_bp = Blueprint("usuarios", __name__)
 
@@ -16,10 +16,16 @@ def listar_usuarios():
 @usuarios_bp.route("/", methods=["POST"])
 def criar_usuario():
     data = request.json
-    novo = Usuario(nome=data["nome"], email=data["email"], senha=data["senha"])
-    db.session.add(novo)
-    db.session.commit()
-    return jsonify({"mensagem": "Usuário criado com sucesso!"})
+    try:
+        novo = Usuario(nome=data["nome"], email=data["email"], senha=data["senha"])
+        db.session.add(novo)
+        db.session.commit()
+        return jsonify({"mensagem": "Usuário criado com sucesso!"})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"erro": str(e)}), 500
+    finally:
+        db.session.close()
 
 @usuarios_bp.route("/<int:id_usuario>", methods=["DELETE"])
 def deletar_usuario(id_usuario):
