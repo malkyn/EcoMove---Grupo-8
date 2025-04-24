@@ -20,6 +20,8 @@ class Veiculo(db.Model):
     tipo = db.Column(db.String(50))
 
 class Carona(db.Model):
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuario.id_usuario'), nullable=False)
+    id_veiculo = db.Column(db.Integer, db.ForeignKey('veiculo.id_veiculo'), nullable=False)
     id_carona = db.Column(db.Integer, primary_key=True)
     origem = db.Column(db.String(100), nullable=False)
     destino = db.Column(db.String(100), nullable=False)
