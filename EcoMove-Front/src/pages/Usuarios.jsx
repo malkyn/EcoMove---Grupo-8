@@ -1,7 +1,12 @@
+import './Usuarios.css'
+
 function Usuarios(){
     return(
         <>
-        <h1>tchau!!!!!!!!!!!!!!</h1>
+        <div className='container'>
+              <h1>tchau</h1>
+        </div>
+        
         </>
     )
 }
