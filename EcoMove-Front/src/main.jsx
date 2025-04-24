@@ -6,6 +6,6 @@ import Usuarios from './pages/Usuarios.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Usuarios />
+    <App/>
   </StrictMode>,
 )
