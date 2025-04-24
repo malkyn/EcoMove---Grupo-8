@@ -1,3 +1,9 @@
 .home {
     background-color: aquamarine;
 }
+
+.container{
+    background-color: #eceaea;
+    height: 1500px;
+    width: 1920px;
+}

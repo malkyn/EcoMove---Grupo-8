@@ -1,10 +1,12 @@
-import styles from './Home.css'
+import './Home.css'
 
 function Home(){
     return(
         <>
-        <h1 className= {styles.home}>tchau</h1>
-        <p>borrraaaa</p>
+        <div className='container'>
+            <h1 className="home">tchau</h1>
+            <p>borrraaaa</p>
+        </div>
         </>
     )
 }
