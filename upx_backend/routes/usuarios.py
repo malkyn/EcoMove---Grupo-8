@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from models import Usuario
-from __init__ import db
+from upx_backend.models import Usuario
+from upx_backend import db
 
 usuarios_bp = Blueprint("usuarios", __name__)
 
@@ -10,14 +10,15 @@ def listar_usuarios():
     return jsonify([{
         "id_usuario": u.id_usuario,
         "nome": u.nome,
-        "email": u.email
+        "email": u.email,
+        "id_perfil": u.id_perfil
     } for u in usuarios])
 
 @usuarios_bp.route("/", methods=["POST"])
 def criar_usuario():
     data = request.json
     try:
-        novo = Usuario(nome=data["nome"], email=data["email"], senha=data["senha"])
+        novo = Usuario(nome=data["nome"], email=data["email"], senha=data["senha"], id_perfil=data["id_perfil"])
         db.session.add(novo)
         db.session.commit()
         return jsonify({"mensagem": "Usuário criado com sucesso!"})
