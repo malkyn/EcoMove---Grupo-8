@@ -13,18 +13,18 @@ def create_app():
 
     db.init_app(app)
 
-    from routes.usuarios import usuarios_bp
+    from upx_backend.routes.usuarios import usuarios_bp
     app.register_blueprint(usuarios_bp, url_prefix="/usuarios")
 
-    from routes.veiculos import veiculos_bp
+    from upx_backend.routes.veiculos import veiculos_bp
     app.register_blueprint(veiculos_bp, url_prefix="/veiculos")
 
-    from routes.caronas import caronas_bp
+    from upx_backend.routes.caronas import caronas_bp
     app.register_blueprint(caronas_bp, url_prefix="/caronas")
 
 
     with app.app_context():
-        from models import Usuario, Veiculo, Carona
+        from upx_backend.models import Usuario, Veiculo, Carona
         db.create_all()
 
     return app

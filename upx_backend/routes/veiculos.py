@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from models import Veiculo
-from __init__ import db
+from upx_backend.models import Veiculo
+from upx_backend import db
 
 veiculos_bp = Blueprint("veiculos", __name__)
 
@@ -20,10 +20,10 @@ def criar_veiculo():
     data = request.json
     try:
         novo = Veiculo(
-            modelo=data["modelo"],
-            placa=data["placa"],
-            capacidade=data["capacidade"],
-            id_usuario=data["id_usuario"]
+            modelo = data["modelo"],
+            placa = data["placa"],
+            id_usuario = data["id_usuario"],
+            tipo = data["tipo"]
         )
         db.session.add(novo)
         db.session.commit()
@@ -33,3 +33,10 @@ def criar_veiculo():
         return jsonify({"erro": str(e)}), 500
     finally:
         db.session.close()
+
+@veiculos_bp.route("/<int:id_veiculo>", methods=["DELETE"])
+def deletar_veiculo(id_veiculo):
+    veiculo = Veiculo.query.get_or_404(id_veiculo)
+    db.session.delete(veiculo)
+    db.session.commit()
+    return jsonify({"mensagem": "Veículo deletado com sucesso!"})
