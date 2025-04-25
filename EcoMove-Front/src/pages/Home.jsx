@@ -3,7 +3,7 @@ import './Home.css'
 function Home(){
     return(
         <>
-        <header className='container'>
+        <header className='header'>
             <img src="" alt="" />
             <h1>Eco Move</h1>
             <p>inicio</p>
@@ -23,7 +23,7 @@ function Home(){
             </button>
         </div>
         <div className='funcionabilidades'>
-            <h1>Principais funcionabilidades</h1>
+            <h1 className='listra'>Principais funcionabilidades</h1>
             <p>Nossa plataforma foi desenvolvida para tornar o compartilhamento de caronas uma
             experiência simples, segura e agradável.</p>
             <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
