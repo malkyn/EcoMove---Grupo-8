@@ -1,4 +1,83 @@
-.listra{
-    background-color: #036141;
-    color: #fff;
-}
+body {
+    background-color: #ffffff;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .home-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .hero {
+    text-align: center;
+    padding: 4rem 1rem;
+  }
+  
+  .hero h1 {
+    font-size: 3rem;
+    color: #014421;
+    margin-bottom: 1rem;
+  }
+  
+  .hero p {
+    font-size: 1.2rem;
+    color: #555;
+    max-width: 700px;
+    margin: 0 auto 2rem auto;
+  }
+  
+  .hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .hero-buttons button {
+    background-color: #014421;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: #fff 0.3s;
+  }
+  
+  .hero-buttons button:hover {
+    background-color: #026232;
+  }
+  
+  .funcionabilidades {
+    padding: 4rem 1rem;
+    text-align: center;
+  }
+  
+  .funcionabilidades h1 {
+    font-size: 2.5rem;
+    color: #014421;
+    margin-bottom: 2rem;
+  }
+  
+  .funcionabilidades p {
+    font-size: 1.1rem;
+    color: #555;
+    max-width: 800px;
+    margin: 0 auto 2rem auto;
+  }
+  
+  .feature {
+    margin-bottom: 2rem;
+  }
+  
+  .feature h2 {
+    font-size: 1.8rem;
+    color: #026232;
+  }
+  
+  .feature p {
+    font-size: 1rem;
+    color: #333;
+  }
+  

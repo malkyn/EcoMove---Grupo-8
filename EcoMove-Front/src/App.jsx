@@ -3,12 +3,14 @@ import { useState } from 'react'
 import './App.css'
 import Home from'./pages/Home'
 import Usuarios from './pages/Usuarios'
+import NavBar from './components/NavBar'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <Router>
+      <NavBar/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/usuarios" element={<Usuarios></Usuarios>}></Route>
