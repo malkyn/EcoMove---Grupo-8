@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./NavBar.css";
-import Logo from "../pages/icons/folha.svg";
+import Logo from "/EcoMove---Grupo-8/EcoMove-Front/src/pages/icons/folha.svg";
 
 function NavBar() {
   const [shrink, setShrink] = useState(false);
@@ -22,16 +22,29 @@ function NavBar() {
     <header className={`header ${shrink ? "shrink" : ""}`}>
       <div className="header-container">
         <div className="logo">
-          <img src={Logo} className="icon-img" title="EcoMove Logo" alt="EcoMove Logo" />
+          <img
+            src={Logo}
+            className="icon-img"
+            title="EcoMove Logo"
+            alt="EcoMove Logo"
+          />
           <span className="logo-text">Eco Move</span>
         </div>
 
         <nav className={`menu ${menuOpen ? "open" : ""}`}>
           <ul>
-            <li><a href="">Início</a></li>
-            <li><a href="">Como Funciona</a></li>
-            <li><a href="">Cadastre-se</a></li>
-            <li className="menu-login"><a href="">Entrar</a></li>
+            <li>
+              <a href="">Início</a>
+            </li>
+            <li>
+              <a href="">Como Funciona</a>
+            </li>
+            <li>
+              <a href="">Cadastre-se</a>
+            </li>
+            <li className="menu-login">
+              <a href="">Entrar</a>
+            </li>
           </ul>
         </nav>
 
