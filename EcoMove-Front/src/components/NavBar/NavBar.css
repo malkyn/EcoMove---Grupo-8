@@ -4,9 +4,8 @@
   left: 0;
   right: 0;
   width: 100%;
-  background: #f8f8f8;
+  background: #ffffff;
   padding: 1rem 0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   z-index: 999;
   transition: all 0.3s ease;
 }
@@ -59,7 +58,7 @@
   transition: 0.4s;
 }
 
-/* RESPONSIVO */
+
 @media (max-width: 768px) {
   .menu {
     position: absolute;
