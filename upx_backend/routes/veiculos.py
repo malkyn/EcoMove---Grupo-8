@@ -21,7 +21,7 @@ def criar_veiculo():
     try:
         novo = Veiculo(
             modelo = data["modelo"],
-            placa = data["placa"],
+            id_placa = data["placa"],
             id_usuario = data["id_usuario"],
             tipo = data["tipo"]
         )
