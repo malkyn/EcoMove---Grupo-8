@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from upx_backend.models import Carona
+from upx_backend.models import Carona, Usuario, Veiculo
 from datetime import datetime
 from upx_backend import db
 
@@ -15,7 +15,8 @@ def listar_caronas():
         "horario": c.horario.strftime("%H:%M"),
         "vagas_disponiveis": c.vagas_disponiveis,
         "id_usuario": c.id_usuario,
-        "id_veiculo": c.id_veiculo
+        "id_veiculo": c.id_veiculo,
+        "placa": c.veiculo.id_placa
     } for c in caronas])
 
 @caronas_bp.route("/", methods=["POST"])

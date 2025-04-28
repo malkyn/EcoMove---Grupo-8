@@ -11,14 +11,17 @@ def listar_usuarios():
         "id_usuario": u.id_usuario,
         "nome": u.nome,
         "email": u.email,
-        "id_perfil": u.id_perfil
+        "id_perfil": u.id_perfil,
+        "cnh": u.cnh,
+        "rg": u.rg,
+        "cpf": u.cpf
     } for u in usuarios])
 
 @usuarios_bp.route("/", methods=["POST"])
 def criar_usuario():
     data = request.json
     try:
-        novo = Usuario(nome=data["nome"], email=data["email"], senha=data["senha"], id_perfil=data["id_perfil"])
+        novo = Usuario(nome=data["nome"], email=data["email"], senha=data["senha"], id_perfil=data["id_perfil"], cnh=data["cnh"], rg=data["rg"], cpf=data["cpf"])
         db.session.add(novo)
         db.session.commit()
         return jsonify({"mensagem": "Usuário criado com sucesso!"})
