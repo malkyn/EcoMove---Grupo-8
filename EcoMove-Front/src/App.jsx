@@ -4,6 +4,7 @@ import "./App.css";
 import Home from "./pages/Home";
 import Usuarios from "./pages/Usuarios";
 import NavBar from "./components/NavBar/NavBar.jsx";
+import Footer from "./components/Footer/Footer.jsx";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/usuarios" element={<Usuarios></Usuarios>}></Route>
       </Routes>
+      <Footer />
     </Router>
   );
 }
