@@ -1,4 +1,4 @@
-import "./Home.css";
+ import "./Home.css";
 import { Link } from "react-router-dom";
 import Logo from "/EcoMove---Grupo-8/EcoMove-Front/src/pages/icons/seguro-de-automovel.svg";
 import Info from "./icons/informacoes.svg";
