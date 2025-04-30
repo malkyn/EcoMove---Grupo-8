@@ -19,6 +19,10 @@
   align-items: start;
 }
 
+.text {
+  color: white;
+}
+
 .logo-texto {
   display: flex;
   flex-direction: column;

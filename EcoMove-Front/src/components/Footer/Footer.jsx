@@ -26,9 +26,7 @@ const Footer = () => {
                 </span>
               </span>
             </div>
-            <p className="text-sm text-left">
-              Compartilhe o caminho, conecte pessoas.
-            </p>
+            <p className="text">Compartilhe o caminho, conecte pessoas.</p>
           </div>
 
           {/* Coluna 2: Links Rápidos */}
