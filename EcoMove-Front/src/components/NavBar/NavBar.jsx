@@ -69,7 +69,7 @@ function NavBar() {
             </li>
             <li>
               <a
-                href="/Usuarios"
+                href="/loginForm"
                 aria-current={
                   location.pathname === "/cadastro" ? "page" : undefined
                 }

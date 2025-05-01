@@ -4,7 +4,7 @@ import UserIcon from "/EcoMove---Grupo-8/EcoMove-Front/src/pages/icons/usuario2.
 import CarIcon from "/EcoMove---Grupo-8/EcoMove-Front/src/pages/icons/seguro-de-automovel.svg";
 import CloseIcon from "/EcoMove---Grupo-8/EcoMove-Front/src/pages/icons/fechar.svg";
 
-const EcoMoveSelection = ({ headerHeight = 100 }) => {
+const Login = ({ headerHeight = 100 }) => {
   return (
     <div
       className="eco-move-container"
@@ -44,4 +44,4 @@ const EcoMoveSelection = ({ headerHeight = 100 }) => {
   );
 };
 
-export default EcoMoveSelection;
+export default Login;

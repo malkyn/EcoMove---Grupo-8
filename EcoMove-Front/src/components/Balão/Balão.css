@@ -1,0 +1,103 @@
+/* Container do balão flutuante */
+.login-flutuante-direita {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: rgba(217, 217, 217, 1);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  max-width: 280px;
+  z-index: 1000;
+  animation: aparecer 0.3s ease-out;
+  border: 1px solid #e0e0e0;
+}
+
+/* Botão de fechar */
+.fechar-botao {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  transition: all 0.2s ease;
+}
+
+.fechar-botao:hover {
+  transform: scale(1.1);
+}
+
+.fechar-botao img {
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+}
+
+/* Conteúdo do balão */
+.conteudo-login {
+  padding-right: 15px;
+  margin-top: 10px;
+}
+
+.texto-login {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.texto-login a {
+  color: #2e7d32;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.texto-login a:hover {
+  text-decoration: underline;
+}
+
+.texto-termos {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #666;
+}
+
+.texto-termos a {
+  color: #2e7d32;
+  text-decoration: underline;
+  font-size: 11px;
+}
+
+/* Animações */
+@keyframes aparecer {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .login-flutuante-direita {
+    right: 15px;
+    bottom: 15px;
+    max-width: 240px;
+    padding: 15px;
+  }
+
+  .texto-login {
+    font-size: 13px;
+  }
+
+  .texto-termos {
+    font-size: 11px;
+  }
+}
