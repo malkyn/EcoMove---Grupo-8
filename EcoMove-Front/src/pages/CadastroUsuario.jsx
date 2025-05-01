@@ -2,9 +2,9 @@ import React from "react";
 import "./CadastroUsuario.css";
 import Logo from "/EcoMove---Grupo-8/EcoMove-Front/src/pages/icons/seguro-de-automovel.svg";
 import Info from "./icons/informacoes.svg";
-function FormPass(){
+function CadastroUsuario(){
     return(
-        <body>
+        <body className="body">
          <div className="container">
             <div className="form-image">
                <img src={Info} alt="logo"/>
@@ -102,4 +102,4 @@ function FormPass(){
         </body>
     );
 }
-export default FormPass;
+export default CadastroUsuario;
