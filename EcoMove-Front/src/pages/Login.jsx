@@ -26,8 +26,8 @@ const Login = ({ headerHeight = 100 }) => {
             Cadastre-se para encontrar carros disponíveis em sua região e entrar
             em contato com motoristas confiáveis.
           </p>
-          <button className="continue-button">Continuar como Passageiro</button>
-        </div>
+          <a className="continue-button" href="./cadastrousuario">Continuar como Passageiro</a>
+          </div>
 
         {/* Motorista */}
         <div className="selection-card driver-card">

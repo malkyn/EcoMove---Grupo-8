@@ -4,43 +4,44 @@
     box-sizing: border-box;
 }
 .body{
-    margin-top: 70px;
+    margin-top: 30px;
     width: 100%;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #90EE90; 
     
 }
 .container{
-    width: 80%;
-    height: 80vh;
+    margin-top: 400px;
+    width: 100%;
+    height: 75vh;
     display: flex;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, .212);
 }
 .form-image{
     width: 50%;
+    height: 0vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: palegoldenrod;
     padding: 1rem;
 }
 .form-image img {
-    width: 25rem;
+    width: 40rem;
 }
 .form{
     width: 50%;
+    height: 10vh;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     background-color: #ffff;
-    padding: 10rem;
+    padding: 3rem;
 }
 .form-header {
-    margin-bottom: 10rem;
+    margin-bottom: 3rem;
     display: flex;
     justify-content: space-between;
 }
@@ -56,7 +57,7 @@
     cursor: pointer;
 }
 .login-button button:hover {
-    background-color: palegoldenrod;
+    background-color: #036141;
 }
 .login-button button a {
     text-decoration: none;
@@ -111,7 +112,7 @@
     font-size: 0.70rem;
     color: #000000be;
 }
-.generos-imputs {
+.grupo-generos {
     display: flex;
     justify-content: space-between;
     margin-top: 0.62rem;
@@ -129,3 +130,61 @@
     font-weight: 600;
     color: #000000c0;
 }
+.botao-continue {
+    width: 100%;
+    margin-top: 2.5rem;
+    border: none;
+    background-color: #036141;
+    padding: 0.62rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.botao-continue button {
+    background-color: #036141;
+}
+
+.botao-continue button:hover {
+    background-color: #036141;
+}
+
+.botao-continue a {
+    text-decoration: none;
+    font-size: 0.93rem;
+    font-weight: 500;
+    color: #ffff;
+}
+@media screen and (max-width : 1330px) {
+    .form-image{
+        display: none;
+    }
+    .container {
+        width: 50%;
+    }
+    .form {
+        width: 100%;
+    }
+}
+@media screen and (max-width: 1064px) {
+    .container {
+        width: 90%;
+        height: auto;
+    }
+    .imput-group {
+        flex-direction: column;
+        overflow-y: scroll;
+        flex-direction: nowrap;
+        max-height: 10rem;
+        padding-right: 5rem;
+    }
+    .genero-imputs {
+        margin-top: 2rem;
+    }
+    .grupo-generos {
+        flex-direction: column;
+    }
+    .imput-genero {
+        margin-top: 0.5rem;
+    }
+    
+}
+
