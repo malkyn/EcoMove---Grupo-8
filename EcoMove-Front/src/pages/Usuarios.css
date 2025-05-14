@@ -1,2 +1,29 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
+body {
+    background-image: url('icons/fundologin.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+img{
+    width: 20px;
+    height: 15px;
+}
+ 
+.container{
+    width: 420px;
+    background: transparent;
+    border: 3px solid #515151;
+    backdrop-filter: blur(20px);
+     display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
