@@ -6,12 +6,14 @@ db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
-    CORS(app)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\MarcosVini\\EcoMove.db?timeout=20'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
+
+    # Ativando CORS no app inteiro
+    CORS(app, origins=["http://localhost:5173"], supports_credentials=True)
 
     from upx_backend.routes.usuarios import usuarios_bp
     app.register_blueprint(usuarios_bp, url_prefix="/usuarios")
@@ -21,7 +23,6 @@ def create_app():
 
     from upx_backend.routes.caronas import caronas_bp
     app.register_blueprint(caronas_bp, url_prefix="/caronas")
-
 
     with app.app_context():
         from upx_backend.models import Usuario, Veiculo, Carona

@@ -4,6 +4,7 @@
     box-sizing: border-box;
 }
 .body{
+    padding-top: 300px;
     min-height: 100vh;
     height: 100%;
     display: flex;
@@ -87,6 +88,18 @@
     min-width: 250px;
 }
 .input-box input {
+    margin: 0.6rem 0;
+    padding: 0.8rem 1.2rem;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 1px 1px 6px #fbfafa1c;
+    background-color: rgb(237, 237, 237); 
+    color: black;
+    width: 100%; 
+    max-width: 300px; 
+}
+
+.input-box select {
     margin: 0.6rem 0;
     padding: 0.8rem 1.2rem;
     border: none;
