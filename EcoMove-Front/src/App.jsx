@@ -8,6 +8,7 @@ import Footer from "./components/Footer/Footer.jsx";
 import CadastroUsuario from "./pages/CadastroUsuario.jsx";
 import Login from "./pages/Login.jsx";
 import BalãoFlutuante from "./components/Balão/Balão.jsx";
+import Entrar from "./pages/Entrar.jsx";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -19,11 +20,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/usuarios" element={<Usuarios></Usuarios>}></Route>
-        <Route
-          path="/cadastrousuario"
-          element={<CadastroUsuario></CadastroUsuario>}
-        ></Route>
+        <Route path="/cadastrousuario" element={<CadastroUsuario></CadastroUsuario>}></Route>
         <Route path="/loginForm" element={<Login></Login>}></Route>
+        <Route path="/entrar" element={<Entrar></Entrar>}></Route>
       </Routes>
       <Footer />
     </Router>

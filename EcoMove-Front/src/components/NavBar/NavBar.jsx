@@ -79,10 +79,10 @@ function NavBar() {
             </li>
             <li className="menu-login">
               <a
-                href="/login"
+                href="/Entrar"
                 className="login-link"
                 aria-current={
-                  location.pathname === "/login" ? "page" : undefined
+                  location.pathname === "/Entrar" ? "page" : undefined
                 }
               >
                 <img
