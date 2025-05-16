@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "./CadastroUsuario.css";
 import Info from "./icons/informacoes.svg";
 import api from "../services/api";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 function CadastroUsuario() {
   const [formData, setFormData] = useState({
@@ -13,16 +15,25 @@ function CadastroUsuario() {
     rg: "",
     cpf: "",
   });
+
+  const location = useLocation();
+  const perfilId = location.state?.id_perfil || 2;
+
+  useEffect(() => {
+  setFormData((prev) => ({
+    ...prev,
+    id_perfil: perfilId,
+    }));
+  }, [perfilId]);
+
   const [docTipo, setDocTipo] = useState("cpf");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // se o campo for tipo de documento
     if (name === "doctipo") {
       setDocTipo(value);
     } else if (name === "numerodoc") {
-      // atualiza dinamicamente o campo correspondente no formData
       setFormData((prev) => ({
         ...prev,
         [docTipo]: value,
@@ -56,7 +67,7 @@ function CadastroUsuario() {
           <form onSubmit={handleSubmit}>
             <div className="form-header">
               <div className="title">
-                <h1>Cadastro de Passageiro</h1>
+                <h1>Cadastro de {perfilId === 1 ? "Motorista" : "Passageiro"}</h1>
               </div>
               <div className="login-button">
                 <button type="button">

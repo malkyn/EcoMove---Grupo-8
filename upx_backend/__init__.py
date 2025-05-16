@@ -12,7 +12,6 @@ def create_app():
 
     db.init_app(app)
 
-    # Ativando CORS no app inteiro
     CORS(app, origins=["http://localhost:5173"], supports_credentials=True)
 
     from upx_backend.routes.usuarios import usuarios_bp

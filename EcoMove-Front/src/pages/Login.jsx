@@ -1,10 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 import UserIcon from "/EcoMove---Grupo-8/EcoMove-Front/src/pages/icons/usuario2.svg";
 import CarIcon from "/EcoMove---Grupo-8/EcoMove-Front/src/pages/icons/seguro-de-automovel.svg";
-import CloseIcon from "/EcoMove---Grupo-8/EcoMove-Front/src/pages/icons/fechar.svg";
 
 const Login = ({ headerHeight = 100 }) => {
+  const navigate = useNavigate();
+
+  const handleNavigate = (perfilId) => {
+    navigate("/cadastrousuario", { state: { id_perfil: perfilId } });
+  };
+
   return (
     <div
       className="eco-move-container"
@@ -18,7 +24,6 @@ const Login = ({ headerHeight = 100 }) => {
       </h2>
 
       <div className="selection-cards">
-        {/* Passageiro */}
         <div className="selection-card passenger-card">
           <img src={UserIcon} alt="Passageiro" className="card-icon" />
           <h3>Passageiro</h3>
@@ -26,10 +31,14 @@ const Login = ({ headerHeight = 100 }) => {
             Cadastre-se para encontrar carros disponíveis em sua região e entrar
             em contato com motoristas confiáveis.
           </p>
-          <a className="continue-button" href="./cadastrousuario">Continuar como Passageiro</a>
-          </div>
+          <button
+            className="continue-button"
+            onClick={() => handleNavigate(2)}
+          >
+            Continuar como Passageiro
+          </button>
+        </div>
 
-        {/* Motorista */}
         <div className="selection-card driver-card">
           <img src={CarIcon} alt="Motorista" className="card-icon" />
           <h3>Motorista</h3>
@@ -37,7 +46,12 @@ const Login = ({ headerHeight = 100 }) => {
             Ofereça caronas, compartilhe suas trajetórias e ajude a comunidade,
             conhecendo novas pessoas no percurso.
           </p>
-          <button className="continue-button">Continuar como Motorista</button>
+          <button
+            className="continue-button"
+            onClick={() => handleNavigate(1)}
+          >
+            Continuar como Motorista
+          </button>
         </div>
       </div>
     </div>
