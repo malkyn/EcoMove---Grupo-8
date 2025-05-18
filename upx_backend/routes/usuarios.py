@@ -1,6 +1,11 @@
 from flask import Blueprint, request, jsonify
 from upx_backend.models import Usuario
 from upx_backend import db
+from flask import Blueprint, request, jsonify
+from upx_backend import db
+from upx_backend.models import Usuario
+from flask_cors import cross_origin
+
 
 usuarios_bp = Blueprint("usuarios", __name__)
 
@@ -17,10 +22,6 @@ def listar_usuarios():
         "cpf": u.cpf
     } for u in usuarios])
 
-from flask import Blueprint, request, jsonify
-from upx_backend import db
-from upx_backend.models import Usuario
-from flask_cors import cross_origin
 
 usuarios_bp = Blueprint("usuarios", __name__)
 

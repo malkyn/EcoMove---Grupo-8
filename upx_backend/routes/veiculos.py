@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from upx_backend.models import Veiculo
 from upx_backend import db
+from flask_cors import cross_origin
 
 veiculos_bp = Blueprint("veiculos", __name__)
 
@@ -15,7 +16,8 @@ def listar_veiculos():
         "id_usuario": v.id_usuario
     } for v in veiculos])
 
-@veiculos_bp.route("/", methods=["POST"])
+@veiculos_bp.route("/", methods=["POST", "OPTIONS"])
+@cross_origin(origin="http://localhost:5173", supports_credentials=True)
 def criar_veiculo():
     data = request.json
     try:
@@ -34,7 +36,7 @@ def criar_veiculo():
     finally:
         db.session.close()
 
-@veiculos_bp.route("/<int:id_veiculo>", methods=["DELETE"])
+@veiculos_bp.route("/<int:id_veiculo>", methods=["DELETE", "OPTIONS"])
 def deletar_veiculo(id_veiculo):
     veiculo = Veiculo.query.get_or_404(id_veiculo)
     db.session.delete(veiculo)
