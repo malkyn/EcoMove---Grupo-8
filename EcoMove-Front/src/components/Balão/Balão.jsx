@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Balão.css";
-import CloseIcon from "/EcoMove---Grupo-8/EcoMove-Front/src/pages/icons/fechar.svg";
+import CloseIcon from "../../pages/icons/fechar.svg";
 
 const BalãoFlutuante = () => {
   const [isVisible, setIsVisible] = useState(true);

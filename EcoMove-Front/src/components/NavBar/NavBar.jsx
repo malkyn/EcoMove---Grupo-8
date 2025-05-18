@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import "./NavBar.css";
-import Logo from "/EcoMove---Grupo-8/EcoMove-Front/src/pages/icons/logo.svg";
-import UserIcon from "/EcoMove---Grupo-8/EcoMove-Front/src/pages/icons/usuario2.svg";
+import Logo from "../../pages/icons/logo.svg";
+import UserIcon from "../../pages/icons/usuario2.svg";
 
 function NavBar() {
   const [shrink, setShrink] = useState(false);

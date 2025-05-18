@@ -1,6 +1,6 @@
 import React from "react";
 import "./footer.css";
-import LogoFooter from "/EcoMove---Grupo-8/EcoMove-Front/src/pages/icons/logo.svg";
+import LogoFooter from "../../pages/icons/logo.svg";
 
 const Footer = () => {
   return (

@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
-import UserIcon from "/EcoMove---Grupo-8/EcoMove-Front/src/pages/icons/usuario2.svg";
-import CarIcon from "/EcoMove---Grupo-8/EcoMove-Front/src/pages/icons/seguro-de-automovel.svg";
+import UserIcon from "../pages/icons/usuario2.svg";
+import CarIcon from "../pages/icons/seguro-de-automovel.svg";
 
 const Login = ({ headerHeight = 100 }) => {
   const navigate = useNavigate();
