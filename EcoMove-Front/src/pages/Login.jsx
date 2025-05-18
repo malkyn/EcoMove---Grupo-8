@@ -16,7 +16,7 @@ const Login = ({ headerHeight = 100 }) => {
       className="eco-move-container"
       style={{ paddingTop: `${headerHeight}px` }}
     >
-      <h1 className="eco-move-logo">ECOMOVE</h1>
+      <h1 className="eco-move-logo">ECOMOVE</h1>  
 
       <h2 className="selection-subtitle">
         Selecione como você deseja se cadastrar na plataforma para iniciar sua
