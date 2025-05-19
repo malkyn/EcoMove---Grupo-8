@@ -1,19 +1,38 @@
-/* Container do balão flutuante */
+/* ============ VARIÁVEIS ============ */
+:root {
+  --balao-bg-color: rgba(217, 217, 217, 1);
+  --balao-border-color: #e0e0e0;
+  --balao-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --primary-color: #2e7d32;
+  --text-color: #333;
+  --text-secondary: #666;
+  --transition: all 0.2s ease;
+}
+
+/* ============ ESTRUTURA PRINCIPAL ============ */
 .login-flutuante-direita {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  background-color: rgba(217, 217, 217, 1);
+  background-color: var(--balao-bg-color);
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--balao-shadow);
   padding: 20px;
   max-width: 280px;
   z-index: 1000;
-  animation: aparecer 0.3s ease-out;
-  border: 1px solid #e0e0e0;
+  animation: slideUp 0.3s ease-out;
+  border: 1px solid var(--balao-border-color);
+  transform: translateY(0);
+  transition: var(--transition), opacity 0.3s ease;
 }
 
-/* Botão de fechar */
+/* Estado quando estiver fechando */
+.login-flutuante-direita.fechando {
+  transform: translateY(20px);
+  opacity: 0;
+}
+
+/* ============ BOTÃO FECHAR ============ */
 .fechar-botao {
   position: absolute;
   top: 10px;
@@ -22,20 +41,32 @@
   border: none;
   cursor: pointer;
   padding: 5px;
-  transition: all 0.2s ease;
+  transition: var(--transition);
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .fechar-botao:hover {
   transform: scale(1.1);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .fechar-botao img {
   width: 16px;
   height: 16px;
   opacity: 0.7;
+  transition: var(--transition);
 }
 
-/* Conteúdo do balão */
+.fechar-botao:hover img {
+  opacity: 1;
+}
+
+/* ============ CONTEÚDO ============ */
 .conteudo-login {
   padding-right: 15px;
   margin-top: 10px;
@@ -43,37 +74,55 @@
 
 .texto-login {
   margin: 0 0 10px 0;
-  font-size: 14px;
-  color: #333;
+  font-size: 0.875rem; /* 14px */
+  color: var(--text-color);
   font-weight: 500;
-}
-
-.texto-login a {
-  color: #2e7d32;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.texto-login a:hover {
-  text-decoration: underline;
+  line-height: 1.4;
 }
 
 .texto-termos {
   margin: 0;
-  font-size: 12px;
+  font-size: 0.75rem; /* 12px */
   line-height: 1.4;
-  color: #666;
+  color: var(--text-secondary);
+}
+
+/* ============ LINKS ============ */
+.texto-login a,
+.texto-termos a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: var(--transition);
+  font-weight: 600;
+}
+
+.texto-login a {
+  position: relative;
+}
+
+.texto-login a::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: var(--primary-color);
+  transition: var(--transition);
+}
+
+.texto-login a:hover::after {
+  width: 100%;
 }
 
 .texto-termos a {
-  color: #2e7d32;
   text-decoration: underline;
-  font-size: 11px;
+  font-size: 0.6875rem; /* 11px */
+  font-weight: normal;
 }
 
-/* Animações */
-@keyframes aparecer {
+/* ============ ANIMAÇÕES ============ */
+@keyframes slideUp {
   from {
     transform: translateY(20px);
     opacity: 0;
@@ -84,7 +133,7 @@
   }
 }
 
-/* Responsividade */
+/* ============ RESPONSIVIDADE ============ */
 @media (max-width: 768px) {
   .login-flutuante-direita {
     right: 15px;
@@ -94,10 +143,19 @@
   }
 
   .texto-login {
-    font-size: 13px;
+    font-size: 0.8125rem; 
   }
 
   .texto-termos {
-    font-size: 11px;
+    font-size: 0.6875rem; 
+  }
+}
+
+@media (max-width: 480px) {
+  .login-flutuante-direita {
+    right: 10px;
+    left: 10px;
+    max-width: none;
+    bottom: 10px;
   }
 }

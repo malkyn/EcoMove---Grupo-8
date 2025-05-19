@@ -4,6 +4,33 @@
   text-align: center;
 }
 
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  position: relative;
+}
+
+
+.login-page .main-content,
+.cadastro-page .main-content {
+  padding-bottom: 80px; 
+}
+
+.balao-container {
+  z-index: 100;
+}
+
+.footer {
+  z-index: 200;
+  position: relative;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

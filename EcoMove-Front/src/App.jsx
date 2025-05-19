@@ -12,19 +12,24 @@ import Entrar from "./pages/Entrar.jsx";
 
 function App() {
   const [count, setCount] = useState(0);
+  const hiddenPages = ["/Entrar"]; // Páginas onde o balão não aparece
 
   return (
     <Router>
-      <NavBar />
-      <BalãoFlutuante />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/usuarios" element={<Usuarios></Usuarios>}></Route>
-        <Route path="/cadastrousuario" element={<CadastroUsuario></CadastroUsuario>}></Route>
-        <Route path="/loginForm" element={<Login></Login>}></Route>
-        <Route path="/entrar" element={<Entrar></Entrar>}></Route>
-      </Routes>
-      <Footer />
+      <div className="app-container">
+        <NavBar />
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/usuarios" element={<Usuarios />} />
+            <Route path="/cadastrousuario" element={<CadastroUsuario />} />
+            <Route path="/loginForm" element={<Login />} />
+            <Route path="/entrar" element={<Entrar />} />
+          </Routes>
+        </main>
+        <Footer />
+        <BalãoFlutuante hiddenPages={hiddenPages} />
+      </div>
     </Router>
   );
 }

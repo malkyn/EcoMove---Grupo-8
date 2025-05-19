@@ -2,8 +2,10 @@
   background-color: #111827;
   width: 100%;
   color: #d1d5db;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  padding: 2rem 0;
+  position: relative;
+  margin-top: -80px; 
+  z-index: 10;
 }
 
 .footer-container {
@@ -90,13 +92,13 @@
   font-size: 0.875rem;
 }
 
-@media (max-width: 768px) {
-  .footer-grid {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
+@media (max-width: 480px) {
+  .footer {
+    margin-top: -120px; 
+    padding: 1.5rem 0;
   }
 
-  .logo-texto {
-    max-width: 100%;
+  .footer-copyright {
+    margin-top: 2rem;
   }
 }

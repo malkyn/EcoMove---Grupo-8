@@ -1,4 +1,19 @@
-/* Container Principal */
+/* ============ VARIÁVEIS CSS ============ */
+:root {
+  --primary-color: #2e7d32;
+  --primary-dark: #1b5e20;
+  --background-light: rgba(217, 217, 217, 1);
+  --text-color: #555;
+  --white: #fff;
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 25px rgba(46, 125, 50, 0.15);
+  --border-radius-sm: 12px;
+  --border-radius-md: 24px;
+  --transition: all 0.3s ease;
+}
+
+/* ============ ESTILOS GERAIS ============ */
 .eco-move-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -7,9 +22,9 @@
   font-weight: bold;
 }
 
-/* Título ECOMOVE */
+/* ============ SEÇÃO DE CABEÇALHO ============ */
 .eco-move-logo {
-  color: #2e7d32;
+  color: var(--primary-color);
   font-size: 2.5rem;
   font-weight: 700;
   text-align: center;
@@ -18,18 +33,17 @@
   letter-spacing: 2px;
 }
 
-/* Subtítulo abaixo do título */
 .selection-subtitle {
   font-size: 1.2rem;
   text-align: center;
   margin-bottom: 3rem;
-  color: #555;
+  color: var(--text-color);
   font-weight: bold;
   padding: 0 1rem;
   line-height: 1.6;
 }
 
-/* Cartões */
+/* ============ SEÇÃO DE CARTÕES ============ */
 .selection-cards {
   display: flex;
   justify-content: center;
@@ -41,29 +55,24 @@
   flex: 1;
   max-width: 420px;
   padding: 2.5rem;
-  background-color: rgba(217, 217, 217, 1);
+  background-color: var(--background-light);
   border: 1px solid #e0e0e0;
-  border-radius: 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-md);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  transition: all 0.3s ease;
+  transition: var(--transition);
 }
 
-/* Efeitos hover diferenciados para cada card */
-.passenger-card:hover {
+/* Efeitos hover para os cartões */
+.selection-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 8px 25px rgba(46, 125, 50, 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
-.driver-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 8px 25px rgba(46, 125, 50, 0.15);
-}
-
-/* Ícones */
+/* Elementos internos dos cartões */
 .card-icon {
   width: 90px;
   height: 90px;
@@ -71,32 +80,30 @@
   object-fit: contain;
 }
 
-/* Títulos dos cartões */
 .selection-card h3 {
-  color: #2e7d32;
+  color: var(--primary-color);
   margin-bottom: 1.2rem;
   font-size: 1.6rem;
   font-weight: 600;
 }
 
-/* Texto dos cartões */
 .selection-card p {
-  color: #555;
+  color: var(--text-color);
   line-height: 1.6;
   margin-bottom: 2rem;
   font-size: 1rem;
 }
 
-/* Botões */
+/* ============ BOTÕES ============ */
 .continue-button {
-  background-color: #2e7d32;
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--white);
   border: none;
   padding: 1rem 2rem;
-  border-radius: 12px;
+  border-radius: var(--border-radius-sm);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--transition);
   margin-top: auto;
   width: 100%;
   font-size: 1rem;
@@ -104,13 +111,40 @@
 }
 
 .continue-button:hover {
-  background-color: #1b5e20;
+  background-color: var(--primary-dark);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(27, 94, 32, 0.3);
-  color:#fff;
 }
 
-/* Responsividade */
+/* ============ MENSAGEM DE LOGIN ============ */
+.login-message-container {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.login-message {
+  background-color: var(--white);
+  padding: 1rem 1.5rem;
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-sm);
+  max-width: 300px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.login-message a {
+  color: var(--primary-color);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-message a:hover {
+  text-decoration: underline;
+}
+
+/* ============ RESPONSIVIDADE ============ */
 @media (max-width: 768px) {
   .selection-cards {
     flex-direction: column;
@@ -121,6 +155,7 @@
   .selection-card {
     width: 100%;
     padding: 2rem;
+    max-width: 100%;
   }
 
   .eco-move-logo {
@@ -133,30 +168,17 @@
   }
 }
 
-.login-message-container {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  z-index: 1000;
-}
+@media (max-width: 480px) {
+  .eco-move-container {
+    padding: 1.5rem;
+  }
 
-.login-message {
-  background-color: white;
-  padding: 1rem 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 300px;
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
+  .selection-card {
+    padding: 1.5rem;
+  }
 
-.login-message a {
-  color: #2e7d32;
-  font-weight: 600;
-  text-decoration: none;
+  .card-icon {
+    width: 70px;
+    height: 70px;
+  }
 }
-
-.login-message a:hover {
-  text-decoration: underline;
-}
-

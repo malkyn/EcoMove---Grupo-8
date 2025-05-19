@@ -44,7 +44,7 @@ const Footer = () => {
                 </a>
               </li>
               <li className="footer-list-item">
-                <a href="/cadastro" className="footer-link">
+                <a href="/loginForm" className="footer-link">
                   Cadastre-se
                 </a>
               </li>

@@ -1,114 +1,194 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* ==================== VARIÁVEIS ==================== */
+:root {
+  --primary-color: #036141;
+  --primary-hover: #088b60;
+  --white: #ffffff;
+  --text-light: rgba(255, 255, 255, 0.9);
+  --border-light: rgba(255, 255, 255, 0.2);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --border-radius: 10px;
+  --transition: all 0.3s ease;
 }
 
-.imagem{
-    background-size: cover;
-    background-position: center;
-    min-height: 100vh;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-image: url("./icons/fundologin.jpg");
+/* ==================== RESET E BASE ==================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.bory{
-    background-size: cover;
-    background-position: center;
-    min-height: 100vh;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* ==================== LAYOUT PRINCIPAL ==================== */
+.bodyentrar {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 80px 20px 150px;
+  background-image: url("./icons/fundologin.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  will-change: transform;
 }
 
-.box{
-    margin-top: 70px;
-    width: 420px;
-    background: transparent;
-    border: 2px solid #9b9b9b;
-    backdrop-filter: blur(20px);
-    border-radius: 10px;
-    padding: 30px 40px;
+.bodyentrar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: -1;
+}
+
+.imagem {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+}
+
+/* ==================== CARD DO FORMULÁRIO ==================== */
+.box {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 2px solid var(--border-light);
+  border-radius: var(--border-radius);
+  padding: 30px 40px;
+  box-shadow: var(--shadow);
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .box h1 {
-    color: #036141;
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
 }
 
+/* ==================== CAMPOS DO FORMULÁRIO ==================== */
 .input-container {
-    position: relative;
-    width: 100%;
-    height: 50px;
-    margin: 30px 0;
+  position: relative;
+  width: 100%;
+  height: 50px;
+  margin: 25px 0;
 }
 
 .input-container input {
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
-    border: 2px solid rgba( 255, 255, 255, .2);
-    border-radius: 10px;
-    font-family: 16px;
-    color: #fff;
-    padding: 20px 45px 20px 20px;
-    cursor: pointer;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: 2px solid var(--border-light);
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  color: var(--white);
+  padding: 20px 45px 20px 20px;
+  outline: none;
+  transition: var(--transition);
 }
 
-.input-container input::placeholder{
-    color: #fff;
+.input-container input:focus {
+  border-color: var(--primary-color);
+}
+
+.input-container input::placeholder {
+  color: var(--text-light);
+  opacity: 0.8;
 }
 
 .input-container img {
-    position: absolute;
-    right: 15px;
-    margin-top: 20px;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
 }
 
 .input-container a {
-    font-size: 12px;
-    text-decoration: none;
-    color: #fff;
+  display: block;
+  font-size: 12px;
+  text-decoration: none;
+  color: var(--text-light);
+  margin-top: 8px;
+  text-align: right;
+  transition: var(--transition);
 }
 
-.input-container a:hover{
-    text-decoration: underline;
+.input-container a:hover {
+  text-decoration: underline;
+  color: var(--white);
 }
 
+/* ==================== BOTÕES ==================== */
 .submit-button {
-    width: 100%;
-    height: 50px;
-    background-color: #036141;
-    border: none;
-    border-radius: 10px;
-    color: #fff;
-    cursor: pointer;
-    margin-top: 20px;
-    outline: none;
+  width: 100%;
+  height: 50px;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: var(--border-radius);
+  color: var(--white);
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: var(--transition);
 }
 
 .submit-button:hover {
-    background-color: #088b60;
+  background-color: var(--primary-hover);
 }
 
-.link-registro{
-    margin-top: 20px;
+/* ==================== LINK DE REGISTRO ==================== */
+.link-registro {
+  margin-top: 20px;
+  text-align: center;
 }
 
 .link-registro p {
-    color: #fff;
+  color: var(--text-light);
 }
 
 .link-registro a {
-    color: #fff;
+  color: var(--white);
+  text-decoration: none;
+  transition: var(--transition);
 }
 
 .link-registro a:hover {
-    color: #088b60;
+  color: var(--primary-hover);
+  text-decoration: underline;
 }
 
+/* ==================== RESPONSIVIDADE ==================== */
+@media (max-width: 480px) {
+  .bodyentrar {
+    padding-top: 70px;
+    padding-bottom: 120px;
+    background-attachment: scroll;
+  }
+
+  .box {
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  .input-container {
+    margin: 20px 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .box {
+    backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  * {
+    transition: none !important;
+  }
+}
