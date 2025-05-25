@@ -12,9 +12,7 @@ const Balão = ({ hiddenPages = ["/Entrar"], autoCloseDelay = 5000 }) => {
   // Verifica se deve ocultar com base na página atual
   const shouldHide = hiddenPages.includes(location.pathname);
 
-  /**
-   * Função para fechar o balão com animação
-   */
+  /* Função para fechar o balão com animação*/
   const handleClose = () => {
     setIsClosing(true);
     setTimeout(() => setIsVisible(false), 300);
