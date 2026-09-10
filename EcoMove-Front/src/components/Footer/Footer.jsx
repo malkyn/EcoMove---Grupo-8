@@ -83,7 +83,7 @@ const Footer = () => {
             <h3 className="footer-column-title">Contato</h3>
             <ul className="footer-list space-y-2">
               <li className="footer-list-item">contato@EcoMove.com.br</li>
-              <li className="footer-list-item">WhatsApp: (15) 99999-9999</li>
+              <li className="footer-list-item">WhatsApp: (15) 99824-3110</li>
             </ul>
           </div>
         </div>
