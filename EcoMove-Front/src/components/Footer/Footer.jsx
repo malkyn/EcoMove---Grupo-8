@@ -39,7 +39,7 @@ const Footer = () => {
                 </a>
               </li>
               <li className="footer-list-item">
-                <a href="/como-funciona" className="footer-link">
+                <a href="/#como-funciona" className="footer-link">
                   Como Funciona
                 </a>
               </li>

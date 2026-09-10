@@ -116,7 +116,7 @@ function Home() {
         </section>
 
         {/* Seção de Como Funciona */}
-        <section className="how-it-works">
+        <section id="como-funciona" className="how-it-works">
           <div className="section-header">
             <h2>Como Funciona a Plataforma de Mobilidade Sustentável?</h2>
             <p>
