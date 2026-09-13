@@ -38,7 +38,7 @@ function NavBar() {
 
   const navItems = [
     { path: "/", label: "Início" },
-    { path: "/como-funciona", label: "Como Funciona" },
+    { path: "/#como-funciona", label: "Como Funciona" },
     { path: "/loginForm", label: "Cadastre-se" },
   ];
 
