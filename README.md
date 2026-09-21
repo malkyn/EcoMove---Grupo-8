@@ -68,6 +68,17 @@ python -m upx_backend.app
 
 A API sobe em `http://127.0.0.1:5000`. As rotas, campos e regras que o backend deve seguir estão em [docs/api-contrato.md](docs/api-contrato.md). Com o backend no ar, coloque `VITE_USE_MOCK=false` no `.env` do front e reinicie o `npm run dev`.
 
+## Créditos de imagens
+
+As fotos da landing page vêm do [Unsplash](https://unsplash.com), sob a [Unsplash License](https://unsplash.com/license) (uso gratuito, sem exigência de crédito). Arquivos em `EcoMove-Front/src/pages/icons/` e origem:
+
+| Arquivo | Foto no Unsplash |
+|---|---|
+| `hero-carona.webp` | `photo-1671785120538-c24cbe823ccc` |
+| `carro-eletrico.webp` | `photo-1704475336842-0ab3798abf0e` |
+| `moto-eletrica.webp` | `photo-1558980664-10e7170b5df9` |
+| `corrida-app.webp` | `photo-1554672408-730436b60dde` |
+
 ## Fluxo de trabalho
 
 - Ninguém commita direto na `main`. Cada tarefa nasce em uma branch (`feature/...` ou `fix/...`) e entra por Pull Request com título e descrição.

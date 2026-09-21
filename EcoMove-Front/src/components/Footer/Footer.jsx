@@ -1,99 +1,163 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Footer.css";
 import LogoFooter from "../../pages/icons/logo.webp";
+import { useInstalarApp } from "../../hooks/useInstalarApp";
+import { IconeCelular, IconeEscudo, IconeFolha, IconePessoas } from "../Icones";
 
-const Footer = () => {
+const ANO = new Date().getFullYear();
+
+const navegacao = [
+  { rotulo: "Carona ou corrida", href: "/#modos" },
+  { rotulo: "Por que ir de EcoMove", href: "/#funcionalidades" },
+  { rotulo: "Como funciona", href: "/#como-funciona" },
+  { rotulo: "Sustentabilidade", href: "/#sustentabilidade" },
+  { rotulo: "Perguntas frequentes", href: "/#perguntas" },
+];
+
+const ods = [
+  { numero: "7", nome: "Energia limpa" },
+  { numero: "9", nome: "Inovação" },
+  { numero: "12", nome: "Consumo responsável" },
+  { numero: "13", nome: "Ação climática" },
+];
+
+function Footer() {
+  const { jaInstalado, podeInstalar, precisaDeInstrucaoIOS, instalar } = useInstalarApp();
+
+  const voltarAoTopo = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <footer className="footer bg-gray-900 w-full text-gray-300 py-8">
-      <div className="footer-container mx-auto px-6">
-        {" "}
-        <div className="footer-grid grid grid-cols-1 md:grid-cols-4 gap-8 items-start">
-          {/* Coluna 1: Logo e texto */}
-          <div className="logo-texto pl-4">
-            {" "}
-            <div className="footer-logo flex items-center mb-2">
-              <img
-                src={LogoFooter}
-                className="icon-img mr-3"
-                title="EcoMove Logo"
-                alt="EcoMove Logo"
-              />
-              <span className="footer-logo-text text-white font-bold">
-                ECO
-                <span className="footer-logo-subtext text-white font-normal">
-                  {" "}
-                  MOVE
-                </span>
+    <footer className="footer">
+      <div className="footer-container">
+        {/* Faixa: instalar o app no celular */}
+        <div className="footer-instalar">
+          <div className="footer-instalar-texto">
+            <span className="footer-instalar-icone" aria-hidden="true">
+              <IconeCelular tamanho={26} />
+            </span>
+            <div>
+              <strong>Leve o EcoMove no bolso</strong>
+              <p>
+                Web app instalável: abre no navegador e vai para a tela inicial do celular, sem
+                loja e sem download pesado.
+              </p>
+            </div>
+          </div>
+          {jaInstalado ? (
+            <Link to="/app" className="footer-btn">
+              Abrir o app
+            </Link>
+          ) : podeInstalar ? (
+            <button type="button" className="footer-btn" onClick={instalar}>
+              Instalar o app
+            </button>
+          ) : precisaDeInstrucaoIOS ? (
+            <p className="footer-instalar-dica">
+              No iPhone: toque em Compartilhar e depois em "Adicionar à Tela de Início".
+            </p>
+          ) : (
+            <Link to="/loginForm" className="footer-btn">
+              Criar conta grátis
+            </Link>
+          )}
+        </div>
+
+        <div className="footer-grid">
+          {/* Marca */}
+          <div className="footer-marca">
+            <div className="footer-logo">
+              <img src={LogoFooter} alt="" width="40" height="40" />
+              <span>
+                Eco<strong>Move</strong>
               </span>
             </div>
-            <p className="text">Compartilhe o caminho, conecte pessoas.</p>
-          </div>
-
-          {/* Coluna 2: Links Rápidos */}
-          <div className="title-links">
-            <h3 className="footer-column-title">Links Rápidos</h3>
-            <ul className="footer-list space-y-2">
-              <li className="footer-list-item">
-                <a href="/" className="footer-link">
-                  Início
-                </a>
+            <p>
+              Compartilhe o caminho, conecte pessoas. Caronas agendadas e corridas agora, só em
+              veículos elétricos e híbridos.
+            </p>
+            <ul className="footer-selos">
+              <li>
+                <IconeFolha tamanho={16} /> 100% elétrico ou híbrido
               </li>
-              <li className="footer-list-item">
-                <a href="/#como-funciona" className="footer-link">
-                  Como Funciona
-                </a>
+              <li>
+                <IconeEscudo tamanho={16} /> CNH e placa validadas no cadastro
               </li>
-              <li className="footer-list-item">
-                <a href="/loginForm" className="footer-link">
-                  Cadastre-se
-                </a>
+              <li>
+                <IconePessoas tamanho={16} /> Avaliações entre motoristas e passageiros
               </li>
             </ul>
           </div>
 
-          {/* Coluna 3: Região */}
-          <div className="title-links">
-            <h3 className="footer-column-title">Região</h3>
-            <ul className="footer-list space-y-2">
-              <li className="footer-list-item">
-                <a href="" className="footer-link">
-                  Sorocaba
-                </a>
+          {/* Navegação */}
+          <nav aria-label="Seções do site">
+            <h3 className="footer-titulo">Navegação</h3>
+            <ul className="footer-lista">
+              {navegacao.map((item) => (
+                <li key={item.href}>
+                  <a href={item.href}>{item.rotulo}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Conta */}
+          <div>
+            <h3 className="footer-titulo">Conta</h3>
+            <ul className="footer-lista">
+              <li>
+                <Link to="/loginForm">Criar conta</Link>
               </li>
-              <li className="footer-list-item">
-                <a href="" className="footer-link">
-                  Votorantim
-                </a>
+              <li>
+                <Link to="/entrar">Entrar</Link>
               </li>
-              <li className="footer-list-item">
-                <a href="" className="footer-link">
-                  Itu
-                </a>
-              </li>
-              <li className="footer-list-item">
-                <a href="" className="footer-link">
-                  Salto
-                </a>
+              <li>
+                <Link to="/app">Abrir o app</Link>
               </li>
             </ul>
           </div>
 
-          {/* Coluna 4: Contato */}
-          <div className="title-links">
-            <h3 className="footer-column-title">Contato</h3>
-            <ul className="footer-list space-y-2">
-              <li className="footer-list-item">contato@EcoMove.com.br</li>
-              <li className="footer-list-item">WhatsApp: (15) 99824-3110</li>
+          {/* Contato */}
+          <div>
+            <h3 className="footer-titulo">Contato</h3>
+            <ul className="footer-lista footer-lista-texto">
+              <li>
+                <a href="mailto:contato@ecomove.com.br">contato@ecomove.com.br</a>
+              </li>
+              <li>WhatsApp: (15) 99824-3110</li>
+              <li>Sorocaba, Votorantim, Itu e Salto</li>
             </ul>
           </div>
         </div>
-        {/* Copyright */}
-        <div className="footer-copyright">
-          © 2025 Eco Move. Todos os direitos reservados.
+
+        <div className="footer-base">
+          <p className="footer-base-texto">
+            © {ANO} EcoMove · Projeto de extensão UPX V, Centro Universitário FACENS, Sorocaba, SP.
+          </p>
+          <ul className="footer-ods" aria-label="Objetivos de Desenvolvimento Sustentável da ONU">
+            {ods.map((item) => (
+              <li key={item.numero}>
+                <strong>{item.numero}</strong> {item.nome}
+              </li>
+            ))}
+          </ul>
+          <div className="footer-base-fim">
+            <span>
+              Fotos:{" "}
+              <a href="https://unsplash.com/license" target="_blank" rel="noopener noreferrer">
+                Unsplash
+              </a>
+            </span>
+            <button type="button" className="footer-topo" onClick={voltarAoTopo}>
+              Voltar ao topo
+            </button>
+          </div>
         </div>
       </div>
     </footer>
   );
-};
+}
 
 export default Footer;
