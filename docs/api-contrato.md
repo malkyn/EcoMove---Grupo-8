@@ -297,6 +297,10 @@ Como o banco é SQLite de desenvolvimento, apagar o arquivo `.db` e deixar o `cr
 9. Limite de tentativas no login (por exemplo, 5 por minuto por IP) com `Flask-Limiter`, para dificultar força bruta.
 10. Sessão com cookie `httpOnly`, `SameSite=Lax` e `Secure` em produção. Rotas que criam ou apagam dados devem usar o usuário da sessão, não o `id_usuario` do corpo.
 
+## 9.1 Recomendação de caronas
+
+A recomendação (requisito 11) roda no frontend com um modelo de pontuação explicável sobre os dados que a API já devolve (proximidade, horário, reputação, veículo e histórico do passageiro). Não exige rota nova. O modelo está descrito em [recomendacao.md](recomendacao.md); uma rota `GET /recomendacoes?id_usuario=` no backend é evolução opcional.
+
 ## 10. Como o front consome
 
 - URL da API em `EcoMove-Front/.env` (`VITE_API_URL`).

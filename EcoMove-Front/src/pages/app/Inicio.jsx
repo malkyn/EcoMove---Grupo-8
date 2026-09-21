@@ -9,6 +9,9 @@ import { useIntervalo } from "../../hooks/useIntervalo";
 import { mensagemDeErro } from "../../utils/erros";
 import { formatarKm, formatarReais } from "../../utils/estimativas";
 import { rotuloStatus } from "../../utils/corridas";
+import { agoraLocal } from "../../utils/formatar";
+import { montarHistorico, sugerirPeloHistorico } from "../../utils/recomendacao";
+import CaronaCard from "../../components/CaronaCard/CaronaCard";
 
 const PERFIL_MOTORISTA = 1;
 // Centro de Sorocaba: usado enquanto a localização do celular não chega
@@ -44,6 +47,8 @@ function Inicio() {
   const [aceitando, setAceitando] = useState(null);
   const [mensagem, setMensagem] = useState("");
   const [erro, setErro] = useState("");
+  const [sugestoes, setSugestoes] = useState([]);
+  const [reservando, setReservando] = useState(null);
 
   useEffect(() => {
     obterLocalizacao();
@@ -81,6 +86,47 @@ function Inicio() {
     if (!ehMotorista) buscarMotoristas();
   }, [buscarMotoristas, ehMotorista]);
   useIntervalo(buscarMotoristas, 10000, !ehMotorista);
+
+  // Passageiro: sugestões de caronas parecidas com o histórico dele
+  const buscarSugestoes = useCallback(async () => {
+    if (ehMotorista || !idUsuario) return;
+    try {
+      const [respReservas, respCorridas, respCandidatas] = await Promise.all([
+        api.get(`/usuarios/${idUsuario}/reservas`),
+        api.get("/corridas/", { params: { id_usuario: idUsuario } }),
+        api.get("/caronas/", {
+          params: { com_vagas: true, horario_de: agoraLocal(), excluir_usuario: idUsuario },
+        }),
+      ]);
+      const historico = montarHistorico(respReservas.data, respCorridas.data);
+      const jaReservadas = new Set(respReservas.data.map((c) => c.id_carona));
+      const candidatas = respCandidatas.data.filter((c) => !jaReservadas.has(c.id_carona));
+      setSugestoes(sugerirPeloHistorico(candidatas, historico));
+    } catch {
+      // silencioso: sem sugestões
+    }
+  }, [ehMotorista, idUsuario]);
+
+  useEffect(() => {
+    buscarSugestoes();
+  }, [buscarSugestoes]);
+
+  const reservarSugestao = async (carona) => {
+    setErro("");
+    setMensagem("");
+    setReservando(carona.id_carona);
+    try {
+      const resposta = await api.post(`/caronas/${carona.id_carona}/reservas`, {
+        id_usuario: idUsuario,
+      });
+      setMensagem(resposta.data?.mensagem || "Vaga reservada com sucesso!");
+      setSugestoes((prev) => prev.filter((c) => c.id_carona !== carona.id_carona));
+    } catch (err) {
+      setErro(mensagemDeErro(err, "Não foi possível reservar a vaga."));
+    } finally {
+      setReservando(null);
+    }
+  };
 
   // Motorista: veículos e estado online
   useEffect(() => {
@@ -281,6 +327,24 @@ function Inicio() {
                 ? "Nenhum motorista online por perto agora."
                 : `${motoristas.length} ${motoristas.length === 1 ? "motorista online" : "motoristas online"} por perto.`}
             </p>
+
+            {sugestoes.length > 0 && (
+              <div className="inicio-sugestoes">
+                <h2>Sugeridas para você</h2>
+                {sugestoes.map((c) => (
+                  <CaronaCard key={c.id_carona} carona={c} motivos={c.recomendacao.motivos}>
+                    <button
+                      type="button"
+                      className="inicio-botao inicio-botao-aceitar"
+                      onClick={() => reservarSugestao(c)}
+                      disabled={reservando === c.id_carona}
+                    >
+                      {reservando === c.id_carona ? "Reservando..." : "Reservar vaga"}
+                    </button>
+                  </CaronaCard>
+                ))}
+              </div>
+            )}
           </>
         )}
       </section>

@@ -5,13 +5,14 @@ import api from "../../services/api";
 import { getUsuarioLogado } from "../../services/auth";
 import { mensagemDeErro } from "../../utils/erros";
 import { agoraLocal, formatarDataHora, somarMinutos } from "../../utils/formatar";
+import { LIMIAR_RECOMENDADA, montarHistorico, recomendar } from "../../utils/recomendacao";
 import CaronaCard from "../../components/CaronaCard/CaronaCard";
 
 const RAIO_KM = 3; // distância máxima entre o seu ponto e o da carona
 const JANELA_AGENDAR_MIN = 90; // tolerância de horário ao agendar
 const JANELA_AGORA_MIN = 24 * 60; // "agora": caronas nas próximas 24 h
 
-/** Lista de caronas compatíveis com o trajeto vindo da tela "Para onde?". */
+/** Lista de caronas compatíveis com o trajeto vindo da tela "Para onde?", ordenada pela recomendação. */
 function CaronasCompativeis() {
   const location = useLocation();
   const trajeto = location.state;
@@ -42,8 +43,8 @@ function CaronasCompativeis() {
 
     setCarregando(true);
     setErro("");
-    api
-      .get("/caronas/", {
+    Promise.all([
+      api.get("/caronas/", {
         params: {
           origem_lat: origem.lat,
           origem_lng: origem.lng,
@@ -55,9 +56,23 @@ function CaronasCompativeis() {
           com_vagas: true,
           excluir_usuario: idUsuario,
         },
-      })
-      .then((resposta) => {
-        if (ativo) setCaronas(resposta.data);
+      }),
+      // Histórico do passageiro alimenta a recomendação; se falhar, segue sem ele
+      api.get(`/usuarios/${idUsuario}/reservas`).catch(() => ({ data: [] })),
+      api.get("/corridas/", { params: { id_usuario: idUsuario } }).catch(() => ({ data: [] })),
+    ])
+      .then(([respCaronas, respReservas, respCorridas]) => {
+        if (!ativo) return;
+        const historico = montarHistorico(respReservas.data, respCorridas.data);
+        setCaronas(
+          recomendar(respCaronas.data, {
+            origem,
+            destino,
+            quando,
+            dataHora,
+            historico,
+          })
+        );
       })
       .catch((err) => {
         if (ativo) setErro(mensagemDeErro(err, "Não foi possível buscar caronas."));
@@ -115,7 +130,8 @@ function CaronasCompativeis() {
           <span>{destino.nome}</span>
         </p>
         <p className="compativeis-quando">
-          Saída e destino até {RAIO_KM} km dos seus, {descricaoQuando}.
+          Saída e destino até {RAIO_KM} km dos seus, {descricaoQuando}. Ordenadas pela nossa
+          recomendação.
         </p>
       </header>
 
@@ -142,12 +158,18 @@ function CaronasCompativeis() {
         </div>
       ) : (
         <div className="compativeis-lista">
-          {caronas.map((c) => {
+          {caronas.map((c, indice) => {
             const jaReservada =
               reservadas.includes(c.id_carona) ||
               (c.passageiros || []).some((p) => p.id_usuario === idUsuario);
+            const recomendada = indice === 0 && c.recomendacao.pontuacao >= LIMIAR_RECOMENDADA;
             return (
-              <CaronaCard key={c.id_carona} carona={c}>
+              <CaronaCard
+                key={c.id_carona}
+                carona={c}
+                recomendada={recomendada}
+                motivos={c.recomendacao.motivos}
+              >
                 {jaReservada ? (
                   <span className="compativeis-reservada">Vaga reservada</span>
                 ) : (
