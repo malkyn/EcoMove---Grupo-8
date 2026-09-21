@@ -1,0 +1,37 @@
+.nao-encontrada {
+  min-height: 70vh;
+  padding: 120px 20px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  text-align: center;
+  color: #333333;
+}
+
+.nao-encontrada h1 {
+  font-size: 1.8rem;
+  color: #036141;
+  margin: 0;
+}
+
+.nao-encontrada p {
+  margin: 0;
+  color: #555555;
+}
+
+.nao-encontrada-botao {
+  margin-top: 0.5rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: 6px;
+  background: #036141;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nao-encontrada-botao:hover {
+  background: #088b60;
+  color: #ffffff;
+}

@@ -1,0 +1,67 @@
+.carona-card {
+  background: #ffffff;
+  border: 1px solid #e3e8e5;
+  border-left: 4px solid #036141;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.carona-card.carona-lotada {
+  border-left-color: #9aa5a0;
+  opacity: 0.85;
+}
+
+.carona-rota {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #1f2d27;
+  margin-bottom: 0.75rem;
+}
+
+.carona-seta {
+  color: #036141;
+}
+
+.carona-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.6rem 1rem;
+  margin: 0;
+}
+
+.carona-info dt {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7a74;
+}
+
+.carona-info dd {
+  margin: 0.1rem 0 0;
+  color: #333333;
+  font-size: 0.95rem;
+}
+
+.badge-eletrico {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: #e3f5ec;
+  color: #036141;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.carona-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
