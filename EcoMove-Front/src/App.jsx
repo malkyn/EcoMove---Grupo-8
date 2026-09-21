@@ -1,10 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/Home";
 import NavBar from "./components/NavBar/NavBar.jsx";
 import Footer from "./components/Footer/Footer.jsx";
-import CadastroUsuario from "./pages/CadastroUsuario.jsx";
-import Login from "./pages/Login.jsx";
+import Cadastro from "./pages/Cadastro.jsx";
 import BalãoFlutuante from "./components/Balão/Balão.jsx";
 import Entrar from "./pages/Entrar.jsx";
 import NaoEncontrada from "./pages/NaoEncontrada.jsx";
@@ -24,7 +23,10 @@ const PERFIL_MOTORISTA = 1;
 /** Site público: landing page, cadastro e login, com navbar e rodapé. */
 function Site() {
   // Páginas onde o balão "Já possui uma conta?" não aparece: a landing já tem o botão no topo
-  const hiddenPages = ["/", "/entrar"];
+  const hiddenPages = ["/", "/entrar", "/loginForm", "/cadastrousuario"];
+  // O cadastro ocupa a tela inteira, sem rolagem: nao mostra o rodape
+  const { pathname } = useLocation();
+  const semRodape = ["/loginForm", "/cadastrousuario"].includes(pathname);
   return (
     <div className="app-container">
       <a href="#conteudo" className="skip-link">
@@ -34,7 +36,7 @@ function Site() {
       <main id="conteudo" className="main-content">
         <Outlet />
       </main>
-      <Footer />
+      {!semRodape && <Footer />}
       <BalãoFlutuante hiddenPages={hiddenPages} />
     </div>
   );
@@ -46,8 +48,8 @@ function App() {
       <Routes>
         <Route element={<Site />}>
           <Route path="/" element={<Home />} />
-          <Route path="/cadastrousuario" element={<CadastroUsuario />} />
-          <Route path="/loginForm" element={<Login />} />
+          <Route path="/cadastrousuario" element={<Navigate to="/loginForm" replace />} />
+          <Route path="/loginForm" element={<Cadastro />} />
           <Route path="/entrar" element={<Entrar />} />
           <Route path="*" element={<NaoEncontrada />} />
         </Route>

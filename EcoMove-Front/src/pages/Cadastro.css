@@ -1,0 +1,609 @@
+/* Página de criar conta, em passos, ocupando a altura da tela sem rolagem.
+   Variáveis isoladas em .cad. */
+.cad {
+  --cad-verde: #036141;
+  --cad-verde-escuro: #024b30;
+  --cad-verde-claro: #e3f5ec;
+  --cad-verde-neon: #8ee0b8;
+  --cad-texto: #1f2d27;
+  --cad-texto-suave: #5b6a64;
+  --cad-borda: #d6ddd9;
+  --cad-fundo: #f4f7f5;
+  --cad-erro: #b42318;
+  --cad-erro-fundo: #fdecea;
+  --cad-escuro: #0f1f19;
+  --cad-barra: 72px; /* altura da barra fixa */
+
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  height: 100vh;
+  height: 100dvh;
+  padding-top: var(--cad-barra);
+  overflow: hidden;
+  background: var(--cad-fundo);
+  color: var(--cad-texto);
+  text-align: left;
+}
+
+/* ===== Lateral com foto ===== */
+.cad-lateral {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background: var(--cad-escuro);
+}
+
+.cad-lateral img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 60% 50%;
+}
+
+.cad-lateral::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15, 31, 25, 0.15) 0%, rgba(15, 31, 25, 0.35) 50%, rgba(15, 31, 25, 0.9) 100%);
+}
+
+.cad-lateral-texto {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: 40px 44px 48px;
+  color: #ffffff;
+}
+
+.cad-lateral-chapeu {
+  margin: 0 0 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cad-verde-neon);
+}
+
+.cad-lateral h2 {
+  margin: 0 0 1.2rem;
+  font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: #ffffff;
+  max-width: 420px;
+}
+
+.cad-lateral ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  font-size: 0.95rem;
+}
+
+.cad-lateral li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.cad-lateral svg {
+  flex: 0 0 auto;
+  color: var(--cad-verde-neon);
+}
+
+/* ===== Painel do formulário: centraliza; só rola por dentro se a tela for muito baixa ===== */
+.cad-conteudo {
+  display: flex;
+  height: 100%;
+  overflow-y: auto;
+  padding: 24px 20px;
+}
+
+.cad-form {
+  width: 100%;
+  max-width: 600px;
+  margin: auto; /* centraliza vertical e horizontalmente sem cortar o topo */
+  padding: 32px 36px;
+  border-radius: 24px;
+  background: #ffffff;
+  border: 1px solid #e3e8e5;
+  box-shadow: 0 20px 50px rgba(15, 31, 25, 0.08);
+}
+
+.cad-topo {
+  margin-bottom: 16px;
+}
+
+.cad-topo h1 {
+  margin: 0 0 0.25rem;
+  font-size: clamp(1.6rem, 2.6vw, 2rem);
+  font-weight: 800;
+  color: var(--cad-texto);
+}
+
+.cad-topo p {
+  margin: 0;
+  color: var(--cad-texto-suave);
+}
+
+.cad-topo a {
+  color: var(--cad-verde);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.cad-topo a:hover {
+  text-decoration: underline;
+}
+
+/* Passo X de 3 + barra */
+.cad-progresso {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 20px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--cad-texto-suave);
+  white-space: nowrap;
+}
+
+.cad-progresso-barra {
+  flex: 1 1 auto;
+  height: 6px;
+  border-radius: 999px;
+  background: #e3e8e5;
+  overflow: hidden;
+}
+
+.cad-progresso-barra i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--cad-verde);
+  transition: width 0.35s ease;
+}
+
+.cad-alerta {
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #f5c2bd;
+  background: var(--cad-erro-fundo);
+  color: var(--cad-erro);
+  font-size: 0.95rem;
+}
+
+/* Bloco do passo: entra deslizando */
+.cad-passo {
+  animation: cad-entrar 0.3s ease both;
+}
+
+@keyframes cad-entrar {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.cad-passo-titulo {
+  margin: 0 0 14px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--cad-texto);
+}
+
+.cad-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ===== Escolha de perfil ===== */
+.cad-perfis {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.cad-perfis:focus {
+  outline: none;
+}
+
+.cad-perfis-opcoes {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.cad-perfil {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1.5px solid var(--cad-borda);
+  background: #ffffff;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cad-perfil:hover {
+  border-color: var(--cad-verde);
+}
+
+.cad-perfil.escolhido {
+  border-color: var(--cad-verde);
+  background: var(--cad-verde-claro);
+  box-shadow: 0 0 0 3px rgba(3, 97, 65, 0.12);
+}
+
+/* O rádio fica invisível, mas segue no fluxo do teclado */
+.cad-perfil input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cad-perfil:has(input:focus-visible) {
+  outline: 2px solid var(--cad-verde);
+  outline-offset: 2px;
+}
+
+.cad-perfil-icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--cad-verde-claro);
+  color: var(--cad-verde);
+}
+
+.cad-perfil.escolhido .cad-perfil-icone {
+  background: var(--cad-verde);
+  color: #ffffff;
+}
+
+.cad-perfil-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.cad-perfil-texto strong {
+  font-size: 1.05rem;
+}
+
+.cad-perfil-texto span {
+  font-size: 0.9rem;
+  color: var(--cad-texto-suave);
+  line-height: 1.35;
+}
+
+/* ===== Campos ===== */
+.cad-grupo-texto {
+  margin: -0.4rem 0 0.9rem;
+  font-size: 0.9rem;
+  color: var(--cad-texto-suave);
+}
+
+.cad-grade {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+}
+
+.cad-campo {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;
+}
+
+.cad-campo label {
+  margin-bottom: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.cad-opcional {
+  font-weight: 400;
+  color: var(--cad-texto-suave);
+}
+
+.cad-campo input,
+.cad-campo select {
+  width: 100%;
+  padding: 0.75rem 0.95rem;
+  border-radius: 12px;
+  border: 1.5px solid var(--cad-borda);
+  background: #ffffff;
+  color: var(--cad-texto);
+  font: inherit;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cad-campo input::placeholder {
+  color: #9aa7a1;
+}
+
+.cad-campo input:focus,
+.cad-campo select:focus {
+  outline: none;
+  border-color: var(--cad-verde);
+  box-shadow: 0 0 0 3px rgba(3, 97, 65, 0.15);
+}
+
+.cad-campo input[aria-invalid="true"],
+.cad-campo select[aria-invalid="true"] {
+  border-color: var(--cad-erro);
+  box-shadow: 0 0 0 3px rgba(180, 35, 24, 0.12);
+}
+
+.cad-dica {
+  margin: 0.4rem 0 0;
+  font-size: 0.82rem;
+  color: var(--cad-texto-suave);
+}
+
+.cad-erro {
+  margin: 0.4rem 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--cad-erro);
+}
+
+/* Senha com botão de mostrar */
+.cad-senha {
+  position: relative;
+}
+
+.cad-senha input {
+  padding-right: 3rem;
+}
+
+.cad-senha-olho {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--cad-texto-suave);
+  cursor: pointer;
+}
+
+.cad-senha-olho:hover {
+  background: var(--cad-verde-claro);
+  color: var(--cad-verde);
+}
+
+/* Medidor de força */
+.cad-forca {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.cad-forca-barra {
+  display: flex;
+  gap: 4px;
+  flex: 1 1 auto;
+}
+
+.cad-forca-barra i {
+  display: block;
+  flex: 1 1 0;
+  height: 5px;
+  border-radius: 999px;
+  background: #e3e8e5;
+}
+
+.cad-forca-texto {
+  flex: 0 0 auto;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--cad-texto-suave);
+}
+
+.cad-forca-0 i:nth-child(1) {
+  background: #d9480f;
+}
+
+.cad-forca-1 i:nth-child(-n + 2) {
+  background: #e6a700;
+}
+
+.cad-forca-2 i {
+  background: var(--cad-verde);
+}
+
+/* ===== Botões ===== */
+.cad-acoes {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.cad-btn,
+.cad-btn-voltar {
+  padding: 0.95rem 1.5rem;
+  border-radius: 999px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+.cad-btn {
+  flex: 1 1 auto;
+  border: none;
+  background: var(--cad-verde);
+  color: #ffffff;
+}
+
+.cad-btn:hover:not(:disabled) {
+  background: var(--cad-verde-escuro);
+  transform: translateY(-1px);
+}
+
+.cad-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.cad-btn-voltar {
+  flex: 0 0 auto;
+  border: 1.5px solid var(--cad-borda);
+  background: transparent;
+  color: var(--cad-texto);
+}
+
+.cad-btn-voltar:hover:not(:disabled) {
+  border-color: var(--cad-verde);
+  color: var(--cad-verde);
+}
+
+.cad-consentimento {
+  margin: 14px 0 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--cad-texto-suave);
+  text-align: center;
+}
+
+/* ===== Responsividade ===== */
+@media (max-width: 960px) {
+  .cad {
+    grid-template-columns: 1fr;
+  }
+
+  .cad-lateral {
+    display: none;
+  }
+
+  .cad-conteudo {
+    padding: 20px 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .cad {
+    --cad-barra: 64px;
+    background: #ffffff;
+  }
+
+  .cad-conteudo {
+    padding: 8px 0 16px;
+  }
+
+  .cad-form {
+    padding: 12px 16px;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  /* Espaços mais curtos para cada passo caber na tela do celular */
+  .cad-topo {
+    margin-bottom: 8px;
+  }
+
+  .cad-topo h1 {
+    font-size: 1.4rem;
+  }
+
+  .cad-progresso {
+    margin-bottom: 12px;
+  }
+
+  .cad-passo-titulo {
+    font-size: 1.05rem;
+    margin-bottom: 10px;
+  }
+
+  .cad-grupo-texto {
+    display: none;
+  }
+
+  .cad-grade {
+    grid-template-columns: 1fr;
+  }
+
+  .cad-campo {
+    margin-bottom: 10px;
+  }
+
+  .cad-campo label {
+    margin-bottom: 0.3rem;
+  }
+
+  .cad-campo input,
+  .cad-campo select {
+    padding: 0.65rem 0.9rem;
+  }
+
+  .cad-acoes {
+    margin-top: 12px;
+  }
+
+  .cad-acoes {
+    flex-direction: column-reverse;
+  }
+
+  .cad-btn-voltar {
+    width: 100%;
+  }
+}
+
+/* Telas largas mas baixas (notebook pequeno): aperta os espaços para caber sem rolar */
+@media (max-height: 700px) and (min-width: 601px) {
+  .cad-form {
+    padding: 22px 28px;
+  }
+
+  .cad-topo {
+    margin-bottom: 10px;
+  }
+
+  .cad-progresso {
+    margin-bottom: 12px;
+  }
+
+  .cad-campo {
+    margin-bottom: 10px;
+  }
+
+  .cad-campo input,
+  .cad-campo select {
+    padding: 0.6rem 0.9rem;
+  }
+}

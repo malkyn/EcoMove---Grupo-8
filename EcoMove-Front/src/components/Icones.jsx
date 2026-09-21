@@ -133,3 +133,19 @@ export const IconeSair = (p) => (
     <path d="M14 8l4 4-4 4M18 12H9" />
   </Svg>
 );
+
+export const IconeOlho = (p) => (
+  <Svg {...p}>
+    <path d="M2.5 12s3.5-6.5 9.5-6.5S21.5 12 21.5 12s-3.5 6.5-9.5 6.5S2.5 12 2.5 12z" />
+    <circle cx="12" cy="12" r="3" />
+  </Svg>
+);
+
+export const IconeOlhoFechado = (p) => (
+  <Svg {...p}>
+    <path d="M3 3l18 18" />
+    <path d="M10.6 6.1A10 10 0 0 1 12 6c6 0 9.5 6 9.5 6a17 17 0 0 1-3.2 3.9" />
+    <path d="M6.6 6.6C4 8.4 2.5 12 2.5 12s3.5 6 9.5 6c1.5 0 2.8-.3 4-.9" />
+    <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+  </Svg>
+);

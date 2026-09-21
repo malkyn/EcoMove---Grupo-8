@@ -14,12 +14,12 @@ function Entrar() {
   // =============================================
   //               ESTADO DO FORMULÁRIO
   // =============================================
-  const [email, setEmail] = useState("");
+  const location = useLocation();
+  const [email, setEmail] = useState(location.state?.email || "");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
   // Mensagem vinda de outra tela (ex.: cadastro concluído)
   const sucesso = location.state?.mensagem || "";
 
