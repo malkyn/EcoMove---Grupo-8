@@ -5,74 +5,9 @@
   gap: 0.9rem;
 }
 
-.oferecer-titulo {
-  margin: 0;
-  font-size: 1.3rem;
-  color: #036141;
-}
-
-.oferecer-erro {
-  margin: 0;
-  background: #fdecea;
-  color: #8a1c1c;
-  border: 1px solid #f5c2c0;
-  border-radius: 6px;
-  padding: 0.7rem 0.9rem;
-  font-size: 0.9rem;
-}
-
-.oferecer-sem-veiculo {
-  background: #ffffff;
-  border: 1px solid #e3e8e5;
-  border-radius: 14px;
-  padding: 1.2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-  color: #1f2d27;
-}
-
-.oferecer-sem-veiculo p {
-  margin: 0;
-}
-
-.oferecer-form {
-  background: #ffffff;
-  border: 1px solid #e3e8e5;
-  border-radius: 14px;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-}
-
-.oferecer-gps {
-  flex: 0 0 auto;
-  width: 44px;
-  border: 1px solid #d5dcd8;
-  border-radius: 10px;
-  background: #ffffff;
-  color: #036141;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 0;
-}
-
-.oferecer-gps:hover {
-  background: #e3f5ec;
-  border-color: #036141;
-}
-
-.oferecer-gps:disabled {
-  opacity: 0.5;
-  cursor: wait;
-}
-
 .oferecer-mapa {
   height: 200px;
-  border-radius: 10px;
+  border-radius: 16px;
   overflow: hidden;
   border: 1px solid #e3e8e5;
 }
@@ -94,66 +29,24 @@
   color: #036141;
 }
 
-.oferecer-campo {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #1f2d27;
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.oferecer-campo input,
-.oferecer-campo select {
-  font-size: 1rem;
-  font-weight: 400;
-  padding: 0.7rem 0.9rem;
-  border: 1px solid #d5dcd8;
-  border-radius: 10px;
-  background: #ffffff;
-  color: #1f2d27;
-  width: 100%;
-}
-
-.oferecer-campo input:focus,
-.oferecer-campo select:focus {
-  outline: none;
-  border-color: #036141;
-  box-shadow: 0 0 0 3px rgba(3, 97, 65, 0.15);
-}
-
 .oferecer-linha {
   display: flex;
   gap: 0.6rem;
 }
 
-.oferecer-campo-vagas {
-  flex: 0 0 90px;
+/* Os cartoes (app-cartao) dao o fundo; aqui so o espacamento interno */
+.oferecer-sem-veiculo,
+.oferecer-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
 }
 
-.oferecer-botao {
-  display: block;
-  text-align: center;
-  padding: 0.85rem 1rem;
-  border-radius: 12px;
-  border: none;
-  background: #036141;
-  color: #ffffff;
-  font-size: 1rem;
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
+.oferecer-linha > .app-campo {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
-.oferecer-botao:hover {
-  background: #088b60;
-  color: #ffffff;
-  border-color: transparent;
-}
-
-.oferecer-botao:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.oferecer-linha > .oferecer-campo-vagas {
+  flex: 0 0 96px;
 }

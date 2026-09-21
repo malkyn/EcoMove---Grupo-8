@@ -29,7 +29,7 @@
   width: 100%;
   background: #fafbfa;
   border: 1px solid #e3e8e5;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 0.9rem;
 }
 
@@ -80,8 +80,8 @@
   font-size: 0.95rem;
   font-family: inherit;
   padding: 0.6rem 0.8rem;
-  border: 1px solid #d5dcd8;
-  border-radius: 10px;
+  border: 1.5px solid #d6ddd9;
+  border-radius: 12px;
   background: #ffffff;
   color: #1f2d27;
   resize: vertical;
@@ -105,36 +105,6 @@
   justify-content: flex-end;
 }
 
-.avaliacao-botao {
-  padding: 0.6rem 1.1rem;
-  border-radius: 10px;
-  border: none;
-  background: #036141;
-  color: #ffffff;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-.avaliacao-botao:hover {
-  background: #088b60;
-  border-color: transparent;
-}
-
-.avaliacao-botao:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.avaliacao-botao-secundario {
-  background: #f0f3f1;
-  color: #1f2d27;
-}
-
-.avaliacao-botao-secundario:hover {
-  background: #e3e8e5;
-}
-
 .avaliacao-feita {
   margin: 0;
   width: 100%;
@@ -152,8 +122,8 @@
 /* Botão "Avaliar" nas listas */
 .avaliar-botao {
   padding: 0.45rem 0.9rem;
-  border-radius: 8px;
-  border: 1px solid #e0a800;
+  border-radius: 999px;
+  border: 1.5px solid #e0a800;
   background: #fff8e1;
   color: #7a4d00;
   font-size: 0.85rem;

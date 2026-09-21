@@ -161,23 +161,23 @@ function OferecerCarona() {
 
   return (
     <div className="oferecer">
-      <h1 className="oferecer-titulo">Oferecer carona</h1>
+      <h1 className="app-titulo">Oferecer carona</h1>
 
       {erro && (
-        <p className="oferecer-erro" role="alert">
+        <p className="app-alerta app-alerta-erro" role="alert">
           {erro}
         </p>
       )}
 
       {semVeiculos ? (
-        <div className="oferecer-sem-veiculo">
+        <div className="app-cartao oferecer-sem-veiculo">
           <p>Você precisa cadastrar um veículo elétrico ou híbrido antes de oferecer caronas.</p>
-          <Link to="/app/veiculos" className="oferecer-botao">
+          <Link to="/app/veiculos" className="app-btn app-btn-primario">
             Cadastrar veículo
           </Link>
         </div>
       ) : (
-        <form className="oferecer-form" onSubmit={handleSubmit}>
+        <form className="app-cartao oferecer-form" onSubmit={handleSubmit}>
           <CampoEndereco
             id="carona-origem"
             rotulo="Saída"
@@ -187,7 +187,7 @@ function OferecerCarona() {
             acaoExtra={
               <button
                 type="button"
-                className="oferecer-gps"
+                className="app-gps"
                 onClick={usarMinhaLocalizacao}
                 disabled={localizacao.buscando}
                 aria-label="Usar minha localização"
@@ -226,7 +226,7 @@ function OferecerCarona() {
             </p>
           )}
 
-          <label className="oferecer-campo">
+          <label className="app-campo">
             <span>Data e hora da saída</span>
             <input
               type="datetime-local"
@@ -238,7 +238,7 @@ function OferecerCarona() {
           </label>
 
           <div className="oferecer-linha">
-            <label className="oferecer-campo">
+            <label className="app-campo">
               <span>Veículo</span>
               <select
                 value={idVeiculo}
@@ -254,7 +254,7 @@ function OferecerCarona() {
               </select>
             </label>
 
-            <label className="oferecer-campo oferecer-campo-vagas">
+            <label className="app-campo oferecer-campo-vagas">
               <span>Vagas</span>
               <input
                 type="number"
@@ -269,7 +269,7 @@ function OferecerCarona() {
           </div>
           {ehMoto && <p className="oferecer-dica">Moto: 1 passageiro por carona.</p>}
 
-          <button type="submit" className="oferecer-botao" disabled={enviando || calculando}>
+          <button type="submit" className="app-btn app-btn-primario" disabled={enviando || calculando}>
             {enviando ? "Publicando..." : "Publicar carona"}
           </button>
           <p className="oferecer-nota">

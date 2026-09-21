@@ -1,21 +1,19 @@
 .carona-card {
   background: #ffffff;
   border: 1px solid #e3e8e5;
-  border-left: 4px solid #036141;
-  border-radius: 8px;
+  border-radius: 16px;
   padding: 1rem 1.2rem;
   text-align: left;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .carona-card.carona-lotada {
-  border-left-color: #9aa5a0;
+  border-color: #cfd6d2;
   opacity: 0.85;
 }
 
 .carona-card.carona-recomendada {
   border-color: #e0a800;
-  border-left-color: #e0a800;
   box-shadow: 0 2px 12px rgba(224, 168, 0, 0.18);
 }
 
@@ -80,7 +78,7 @@
 
 .carona-info dd {
   margin: 0.1rem 0 0;
-  color: #333333;
+  color: #1f2d27;
   font-size: 0.95rem;
 }
 

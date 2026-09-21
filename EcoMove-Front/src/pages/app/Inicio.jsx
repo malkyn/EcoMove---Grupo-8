@@ -225,18 +225,18 @@ function Inicio() {
       <section className="inicio-folha" aria-label="Ações rápidas">
         <div className="inicio-alca" aria-hidden="true" />
         {avisoDeRota && (
-          <p className="inicio-aviso" role="alert">
+          <p className="app-alerta app-alerta-aviso" role="alert">
             {avisoDeRota}
           </p>
         )}
-        {erroGps && <p className="inicio-aviso">{erroGps} Mostrando Sorocaba.</p>}
+        {erroGps && <p className="app-alerta app-alerta-aviso">{erroGps} Mostrando Sorocaba.</p>}
         {erro && (
-          <p className="inicio-aviso inicio-erro" role="alert">
+          <p className="app-alerta app-alerta-erro" role="alert">
             {erro}
           </p>
         )}
         {mensagem && (
-          <p className="inicio-aviso inicio-ok" role="status">
+          <p className="app-alerta app-alerta-ok" role="status">
             {mensagem}
           </p>
         )}
@@ -263,20 +263,20 @@ function Inicio() {
         {ehMotorista ? (
           <div className="inicio-acoes">
             {semVeiculo ? (
-              <Link to="/app/veiculos" className="inicio-botao">
+              <Link to="/app/veiculos" className="app-btn app-btn-primario">
                 Cadastre um veículo para começar
               </Link>
             ) : (
               <button
                 type="button"
-                className={`inicio-botao ${online ? "inicio-botao-online" : ""}`}
+                className={`app-btn ${online ? "app-btn-vazado" : "app-btn-primario"}`}
                 onClick={alternarOnline}
                 disabled={Boolean(corridaAtual)}
               >
                 {online ? "Ficar offline" : "Ficar online para corridas"}
               </button>
             )}
-            <Link to="/app/caronas/nova" className="inicio-botao inicio-botao-secundario">
+            <Link to="/app/caronas/nova" className="app-btn app-btn-secundario">
               Oferecer carona
             </Link>
 
@@ -303,7 +303,7 @@ function Inicio() {
                         </div>
                         <button
                           type="button"
-                          className="inicio-botao inicio-botao-aceitar"
+                          className="app-btn app-btn-primario app-btn-pequeno"
                           onClick={() => aceitar(p)}
                           disabled={aceitando === p.id_corrida}
                         >
@@ -335,7 +335,7 @@ function Inicio() {
                   <CaronaCard key={c.id_carona} carona={c} motivos={c.recomendacao.motivos}>
                     <button
                       type="button"
-                      className="inicio-botao inicio-botao-aceitar"
+                      className="app-btn app-btn-primario app-btn-pequeno"
                       onClick={() => reservarSugestao(c)}
                       disabled={reservando === c.id_carona}
                     >

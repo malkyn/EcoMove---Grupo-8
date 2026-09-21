@@ -5,49 +5,17 @@
   gap: 0.9rem;
 }
 
-.viagens-titulo {
-  margin: 0;
-  font-size: 1.3rem;
-  color: #036141;
-}
-
-.viagens-msg {
-  margin: 0;
-  border-radius: 6px;
-  padding: 0.7rem 0.9rem;
-  font-size: 0.9rem;
-}
-
-.viagens-erro {
-  background: #fdecea;
-  color: #8a1c1c;
-  border: 1px solid #f5c2c0;
-}
-
-.viagens-sucesso {
-  background: #e3f5ec;
-  color: #036141;
-  border: 1px solid #bfe6d1;
-}
-
 .viagens-secao {
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
 }
 
-.viagens-subtitulo {
-  margin: 0.3rem 0 0;
-  font-size: 1rem;
-  color: #1f2d27;
-}
-
 /* ----- Corridas ----- */
 .corrida-resumo {
   background: #ffffff;
   border: 1px solid #e3e8e5;
-  border-left: 4px solid #1d4ed8;
-  border-radius: 8px;
+  border-radius: 16px;
   padding: 0.9rem 1rem;
   display: flex;
   flex-direction: column;
@@ -124,73 +92,9 @@
   white-space: nowrap;
 }
 
-.viagens-realizada {
-  padding: 0.35rem 0.7rem;
-  border-radius: 999px;
-  background: #eef1ef;
-  color: #6b7a74;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-.viagens-avaliado {
-  padding: 0.4rem 0.8rem;
-  border-radius: 8px;
-  background: #e3f5ec;
-  color: #036141;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.viagens-cancelar {
-  background: none;
-  border: 1px solid #f5c2c0;
-  color: #b42318;
-  border-radius: 8px;
-  padding: 0.45rem 0.9rem;
-  font-size: 0.85rem;
-  cursor: pointer;
-}
-
-.viagens-cancelar:hover {
-  background: #fdecea;
-  border-color: #f5c2c0;
-}
-
-.viagens-cancelar:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.viagens-vazio {
-  color: #6b7a74;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-  padding: 1.5rem 0;
-}
-
-.viagens-vazio p {
-  margin: 0;
-}
-
 .viagens-lista {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
 }
 
-.viagens-botao {
-  align-self: flex-start;
-  padding: 0.7rem 1.3rem;
-  border-radius: 10px;
-  background: #036141;
-  color: #ffffff;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.viagens-botao:hover {
-  background: #088b60;
-  color: #ffffff;
-}

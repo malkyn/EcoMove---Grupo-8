@@ -109,14 +109,14 @@ export function AvaliacaoForm({ viagem, idAvaliador, idAvaliado, nomeAvaliado, o
         {onCancelar && (
           <button
             type="button"
-            className="avaliacao-botao avaliacao-botao-secundario"
+            className="app-btn app-btn-secundario app-btn-pequeno"
             onClick={onCancelar}
             disabled={enviando}
           >
             Agora não
           </button>
         )}
-        <button type="submit" className="avaliacao-botao" disabled={enviando}>
+        <button type="submit" className="app-btn app-btn-primario app-btn-pequeno" disabled={enviando}>
           {enviando ? "Enviando..." : "Enviar avaliação"}
         </button>
       </div>

@@ -101,12 +101,12 @@ function Corrida() {
     }
   };
 
-  if (carregando) return <p className="corrida-carregando">Carregando corrida...</p>;
+  if (carregando) return <p className="app-vazio">Carregando corrida...</p>;
   if (!corrida) {
     return (
       <div className="corrida">
-        <p className="corrida-msg corrida-erro">{erro || "Corrida não encontrada."}</p>
-        <Link to="/app" className="corrida-botao">
+        <p className="app-alerta app-alerta-erro">{erro || "Corrida não encontrada."}</p>
+        <Link to="/app" className="app-btn app-btn-primario">
           Voltar ao início
         </Link>
       </div>
@@ -127,11 +127,11 @@ function Corrida() {
   return (
     <div className="corrida">
       <header className="corrida-cabecalho">
-        <Link to="/app" className="corrida-voltar">
+        <Link to="/app" className="app-voltar">
           ‹ Início
         </Link>
         <div className="corrida-titulo-linha">
-          <h1>Corrida #{corrida.id_corrida}</h1>
+          <h1 className="app-titulo">Corrida #{corrida.id_corrida}</h1>
           <span className={`corrida-status corrida-status-${tomStatus(corrida.status)}`}>
             {rotuloStatus(corrida.status)}
           </span>
@@ -147,18 +147,18 @@ function Corrida() {
       </div>
 
       {erro && (
-        <p className="corrida-msg corrida-erro" role="alert">
+        <p className="app-alerta app-alerta-erro" role="alert">
           {erro}
         </p>
       )}
       {mensagem && (
-        <p className="corrida-msg corrida-sucesso" role="status">
+        <p className="app-alerta app-alerta-ok" role="status">
           {mensagem}
         </p>
       )}
 
       {/* Situação atual */}
-      <section className="corrida-cartao" aria-live="polite">
+      <section className="app-cartao" aria-live="polite">
         {corrida.status === "pendente" && (
           <div className="corrida-aguardando">
             <span className="corrida-pulso" aria-hidden="true" />
@@ -216,7 +216,7 @@ function Corrida() {
       </section>
 
       {/* Trajeto e pessoas */}
-      <section className="corrida-cartao">
+      <section className="app-cartao">
         <dl className="corrida-info">
           <div>
             <dt>Origem</dt>
@@ -284,7 +284,7 @@ function Corrida() {
         {souMotorista && corrida.status === "aceita" && (
           <button
             type="button"
-            className="corrida-botao"
+            className="app-btn app-btn-primario"
             onClick={() => mudarStatus("em_andamento")}
             disabled={acao}
           >
@@ -294,7 +294,7 @@ function Corrida() {
         {souMotorista && corrida.status === "em_andamento" && (
           <button
             type="button"
-            className="corrida-botao"
+            className="app-btn app-btn-primario"
             onClick={() => mudarStatus("concluida")}
             disabled={acao}
           >
@@ -304,7 +304,7 @@ function Corrida() {
         {souPassageiro && (corrida.status === "pendente" || corrida.status === "aceita") && (
           <button
             type="button"
-            className="corrida-botao corrida-botao-perigo"
+            className="app-btn app-btn-perigo"
             onClick={() => mudarStatus("cancelada", "Cancelar esta corrida?")}
             disabled={acao}
           >
@@ -314,7 +314,7 @@ function Corrida() {
         {souMotorista && corrida.status === "aceita" && (
           <button
             type="button"
-            className="corrida-botao corrida-botao-secundario"
+            className="app-btn app-btn-secundario"
             onClick={() =>
               mudarStatus("cancelada", "Sair desta corrida? O passageiro voltará a procurar motorista.")
             }
@@ -324,7 +324,7 @@ function Corrida() {
           </button>
         )}
         {!ativa && (
-          <button type="button" className="corrida-botao" onClick={() => navigate("/app")}>
+          <button type="button" className="app-btn app-btn-primario" onClick={() => navigate("/app")}>
             Voltar ao início
           </button>
         )}
