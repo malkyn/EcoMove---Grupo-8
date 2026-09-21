@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./Entrar.css";
 import usuario2 from "./icons/usuario2.svg";
 import cadeado from "./icons/cadeado.svg";
+import api from "../services/api";
 
 /**
  * Componente de Página de Login
@@ -9,12 +11,40 @@ import cadeado from "./icons/cadeado.svg";
  */
 function Entrar() {
   // =============================================
+  //               ESTADO DO FORMULÁRIO
+  // =============================================
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [erro, setErro] = useState("");
+  const [carregando, setCarregando] = useState(false);
+  const navigate = useNavigate();
+
+  // =============================================
   //               MANIPULAÇÃO DE FORMULÁRIO
   // =============================================
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Lógica de autenticação será implementada aqui
-    console.log("Formulário submetido");
+    setErro("");
+    setCarregando(true);
+
+    try {
+      const resposta = await api.post("/usuarios/login", {
+        email: email.trim(),
+        senha,
+      });
+      alert(resposta.data.mensagem);
+      navigate("/");
+    } catch (err) {
+      if (err.response) {
+        // O servidor respondeu, mas com erro (400, 401, 500...)
+        setErro(err.response.data?.erro || "Não foi possível entrar. Tente novamente.");
+      } else {
+        // A requisição nem chegou: servidor fora do ar, sem rede, timeout
+        setErro("Não foi possível conectar ao servidor.");
+      }
+    } finally {
+      setCarregando(false);
+    }
   };
 
   // =============================================
@@ -30,6 +60,13 @@ function Entrar() {
             {/* Título */}
             <h1>Entrar</h1>
 
+            {/* Mensagem de erro (só aparece quando existe) */}
+            {erro && (
+              <p className="form-error" role="alert">
+                {erro}
+              </p>
+            )}
+
             {/* Campo de Email */}
             <div className="input-container">
               <input
@@ -37,6 +74,9 @@ function Entrar() {
                 placeholder="Email"
                 required
                 aria-label="Endereço de e-mail"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <img
                 src={usuario2}
@@ -54,6 +94,9 @@ function Entrar() {
                 placeholder="Senha"
                 required
                 aria-label="Senha"
+                autoComplete="current-password"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
               />
               <img
                 src={cadeado}
@@ -68,17 +111,17 @@ function Entrar() {
             </div>
 
             {/* Botão de Submit */}
-            <button className="submit-button" type="submit">
-              Entrar
+            <button className="submit-button" type="submit" disabled={carregando}>
+              {carregando ? "Entrando..." : "Entrar"}
             </button>
 
             {/* Link para Cadastro */}
             <div className="link-registro">
               <p>
                 Não está cadastrado?{" "}
-                <a href="./loginForm" className="register-link">
+                <Link to="/loginForm" className="register-link">
                   Cadastre-se
-                </a>
+                </Link>
               </p>
             </div>
           </form>
