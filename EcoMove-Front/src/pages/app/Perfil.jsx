@@ -72,7 +72,7 @@ function Perfil() {
       </header>
 
       {erro && (
-        <p className="perfil-erro" role="alert">
+        <p className="app-alerta app-alerta-erro" role="alert">
           {erro}
         </p>
       )}

@@ -11,7 +11,7 @@
   gap: 0.9rem;
   background: #ffffff;
   border: 1px solid #e3e8e5;
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 1rem;
 }
 
@@ -81,16 +81,6 @@
   text-align: center;
 }
 
-.perfil-erro {
-  margin: 0;
-  background: #fdecea;
-  color: #8a1c1c;
-  border: 1px solid #f5c2c0;
-  border-radius: 6px;
-  padding: 0.7rem 0.9rem;
-  font-size: 0.9rem;
-}
-
 /* ----- Menu ----- */
 .perfil-menu {
   list-style: none;
@@ -98,7 +88,7 @@
   padding: 0;
   background: #ffffff;
   border: 1px solid #e3e8e5;
-  border-radius: 14px;
+  border-radius: 16px;
   overflow: hidden;
 }
 
@@ -155,7 +145,7 @@
 .perfil-avaliacoes {
   background: #ffffff;
   border: 1px solid #e3e8e5;
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 1rem;
   display: flex;
   flex-direction: column;

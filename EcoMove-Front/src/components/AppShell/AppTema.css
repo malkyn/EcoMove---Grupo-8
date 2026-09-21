@@ -1,0 +1,260 @@
+/* Tema compartilhado da área logada: botões, cartões, alertas, campos, títulos e chips.
+   Vale para tudo dentro de .app-shell (as variáveis ficam em AppShell.css). */
+
+/* ===== Botões ===== */
+.app-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.85rem 1.2rem;
+  border-radius: 999px;
+  border: 1.5px solid transparent;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.app-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.app-btn-primario {
+  background: var(--app-verde);
+  color: #ffffff;
+}
+
+.app-btn-primario:hover:not(:disabled) {
+  background: var(--app-verde-medio);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.app-btn-secundario {
+  background: #eef2f0;
+  color: var(--app-texto);
+}
+
+.app-btn-secundario:hover:not(:disabled) {
+  background: #e3e8e5;
+  color: var(--app-texto);
+}
+
+.app-btn-vazado {
+  background: #ffffff;
+  border-color: var(--app-borda-forte);
+  color: var(--app-verde);
+}
+
+.app-btn-vazado:hover:not(:disabled) {
+  background: var(--app-verde-claro);
+  border-color: var(--app-verde);
+  color: var(--app-verde);
+}
+
+.app-btn-perigo {
+  background: #fdecea;
+  color: #b42318;
+}
+
+.app-btn-perigo:hover:not(:disabled) {
+  background: #f9d3d0;
+  color: #b42318;
+}
+
+/* Versão compacta, para dentro de cartões e listas */
+.app-btn-pequeno {
+  align-self: flex-start;
+  padding: 0.55rem 1rem;
+  font-size: 0.9rem;
+}
+
+/* ===== Cartão ===== */
+.app-cartao {
+  background: #ffffff;
+  border: 1px solid var(--app-borda);
+  border-radius: var(--app-raio);
+  padding: 1rem;
+  color: var(--app-texto);
+  box-shadow: 0 2px 10px rgba(15, 31, 25, 0.04);
+}
+
+/* ===== Títulos e navegação de volta ===== */
+.app-titulo {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--app-texto);
+}
+
+.app-subtitulo {
+  margin: 0.2rem 0 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--app-texto);
+}
+
+.app-voltar {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.3rem 0.8rem 0.3rem 0.6rem;
+  border-radius: 999px;
+  background: #eef2f0;
+  color: var(--app-texto);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.app-voltar:hover {
+  background: var(--app-verde-claro);
+  color: var(--app-verde);
+}
+
+/* ===== Alertas ===== */
+.app-alerta {
+  margin: 0;
+  padding: 0.75rem 0.95rem;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.app-alerta a {
+  color: inherit;
+  font-weight: 700;
+}
+
+.app-alerta-erro {
+  background: #fdecea;
+  border-color: #f5c2c0;
+  color: #8a1c1c;
+}
+
+.app-alerta-ok {
+  background: var(--app-verde-claro);
+  border-color: #bfe6d1;
+  color: var(--app-verde-escuro);
+}
+
+.app-alerta-aviso {
+  background: #fff6e0;
+  border-color: #f3dfae;
+  color: #7a4d00;
+}
+
+/* ===== Chips e estados vazios ===== */
+.app-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  background: #eef2f0;
+  color: var(--app-texto-suave);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.app-chip-ok {
+  background: var(--app-verde-claro);
+  color: var(--app-verde);
+}
+
+.app-vazio {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 1.3rem 1rem;
+  border: 1px dashed var(--app-borda-forte);
+  border-radius: var(--app-raio);
+  color: var(--app-texto-suave);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.app-vazio p {
+  margin: 0;
+}
+
+.app-vazio .app-btn-pequeno {
+  align-self: center;
+}
+
+/* ===== Campos de formulário ===== */
+.app-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--app-texto);
+}
+
+.app-campo input,
+.app-campo select,
+.app-campo textarea {
+  width: 100%;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 0.75rem 0.95rem;
+  border: 1.5px solid var(--app-borda-forte);
+  border-radius: var(--app-raio-campo);
+  background: #ffffff;
+  color: var(--app-texto);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.app-campo input::placeholder,
+.app-campo textarea::placeholder {
+  color: #9aa7a1;
+}
+
+.app-campo input:focus,
+.app-campo select:focus,
+.app-campo textarea:focus {
+  outline: none;
+  border-color: var(--app-verde);
+  box-shadow: 0 0 0 3px rgba(3, 97, 65, 0.15);
+}
+
+/* Botão "usar minha localização" ao lado de um campo de endereço */
+.app-gps {
+  flex: 0 0 auto;
+  width: 46px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--app-borda-forte);
+  border-radius: var(--app-raio-campo);
+  background: #ffffff;
+  color: var(--app-verde);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.app-gps:hover:not(:disabled) {
+  background: var(--app-verde-claro);
+  border-color: var(--app-verde);
+}
+
+.app-gps:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}

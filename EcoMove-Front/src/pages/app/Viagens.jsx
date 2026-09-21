@@ -111,7 +111,7 @@ function Viagens() {
   const renderAvaliacao = (tipo, id, pessoa) => {
     if (!pessoa || pessoa.id_usuario === idUsuario) return null;
     if (jaAvaliei(tipo, id, pessoa.id_usuario)) {
-      return <span className="viagens-avaliado">Você avaliou {pessoa.nome}</span>;
+      return <span className="app-chip app-chip-ok">Você avaliou {pessoa.nome}</span>;
     }
     if (estaAvaliando(tipo, id, pessoa.id_usuario)) {
       return (
@@ -140,35 +140,35 @@ function Viagens() {
 
   return (
     <div className="viagens">
-      <h1 className="viagens-titulo">{ehMotorista ? "Minhas caronas" : "Minhas viagens"}</h1>
+      <h1 className="app-titulo">{ehMotorista ? "Minhas caronas" : "Minhas viagens"}</h1>
 
       {erro && (
-        <p className="viagens-msg viagens-erro" role="alert">
+        <p className="app-alerta app-alerta-erro" role="alert">
           {erro}
         </p>
       )}
       {mensagem && (
-        <p className="viagens-msg viagens-sucesso" role="status">
+        <p className="app-alerta app-alerta-ok" role="status">
           {mensagem}
         </p>
       )}
 
       {carregando ? (
-        <p className="viagens-vazio">Carregando...</p>
+        <p className="app-vazio">Carregando...</p>
       ) : (
         <>
           <section className="viagens-secao">
-            <h2 className="viagens-subtitulo">
+            <h2 className="app-subtitulo">
               {ehMotorista ? "Caronas oferecidas" : "Caronas reservadas"}
             </h2>
             {caronas.length === 0 ? (
-              <div className="viagens-vazio">
+              <div className="app-vazio">
                 <p>
                   {ehMotorista
                     ? "Você ainda não ofereceu nenhuma carona."
                     : "Você ainda não reservou nenhuma carona."}
                 </p>
-                <Link to={ehMotorista ? "/app/caronas/nova" : "/app/destino"} className="viagens-botao">
+                <Link to={ehMotorista ? "/app/caronas/nova" : "/app/destino"} className="app-btn app-btn-primario app-btn-pequeno">
                   {ehMotorista ? "Oferecer carona" : "Buscar carona"}
                 </Link>
               </div>
@@ -192,7 +192,7 @@ function Viagens() {
 
                       {jaAconteceu ? (
                         <>
-                          <span className="viagens-realizada">Realizada</span>
+                          <span className="app-chip">Realizada</span>
                           {ehMotorista
                             ? c.passageiros?.map((p) => (
                                 <React.Fragment key={p.id_usuario}>
@@ -204,7 +204,7 @@ function Viagens() {
                       ) : (
                         <button
                           type="button"
-                          className="viagens-cancelar"
+                          className="app-btn app-btn-perigo app-btn-pequeno"
                           onClick={() => (ehMotorista ? cancelarCarona(c) : cancelarReserva(c))}
                           disabled={processando === c.id_carona}
                         >
@@ -223,9 +223,9 @@ function Viagens() {
           </section>
 
           <section className="viagens-secao">
-            <h2 className="viagens-subtitulo">Corridas</h2>
+            <h2 className="app-subtitulo">Corridas</h2>
             {corridas.length === 0 ? (
-              <p className="viagens-vazio">
+              <p className="app-vazio">
                 {ehMotorista
                   ? "Nenhuma corrida atendida ainda. Fique online no Início para receber pedidos."
                   : "Nenhuma corrida pedida ainda."}
@@ -258,7 +258,7 @@ function Viagens() {
                         )}
                       </div>
                       {corridaAtiva(c) && (
-                        <Link to={`/app/corridas/${c.id_corrida}`} className="viagens-botao">
+                        <Link to={`/app/corridas/${c.id_corrida}`} className="app-btn app-btn-primario app-btn-pequeno">
                           Acompanhar
                         </Link>
                       )}

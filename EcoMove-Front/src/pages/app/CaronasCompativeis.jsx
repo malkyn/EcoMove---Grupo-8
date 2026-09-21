@@ -118,10 +118,10 @@ function CaronasCompativeis() {
   return (
     <div className="compativeis">
       <header className="compativeis-cabecalho">
-        <Link to="/app/destino" className="compativeis-voltar">
+        <Link to="/app/destino" className="app-voltar">
           ‹ Trajeto
         </Link>
-        <h1>Caronas compatíveis</h1>
+        <h1 className="app-titulo">Caronas compatíveis</h1>
         <p className="compativeis-trajeto">
           <span>{origem.nome}</span>
           <span className="compativeis-seta" aria-hidden="true">
@@ -136,23 +136,23 @@ function CaronasCompativeis() {
       </header>
 
       {erro && (
-        <p className="compativeis-msg compativeis-erro" role="alert">
+        <p className="app-alerta app-alerta-erro" role="alert">
           {erro}
         </p>
       )}
       {mensagem && (
-        <p className="compativeis-msg compativeis-sucesso" role="status">
+        <p className="app-alerta app-alerta-ok" role="status">
           {mensagem} <Link to="/app/viagens">Ver em Viagens</Link>
         </p>
       )}
 
       {carregando ? (
-        <p className="compativeis-vazio">Procurando caronas...</p>
+        <p className="app-vazio">Procurando caronas...</p>
       ) : caronas.length === 0 ? (
-        <div className="compativeis-vazio">
+        <div className="app-vazio">
           <p>Nenhuma carona compatível por enquanto.</p>
           <p>Tente outro horário, um raio maior de partida, ou volte mais tarde.</p>
-          <Link to="/app/destino" className="compativeis-botao compativeis-botao-secundario">
+          <Link to="/app/destino" className="app-btn app-btn-secundario app-btn-pequeno">
             Ajustar trajeto
           </Link>
         </div>
@@ -171,11 +171,11 @@ function CaronasCompativeis() {
                 motivos={c.recomendacao.motivos}
               >
                 {jaReservada ? (
-                  <span className="compativeis-reservada">Vaga reservada</span>
+                  <span className="app-chip app-chip-ok">Vaga reservada</span>
                 ) : (
                   <button
                     type="button"
-                    className="compativeis-botao"
+                    className="app-btn app-btn-primario app-btn-pequeno"
                     onClick={() => reservar(c)}
                     disabled={reservando === c.id_carona || c.vagas_restantes === 0}
                   >

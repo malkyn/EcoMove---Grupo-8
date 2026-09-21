@@ -18,30 +18,6 @@
   gap: 0.7rem;
 }
 
-.destino-gps {
-  flex: 0 0 auto;
-  width: 44px;
-  border: 1px solid #d5dcd8;
-  border-radius: 10px;
-  background: #ffffff;
-  color: #036141;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 0;
-}
-
-.destino-gps:hover {
-  background: #e3f5ec;
-  border-color: #036141;
-}
-
-.destino-gps:disabled {
-  opacity: 0.5;
-  cursor: wait;
-}
-
 .destino-quando {
   display: flex;
   gap: 0.6rem;
@@ -52,7 +28,7 @@
 .destino-segmentado {
   display: inline-flex;
   background: #f0f3f1;
-  border-radius: 10px;
+  border-radius: 999px;
   padding: 3px;
 }
 
@@ -60,7 +36,7 @@
   border: none;
   background: none;
   padding: 0.45rem 1rem;
-  border-radius: 8px;
+  border-radius: 999px;
   font-size: 0.9rem;
   font-weight: 600;
   color: #6b7a74;
@@ -76,9 +52,9 @@
 .destino-data {
   flex: 1 1 180px;
   font-size: 0.95rem;
-  padding: 0.5rem 0.7rem;
-  border: 1px solid #d5dcd8;
-  border-radius: 10px;
+  padding: 0.55rem 0.8rem;
+  border: 1.5px solid #d6ddd9;
+  border-radius: 12px;
   background: #ffffff;
   color: #1f2d27;
 }
@@ -97,7 +73,7 @@
   overflow-y: auto;
   background: #ffffff;
   border-top: 1px solid #e3e8e5;
-  border-radius: 16px 16px 0 0;
+  border-radius: 24px 24px 0 0;
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
   padding: 0.9rem 1rem 1rem;
   display: flex;
@@ -110,16 +86,6 @@
   margin: 0;
   color: #6b7a74;
   font-size: 0.85rem;
-}
-
-.destino-erro {
-  margin: 0;
-  background: #fdecea;
-  color: #8a1c1c;
-  border: 1px solid #f5c2c0;
-  border-radius: 6px;
-  padding: 0.6rem 0.8rem;
-  font-size: 0.9rem;
 }
 
 .destino-resumo {
@@ -150,7 +116,7 @@
   gap: 0.15rem;
   padding: 0.75rem 0.85rem;
   border: 1px solid #e3e8e5;
-  border-radius: 12px;
+  border-radius: 14px;
   background: #fafbfa;
 }
 
@@ -202,27 +168,3 @@
   gap: 0.5rem;
 }
 
-.destino-botao {
-  padding: 0.85rem 1rem;
-  border-radius: 12px;
-  border: none;
-  background: #036141;
-  color: #ffffff;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.destino-botao:hover {
-  background: #088b60;
-  border-color: transparent;
-}
-
-.destino-botao-secundario {
-  background: #f0f3f1;
-  color: #6b7a74;
-}
-
-.destino-botao-secundario:disabled {
-  cursor: not-allowed;
-}

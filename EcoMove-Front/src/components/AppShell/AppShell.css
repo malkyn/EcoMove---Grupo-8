@@ -1,12 +1,17 @@
 /* Casca do app logado: ocupa a tela inteira do celular */
 .app-shell {
   --app-verde: #036141;
+  --app-verde-escuro: #024b30;
+  --app-verde-medio: #088b60;
   --app-verde-claro: #e3f5ec;
   --app-texto: #1f2d27;
   --app-texto-suave: #6b7a74;
   --app-borda: #e3e8e5;
+  --app-borda-forte: #d6ddd9;
   --app-fundo: #f5f7f6;
-  --app-topo-altura: 52px;
+  --app-raio: 16px;
+  --app-raio-campo: 12px;
+  --app-topo-altura: 56px;
   --app-abas-altura: 60px;
 
   display: flex;
@@ -34,9 +39,10 @@
 }
 
 .app-topo-titulo {
-  font-weight: 700;
-  color: var(--app-verde);
+  font-weight: 800;
+  color: var(--app-verde-escuro);
   font-size: 1.1rem;
+  letter-spacing: -0.01em;
 }
 
 .app-topo-demo {
@@ -75,7 +81,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 3px;
+  padding-top: 4px;
   color: var(--app-texto-suave);
   text-decoration: none;
   font-size: 0.72rem;
@@ -99,4 +106,21 @@
     border-left: 1px solid var(--app-borda);
     border-right: 1px solid var(--app-borda);
   }
+}
+
+/* Aba ativa: o icone ganha uma pilula verde-clara, como nos apps de mobilidade */
+.app-aba svg {
+  width: 52px;
+  height: 28px;
+  padding: 2px 14px;
+  border-radius: 999px;
+  transition: background 0.2s ease;
+}
+
+.app-aba.ativa svg {
+  background: var(--app-verde-claro);
+}
+
+.app-aba.ativa span {
+  font-weight: 700;
 }

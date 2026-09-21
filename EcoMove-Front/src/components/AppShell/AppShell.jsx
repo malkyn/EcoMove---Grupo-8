@@ -1,6 +1,8 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import "./AppShell.css";
+import "./AppTema.css";
+import "./AppTema.css";
 import Logo from "../../pages/icons/logo.webp";
 import { usandoMock } from "../../services/api";
 

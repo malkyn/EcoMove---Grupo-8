@@ -135,25 +135,25 @@ function Veiculos() {
   return (
     <div className="veiculos">
       <header className="veiculos-cabecalho">
-        <h1>Meus veículos</h1>
+        <h1 className="app-titulo">Meus veículos</h1>
         <span className="veiculos-contador">{veiculos.length}</span>
       </header>
 
       {erro && (
-        <p className="veiculos-msg veiculos-erro" role="alert">
+        <p className="app-alerta app-alerta-erro" role="alert">
           {erro}
         </p>
       )}
       {sucesso && (
-        <p className="veiculos-msg veiculos-sucesso" role="status">
+        <p className="app-alerta app-alerta-ok" role="status">
           {sucesso}
         </p>
       )}
 
       {carregando ? (
-        <p className="veiculos-vazio">Carregando...</p>
+        <p className="app-vazio">Carregando...</p>
       ) : veiculos.length === 0 ? (
-        <p className="veiculos-vazio">
+        <p className="app-vazio">
           Nenhum veículo cadastrado. Você precisa de um para oferecer caronas.
         </p>
       ) : (
@@ -177,7 +177,7 @@ function Veiculos() {
               </div>
               <button
                 type="button"
-                className="veiculo-remover"
+                className="app-btn app-btn-perigo app-btn-pequeno"
                 onClick={() => remover(v)}
                 disabled={removendo === v.id_veiculo}
               >
@@ -189,11 +189,11 @@ function Veiculos() {
       )}
 
       {!mostrarForm ? (
-        <button type="button" className="veiculos-botao" onClick={() => setMostrarForm(true)}>
+        <button type="button" className="app-btn app-btn-primario" onClick={() => setMostrarForm(true)}>
           Adicionar veículo
         </button>
       ) : (
-        <form className="veiculos-form" onSubmit={handleSubmit}>
+        <form className="app-cartao veiculos-form" onSubmit={handleSubmit}>
           <h2>Novo veículo</h2>
 
           <fieldset className="veiculos-categoria">
@@ -216,7 +216,7 @@ function Veiculos() {
             ))}
           </fieldset>
 
-          <label className="veiculos-campo">
+          <label className="app-campo">
             <span>Modelo</span>
             <input
               type="text"
@@ -229,7 +229,7 @@ function Veiculos() {
             />
           </label>
 
-          <label className="veiculos-campo">
+          <label className="app-campo">
             <span>Placa</span>
             <input
               type="text"
@@ -244,7 +244,7 @@ function Veiculos() {
             />
           </label>
 
-          <label className="veiculos-campo">
+          <label className="app-campo">
             <span>Cor</span>
             <input
               type="text"
@@ -256,7 +256,7 @@ function Veiculos() {
             />
           </label>
 
-          <label className="veiculos-campo">
+          <label className="app-campo">
             <span>Propulsão</span>
             <select name="propulsao" value={form.propulsao} onChange={handleChange} required>
               {PROPULSOES.map((p) => (
@@ -275,7 +275,7 @@ function Veiculos() {
           <div className="veiculos-form-acoes">
             <button
               type="button"
-              className="veiculos-botao veiculos-botao-secundario"
+              className="app-btn app-btn-secundario"
               onClick={() => {
                 setMostrarForm(false);
                 setForm(FORM_INICIAL);
@@ -285,7 +285,7 @@ function Veiculos() {
             >
               Cancelar
             </button>
-            <button type="submit" className="veiculos-botao" disabled={enviando}>
+            <button type="submit" className="app-btn app-btn-primario" disabled={enviando}>
               {enviando ? "Salvando..." : "Salvar veículo"}
             </button>
           </div>

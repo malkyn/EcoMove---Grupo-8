@@ -143,7 +143,7 @@ function Destino() {
           acaoExtra={
             <button
               type="button"
-              className="destino-gps"
+              className="app-gps"
               onClick={usarMinhaLocalizacao}
               disabled={buscandoGps}
               aria-label="Usar minha localização"
@@ -209,7 +209,7 @@ function Destino() {
       {/* Resultado */}
       <section className="destino-folha" aria-live="polite">
         {erro && (
-          <p className="destino-erro" role="alert">
+          <p className="app-alerta app-alerta-erro" role="alert">
             {erro}
           </p>
         )}
@@ -249,12 +249,12 @@ function Destino() {
             </p>
 
             <div className="destino-acoes">
-              <button type="button" className="destino-botao" onClick={verCaronas}>
+              <button type="button" className="app-btn app-btn-primario" onClick={verCaronas}>
                 Ver caronas compatíveis
               </button>
               <button
                 type="button"
-                className="destino-botao destino-botao-secundario"
+                className="app-btn app-btn-secundario"
                 onClick={pedirCorrida}
                 disabled={quando !== "agora" || pedindo}
               >
