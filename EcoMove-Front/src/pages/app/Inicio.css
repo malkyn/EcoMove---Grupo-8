@@ -188,6 +188,19 @@
   background: #1e40af;
 }
 
+/* Sugestões pelo histórico (passageiro) */
+.inicio-sugestoes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.inicio-sugestoes h2 {
+  margin: 0.2rem 0 0;
+  font-size: 0.95rem;
+  color: #1f2d27;
+}
+
 /* Pedidos (motorista online) */
 .inicio-pedidos h2 {
   margin: 0.3rem 0 0.5rem;

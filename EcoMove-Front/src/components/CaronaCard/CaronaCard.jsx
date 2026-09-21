@@ -9,7 +9,7 @@ import { Estrelas } from "../Avaliacao/Avaliacao";
  * Card de carona no formato completo do contrato (docs/api-contrato.md).
  * `children` recebe os botões de ação (reservar, cancelar, avaliar...).
  */
-function CaronaCard({ carona, children }) {
+function CaronaCard({ carona, children, recomendada = false, motivos = [] }) {
   const {
     origem,
     destino,
@@ -24,7 +24,10 @@ function CaronaCard({ carona, children }) {
   const lotada = vagas_restantes === 0;
 
   return (
-    <article className={`carona-card ${lotada ? "carona-lotada" : ""}`}>
+    <article
+      className={`carona-card ${lotada ? "carona-lotada" : ""} ${recomendada ? "carona-recomendada" : ""}`}
+    >
+      {recomendada && <span className="carona-selo-recomendada">Recomendada para você</span>}
       <div className="carona-rota">
         <span className="carona-local">{origem}</span>
         <span className="carona-seta" aria-hidden="true">
@@ -78,6 +81,14 @@ function CaronaCard({ carona, children }) {
           Saída a {formatarKm(compatibilidade.distancia_origem_km)} de você · chegada a{" "}
           {formatarKm(compatibilidade.distancia_destino_km)} do seu destino
         </p>
+      )}
+
+      {motivos.length > 0 && (
+        <ul className="carona-motivos" aria-label="Por que esta carona">
+          {motivos.slice(0, 3).map((m) => (
+            <li key={m}>{m}</li>
+          ))}
+        </ul>
       )}
 
       {children && <div className="carona-acoes">{children}</div>}

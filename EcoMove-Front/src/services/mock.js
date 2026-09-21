@@ -11,7 +11,7 @@ import { estimarCarona, estimarCorrida } from "../utils/estimativas";
 
 const CHAVE_DB = "ecomove_mock_db";
 // Aumente quando o formato dos dados mudar: o banco salvo no navegador é recriado.
-const VERSAO_BANCO = 5;
+const VERSAO_BANCO = 7;
 const LATENCIA_MS = 300;
 const PERFIL_MOTORISTA = 1;
 const PERFIL_PASSAGEIRO = 2;
@@ -44,10 +44,12 @@ function bancoInicial() {
   depois.setDate(hoje.getDate() + 2);
   const ontem = new Date(hoje);
   ontem.setDate(hoje.getDate() - 1);
+  const tresDiasAtras = new Date(hoje);
+  tresDiasAtras.setDate(hoje.getDate() - 3);
 
   return {
     versao: VERSAO_BANCO,
-    proximoId: { usuario: 3, veiculo: 2, carona: 5, avaliacao: 1, corrida: 1 },
+    proximoId: { usuario: 3, veiculo: 2, carona: 6, avaliacao: 2, corrida: 1 },
     usuarios: [
       {
         id_usuario: 1,
@@ -136,9 +138,38 @@ function bancoInicial() {
         vagas_disponiveis: 3,
         distancia_km: 10.2,
       },
+      {
+        // Carona de três dias atrás, já avaliada pelo Lucas: dá reputação inicial à Camila
+        id_carona: 5,
+        id_usuario: 1,
+        id_veiculo: 1,
+        origem: "Centro Universitário FACENS, Sorocaba",
+        destino: "Centro, Sorocaba",
+        origem_lat: FACENS.lat,
+        origem_lng: FACENS.lng,
+        destino_lat: CENTRO.lat,
+        destino_lng: CENTRO.lng,
+        horario: `${dataLocal(tresDiasAtras)}T18:00`,
+        vagas_disponiveis: 2,
+        distancia_km: 6.4,
+      },
     ],
-    reservas: [{ id_carona: 4, id_usuario: 2, criada_em: `${dataLocal(ontem)}T06:10` }],
-    avaliacoes: [],
+    reservas: [
+      { id_carona: 4, id_usuario: 2, criada_em: `${dataLocal(ontem)}T06:10` },
+      { id_carona: 5, id_usuario: 2, criada_em: `${dataLocal(tresDiasAtras)}T12:00` },
+    ],
+    avaliacoes: [
+      {
+        id_avaliacao: 1,
+        id_carona: 5,
+        id_corrida: null,
+        id_avaliador: 2,
+        id_avaliado: 1,
+        nota: 5,
+        comentario: "Ótima motorista, dirige com cuidado.",
+        criada_em: `${dataLocal(tresDiasAtras)}T19:05`,
+      },
+    ],
     corridas: [],
     motoristas_online: [],
   };
