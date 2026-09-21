@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Entrar.css";
 import usuario2 from "./icons/usuario2.svg";
 import cadeado from "./icons/cadeado.svg";
@@ -119,9 +119,9 @@ function Entrar() {
             <div className="link-registro">
               <p>
                 Não está cadastrado?{" "}
-                <a href="./loginForm" className="register-link">
+                <Link to="/loginForm" className="register-link">
                   Cadastre-se
-                </a>
+                </Link>
               </p>
             </div>
           </form>
