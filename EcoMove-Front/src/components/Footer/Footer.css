@@ -21,79 +21,6 @@
   padding: 0 20px;
 }
 
-/* ===== Faixa: instalar o app ===== */
-.footer-instalar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  padding: 1.5rem 1.8rem;
-  border-radius: 20px;
-  background: linear-gradient(120deg, var(--footer-verde-forte) 0%, var(--footer-verde-escuro) 100%);
-  color: #ffffff;
-  margin-bottom: 3rem;
-}
-
-.footer-instalar-texto {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.footer-instalar-icone {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--footer-verde);
-}
-
-.footer-instalar strong {
-  display: block;
-  font-size: 1.1rem;
-  color: #ffffff;
-  margin-bottom: 0.2rem;
-}
-
-.footer-instalar p {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.85);
-  line-height: 1.5;
-  max-width: 520px;
-}
-
-.footer-instalar-dica {
-  font-size: 0.9rem;
-}
-
-.footer-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.8rem 1.5rem;
-  border-radius: 999px;
-  border: none;
-  background: #ffffff;
-  color: var(--footer-verde-forte);
-  font-size: 1rem;
-  font-weight: 700;
-  text-decoration: none;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.footer-btn:hover {
-  background: #e3f5ec;
-  color: var(--footer-verde-forte);
-  transform: translateY(-1px);
-}
-
 /* ===== Colunas ===== */
 .footer-grid {
   display: grid;
@@ -175,15 +102,23 @@
 
 /* ===== Base ===== */
 .footer-base {
-  margin-top: 3rem;
-  padding-top: 1.4rem;
+  margin-top: 2.5rem;
+  padding-top: 1.2rem;
   border-top: 1px solid var(--footer-borda);
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  align-items: center;
-  gap: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
   font-size: 0.85rem;
   color: var(--footer-suave);
+}
+
+/* Cada linha da base: conteudo a esquerda, acoes a direita, quebrando se faltar espaco */
+.footer-base-linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.5rem;
 }
 
 .footer-base-texto {
@@ -223,10 +158,11 @@
   font-size: 0.72rem;
 }
 
-.footer-base-fim {
+.footer-base-links {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.1rem;
 }
 
 .footer-base a {
@@ -259,33 +195,32 @@
   .footer-grid {
     grid-template-columns: 1fr 1fr;
   }
-
-  .footer-base {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 600px) {
+  .footer {
+    padding-top: 2rem;
+  }
+
+  /* Marca e contato ocupam a largura toda; navegacao e conta ficam lado a lado */
   .footer-grid {
-    grid-template-columns: 1fr;
-    gap: 1.8rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.4rem 1.2rem;
   }
 
-  .footer-instalar {
-    padding: 1.3rem;
-    margin-bottom: 2.2rem;
+  .footer-marca,
+  .footer-contato {
+    grid-column: 1 / -1;
   }
 
-  .footer-instalar-texto {
+  .footer-base {
+    margin-top: 1.8rem;
+    gap: 0.7rem;
+  }
+
+  .footer-base-linha {
+    flex-direction: column;
     align-items: flex-start;
-  }
-
-  .footer-btn {
-    width: 100%;
-  }
-
-  .footer-base-fim {
-    justify-content: space-between;
   }
 
   /* Na landing, o botão fixo "Criar conta" cobre o fim da página: abre espaço */

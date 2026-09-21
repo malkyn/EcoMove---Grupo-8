@@ -2,8 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./Footer.css";
 import LogoFooter from "../../pages/icons/logo.webp";
-import { useInstalarApp } from "../../hooks/useInstalarApp";
-import { IconeCelular, IconeEscudo, IconeFolha, IconePessoas } from "../Icones";
+import { IconeEscudo, IconeFolha, IconePessoas } from "../Icones";
 
 const ANO = new Date().getFullYear();
 
@@ -23,8 +22,6 @@ const ods = [
 ];
 
 function Footer() {
-  const { jaInstalado, podeInstalar, precisaDeInstrucaoIOS, instalar } = useInstalarApp();
-
   const voltarAoTopo = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -32,39 +29,6 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="footer-container">
-        {/* Faixa: instalar o app no celular */}
-        <div className="footer-instalar">
-          <div className="footer-instalar-texto">
-            <span className="footer-instalar-icone" aria-hidden="true">
-              <IconeCelular tamanho={26} />
-            </span>
-            <div>
-              <strong>Leve o EcoMove no bolso</strong>
-              <p>
-                Web app instalável: abre no navegador e vai para a tela inicial do celular, sem
-                loja e sem download pesado.
-              </p>
-            </div>
-          </div>
-          {jaInstalado ? (
-            <Link to="/app" className="footer-btn">
-              Abrir o app
-            </Link>
-          ) : podeInstalar ? (
-            <button type="button" className="footer-btn" onClick={instalar}>
-              Instalar o app
-            </button>
-          ) : precisaDeInstrucaoIOS ? (
-            <p className="footer-instalar-dica">
-              No iPhone: toque em Compartilhar e depois em "Adicionar à Tela de Início".
-            </p>
-          ) : (
-            <Link to="/loginForm" className="footer-btn">
-              Criar conta grátis
-            </Link>
-          )}
-        </div>
-
         <div className="footer-grid">
           {/* Marca */}
           <div className="footer-marca">
@@ -120,7 +84,7 @@ function Footer() {
           </div>
 
           {/* Contato */}
-          <div>
+          <div className="footer-contato">
             <h3 className="footer-titulo">Contato</h3>
             <ul className="footer-lista footer-lista-texto">
               <li>
@@ -133,23 +97,31 @@ function Footer() {
         </div>
 
         <div className="footer-base">
-          <p className="footer-base-texto">
-            © {ANO} EcoMove · Projeto de extensão UPX V, Centro Universitário FACENS, Sorocaba, SP.
-          </p>
-          <ul className="footer-ods" aria-label="Objetivos de Desenvolvimento Sustentável da ONU">
-            {ods.map((item) => (
-              <li key={item.numero}>
-                <strong>{item.numero}</strong> {item.nome}
-              </li>
-            ))}
-          </ul>
-          <div className="footer-base-fim">
-            <span>
-              Fotos:{" "}
-              <a href="https://unsplash.com/license" target="_blank" rel="noopener noreferrer">
-                Unsplash
-              </a>
-            </span>
+          {/* Linha 1: copyright e documentos */}
+          <div className="footer-base-linha">
+            <p className="footer-base-texto">
+              © {ANO} EcoMove · Projeto de extensão UPX V, Centro Universitário FACENS, Sorocaba, SP.
+            </p>
+            <nav className="footer-base-links" aria-label="Documentos e créditos">
+              <Link to="/termos">Termos de Uso</Link>
+              <Link to="/privacidade">Privacidade</Link>
+              <span>
+                Fotos:{" "}
+                <a href="https://unsplash.com/license" target="_blank" rel="noopener noreferrer">
+                  Unsplash
+                </a>
+              </span>
+            </nav>
+          </div>
+          {/* Linha 2: ODS e voltar ao topo */}
+          <div className="footer-base-linha">
+            <ul className="footer-ods" aria-label="Objetivos de Desenvolvimento Sustentável da ONU">
+              {ods.map((item) => (
+                <li key={item.numero}>
+                  <strong>{item.numero}</strong> {item.nome}
+                </li>
+              ))}
+            </ul>
             <button type="button" className="footer-topo" onClick={voltarAoTopo}>
               Voltar ao topo
             </button>

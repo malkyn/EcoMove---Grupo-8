@@ -471,8 +471,8 @@ function Cadastro() {
 
           {ultimoPasso && (
             <p className="conta-consentimento">
-              Ao criar a conta, você concorda em usar o EcoMove de forma responsável e com o
-              tratamento dos seus dados para o funcionamento do serviço.
+              Ao criar a conta, você concorda com os <Link to="/termos">Termos de Uso</Link> e com
+              a <Link to="/privacidade">Política de Privacidade</Link>.
             </p>
           )}
         </form>
