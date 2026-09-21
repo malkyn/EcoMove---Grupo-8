@@ -5,6 +5,8 @@ import api from "../../services/api";
 import { getUsuarioLogado, logout } from "../../services/auth";
 import { mensagemDeErro } from "../../utils/erros";
 import { useInstalarApp } from "../../hooks/useInstalarApp";
+import { formatarData } from "../../utils/formatar";
+import { Estrelas } from "../../components/Avaliacao/Avaliacao";
 
 const PERFIL_MOTORISTA = 1;
 
@@ -15,7 +17,7 @@ function Perfil() {
   const ehMotorista = usuario?.id_perfil === PERFIL_MOTORISTA;
   const { jaInstalado, podeInstalar, precisaDeInstrucaoIOS, instalar } = useInstalarApp();
 
-  const [avaliacoes, setAvaliacoes] = useState({ media: null, total: 0 });
+  const [avaliacoes, setAvaliacoes] = useState({ media: null, total: 0, avaliacoes: [] });
   const [erro, setErro] = useState("");
 
   useEffect(() => {
@@ -113,6 +115,31 @@ function Perfil() {
           </button>
         </li>
       </ul>
+
+      <section className="perfil-avaliacoes" aria-label="Avaliações recebidas">
+        <h2>
+          Avaliações recebidas{" "}
+          <Estrelas media={avaliacoes.media} total={avaliacoes.total} />
+        </h2>
+        {avaliacoes.total === 0 ? (
+          <p className="perfil-avaliacoes-vazio">
+            Você ainda não recebeu avaliações. Elas aparecem aqui depois das suas viagens.
+          </p>
+        ) : (
+          <ul className="perfil-avaliacoes-lista">
+            {(avaliacoes.avaliacoes || []).slice(0, 5).map((a) => (
+              <li key={a.id_avaliacao}>
+                <div className="perfil-avaliacao-topo">
+                  <Estrelas media={a.nota} total={1} semTotal />
+                  <span>{a.avaliador}</span>
+                  <small>{formatarData(a.criada_em)}</small>
+                </div>
+                {a.comentario && <p>“{a.comentario}”</p>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
       <p className="perfil-rodape">EcoMove · projeto UPX V · FACENS 2026</p>
     </div>

@@ -115,6 +115,31 @@
   width: 100%;
   font-size: 0.85rem;
   color: #1f2d27;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.8rem;
+}
+
+.viagens-passageiro {
+  white-space: nowrap;
+}
+
+.viagens-realizada {
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: #eef1ef;
+  color: #6b7a74;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.viagens-avaliado {
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  background: #e3f5ec;
+  color: #036141;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
 .viagens-cancelar {

@@ -3,6 +3,7 @@ import "./CaronaCard.css";
 import { formatarDataHora } from "../../utils/formatar";
 import { formatarKm, formatarReais } from "../../utils/estimativas";
 import { propulsaoSustentavel, rotuloPropulsao } from "../../utils/veiculos";
+import { Estrelas } from "../Avaliacao/Avaliacao";
 
 /**
  * Card de carona no formato completo do contrato (docs/api-contrato.md).
@@ -40,7 +41,10 @@ function CaronaCard({ carona, children }) {
         {motorista && (
           <div>
             <dt>Motorista</dt>
-            <dd>{motorista.nome}</dd>
+            <dd>
+              {motorista.nome}{" "}
+              <Estrelas media={motorista.media_avaliacao} total={motorista.total_avaliacoes} />
+            </dd>
           </div>
         )}
         {veiculo && (

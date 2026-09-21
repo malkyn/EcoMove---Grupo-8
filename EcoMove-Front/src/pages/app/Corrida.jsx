@@ -11,6 +11,7 @@ import { co2EvitadoKg, formatarKm, formatarMinutos, formatarReais } from "../../
 import { corridaAtiva, rotuloStatus, tomStatus } from "../../utils/corridas";
 import { rotuloPropulsao } from "../../utils/veiculos";
 import Mapa, { Marcador, TracadoRota } from "../../components/Mapa/Mapa";
+import { AvaliacaoFeita, AvaliacaoForm, Estrelas } from "../../components/Avaliacao/Avaliacao";
 
 const COR_ORIGEM = "#036141";
 const COR_DESTINO = "#d9480f";
@@ -29,6 +30,8 @@ function Corrida() {
   const [erro, setErro] = useState("");
   const [mensagem, setMensagem] = useState("");
   const [acao, setAcao] = useState(false);
+  const [avaliacaoFeita, setAvaliacaoFeita] = useState(null);
+  const [avaliacaoVerificada, setAvaliacaoVerificada] = useState(false);
 
   const carregar = useCallback(async () => {
     try {
@@ -63,6 +66,26 @@ function Corrida() {
     return () => ctrl.abort();
   }, [corrida, rota]);
 
+  // Corrida concluída: verifica se este usuário já avaliou a outra pessoa
+  useEffect(() => {
+    if (!corrida || corrida.status !== "concluida" || avaliacaoVerificada || !idUsuario) {
+      return undefined;
+    }
+    let ativo = true;
+    api
+      .get("/avaliacoes/", { params: { id_avaliador: idUsuario, id_corrida: corrida.id_corrida } })
+      .then((resposta) => {
+        if (ativo) setAvaliacaoFeita(resposta.data[0] || null);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (ativo) setAvaliacaoVerificada(true);
+      });
+    return () => {
+      ativo = false;
+    };
+  }, [corrida, idUsuario, avaliacaoVerificada]);
+
   const mudarStatus = async (status, confirmacao) => {
     if (confirmacao && !window.confirm(confirmacao)) return;
     setAcao(true);
@@ -93,6 +116,7 @@ function Corrida() {
   const souMotorista = corrida.id_motorista === idUsuario;
   const souPassageiro = corrida.id_passageiro === idUsuario;
   const ativa = corridaAtiva(corrida);
+  const outraPessoa = souPassageiro ? corrida.motorista : souMotorista ? corrida.passageiro : null;
   const origem = { lat: corrida.origem_lat, lng: corrida.origem_lng };
   const destino = { lat: corrida.destino_lat, lng: corrida.destino_lng };
   const pontos = rota?.pontos || [
@@ -169,6 +193,23 @@ function Corrida() {
               </p>
             )}
             <p className="corrida-nota">Sem cobrança nesta versão: o valor é apenas estimativa.</p>
+
+            {outraPessoa && avaliacaoVerificada && (
+              avaliacaoFeita ? (
+                <AvaliacaoFeita avaliacao={avaliacaoFeita} nomeAvaliado={outraPessoa.nome} />
+              ) : (
+                <AvaliacaoForm
+                  viagem={{ id_corrida: corrida.id_corrida }}
+                  idAvaliador={idUsuario}
+                  idAvaliado={outraPessoa.id_usuario}
+                  nomeAvaliado={outraPessoa.nome}
+                  onEnviada={(avaliacao, texto) => {
+                    setAvaliacaoFeita(avaliacao);
+                    setMensagem(texto || "Avaliação enviada.");
+                  }}
+                />
+              )
+            )}
           </div>
         )}
         {corrida.status === "cancelada" && <p>Esta corrida foi cancelada.</p>}
@@ -203,7 +244,11 @@ function Corrida() {
             <div>
               <dt>Motorista</dt>
               <dd>
-                {corrida.motorista.nome}
+                {corrida.motorista.nome}{" "}
+                <Estrelas
+                  media={corrida.motorista.media_avaliacao}
+                  total={corrida.motorista.total_avaliacoes}
+                />
                 {corrida.motorista.telefone && <small> · {corrida.motorista.telefone}</small>}
               </dd>
             </div>
@@ -222,7 +267,11 @@ function Corrida() {
             <div>
               <dt>Passageiro</dt>
               <dd>
-                {corrida.passageiro.nome}
+                {corrida.passageiro.nome}{" "}
+                <Estrelas
+                  media={corrida.passageiro.media_avaliacao}
+                  total={corrida.passageiro.total_avaliacoes}
+                />
                 {corrida.passageiro.telefone && <small> · {corrida.passageiro.telefone}</small>}
               </dd>
             </div>
