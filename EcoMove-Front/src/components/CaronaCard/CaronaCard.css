@@ -59,6 +59,17 @@
   font-weight: 600;
 }
 
+.badge-categoria {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: #eef1ef;
+  color: #6b7a74;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
 .carona-acoes {
   display: flex;
   flex-wrap: wrap;

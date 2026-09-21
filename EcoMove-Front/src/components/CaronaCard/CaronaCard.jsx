@@ -1,6 +1,7 @@
 import React from "react";
 import "./CaronaCard.css";
 import { formatarDataHora } from "../../utils/formatar";
+import { propulsaoSustentavel, rotuloPropulsao } from "../../utils/veiculos";
 
 /**
  * Card de carona no formato completo do contrato (docs/api-contrato.md).
@@ -37,7 +38,10 @@ function CaronaCard({ carona, children }) {
             <dt>Veículo</dt>
             <dd>
               {veiculo.modelo}
-              {veiculo.eletrico && <span className="badge-eletrico">Elétrico</span>}
+              {veiculo.categoria === "moto" && <span className="badge-categoria">Moto</span>}
+              {propulsaoSustentavel(veiculo.propulsao) && (
+                <span className="badge-eletrico">{rotuloPropulsao(veiculo.propulsao)}</span>
+              )}
             </dd>
           </div>
         )}
