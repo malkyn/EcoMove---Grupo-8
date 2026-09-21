@@ -1,104 +1,295 @@
+/* Rodapé. Variáveis isoladas em .footer para não colidir com as de outras páginas. */
 .footer {
-  background-color: #111827;
+  --footer-fundo: #0f1f19;
+  --footer-texto: #c8d3ce;
+  --footer-suave: #8a9a93;
+  --footer-verde: #6fd3a3;
+  --footer-verde-forte: #036141;
+  --footer-verde-escuro: #024b30;
+  --footer-borda: #22362e;
+
   width: 100%;
-  color: #d1d5db;
-  padding: 2rem 0;
-  position: relative;
-  margin-top: -80px; 
-  z-index: 10;
+  background: var(--footer-fundo);
+  color: var(--footer-texto);
+  padding: 2.5rem 0 1.5rem;
+  text-align: left;
 }
 
 .footer-container {
-  max-width: 1200px;
+  max-width: 1120px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 20px;
 }
 
+/* ===== Faixa: instalar o app ===== */
+.footer-instalar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding: 1.5rem 1.8rem;
+  border-radius: 20px;
+  background: linear-gradient(120deg, var(--footer-verde-forte) 0%, var(--footer-verde-escuro) 100%);
+  color: #ffffff;
+  margin-bottom: 3rem;
+}
+
+.footer-instalar-texto {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.footer-instalar-icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--footer-verde);
+}
+
+.footer-instalar strong {
+  display: block;
+  font-size: 1.1rem;
+  color: #ffffff;
+  margin-bottom: 0.2rem;
+}
+
+.footer-instalar p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.5;
+  max-width: 520px;
+}
+
+.footer-instalar-dica {
+  font-size: 0.9rem;
+}
+
+.footer-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1.5rem;
+  border-radius: 999px;
+  border: none;
+  background: #ffffff;
+  color: var(--footer-verde-forte);
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.footer-btn:hover {
+  background: #e3f5ec;
+  color: var(--footer-verde-forte);
+  transform: translateY(-1px);
+}
+
+/* ===== Colunas ===== */
 .footer-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
-  align-items: start;
+  grid-template-columns: 1.6fr 1fr 0.8fr 1.1fr;
+  gap: 2.5rem;
 }
 
-.text {
-  color: white;
-}
-
-.logo-texto {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  max-width: 250px;
+.footer-marca p {
+  margin: 0 0 1rem;
+  line-height: 1.6;
+  max-width: 380px;
 }
 
 .footer-logo {
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
-}
-
-.icon-img {
-  width: 40px;
-  height: auto;
-  object-fit: contain;
-}
-
-.footer-logo-text {
-  color: #036141;
-  font-weight: bold;
-  font-size: 1.5rem;
-}
-
-.footer-logo-subtext {
-  color: #ffffff;
-  font-weight: normal;
-}
-
-.footer-column-title {
-  color: white;
-  font-weight: 500;
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-}
-
-.footer-link {
-  color: #93c5fd;
-  text-decoration: none;
-  transition: color 0.3s;
-}
-
-.footer-link:hover {
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+  font-size: 1.3rem;
   color: #ffffff;
 }
 
-.footer-list {
-  list-style-type: none;
-  padding: 0;
+.footer-logo strong {
+  color: var(--footer-verde);
+}
+
+.footer-selos {
+  list-style: none;
   margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.9rem;
+  color: var(--footer-suave);
 }
 
-.footer-list-item {
-  margin-bottom: 0.5rem;
-  line-height: 1.6;
+.footer-selos li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.footer-copyright {
-  text-align: center;
+.footer-selos svg {
+  flex: 0 0 auto;
+  color: var(--footer-verde);
+}
+
+.footer-titulo {
+  margin: 0 0 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.footer-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.footer-lista a {
+  color: var(--footer-texto);
+  text-decoration: none;
+  font-weight: 400;
+  transition: color 0.2s ease;
+}
+
+.footer-lista a:hover {
+  color: var(--footer-verde);
+}
+
+.footer-lista-texto li {
+  line-height: 1.5;
+}
+
+/* ===== Base ===== */
+.footer-base {
   margin-top: 3rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #374151;
-  font-size: 0.875rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--footer-borda);
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 1rem 2rem;
+  font-size: 0.85rem;
+  color: var(--footer-suave);
 }
 
-@media (max-width: 480px) {
-  .footer {
-    margin-top: -120px; 
-    padding: 1.5rem 0;
+.footer-base-texto {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.footer-ods {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.footer-ods li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.15rem 0.6rem 0.15rem 0.15rem;
+  border: 1px solid var(--footer-borda);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.footer-ods strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--footer-verde-forte);
+  color: #ffffff;
+  font-size: 0.72rem;
+}
+
+.footer-base-fim {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.footer-base a {
+  color: var(--footer-texto);
+  text-decoration: underline;
+}
+
+.footer-base a:hover {
+  color: var(--footer-verde);
+}
+
+.footer-topo {
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--footer-borda);
+  background: transparent;
+  color: var(--footer-texto);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.footer-topo:hover {
+  color: var(--footer-verde);
+  border-color: var(--footer-verde);
+}
+
+/* ===== Responsividade ===== */
+@media (max-width: 900px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
   }
 
-  .footer-copyright {
-    margin-top: 2rem;
+  .footer-base {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 1.8rem;
+  }
+
+  .footer-instalar {
+    padding: 1.3rem;
+    margin-bottom: 2.2rem;
+  }
+
+  .footer-instalar-texto {
+    align-items: flex-start;
+  }
+
+  .footer-btn {
+    width: 100%;
+  }
+
+  .footer-base-fim {
+    justify-content: space-between;
+  }
+
+  /* Na landing, o botão fixo "Criar conta" cobre o fim da página: abre espaço */
+  .app-container:has(.lp-cta-fixa) .footer {
+    padding-bottom: calc(1.5rem + 84px);
   }
 }

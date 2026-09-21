@@ -23,7 +23,8 @@ const PERFIL_MOTORISTA = 1;
 
 /** Site público: landing page, cadastro e login, com navbar e rodapé. */
 function Site() {
-  const hiddenPages = ["/entrar"]; // Páginas onde o balão não aparece
+  // Páginas onde o balão "Já possui uma conta?" não aparece: a landing já tem o botão no topo
+  const hiddenPages = ["/", "/entrar"];
   return (
     <div className="app-container">
       <a href="#conteudo" className="skip-link">

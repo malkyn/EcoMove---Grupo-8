@@ -1,157 +1,172 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./NavBar.css";
 import Logo from "../../pages/icons/logo.webp";
-import UserIcon from "../../pages/icons/usuario2.svg";
-import CloseIcon from "../../pages/icons/fechar.svg";
 import { getUsuarioLogado, logout } from "../../services/auth";
+import { IconeSair, IconeUsuario } from "../Icones";
+
+// Seções da landing. Como o href leva a "/#...", funciona de qualquer página.
+const secoes = [
+  { hash: "#funcionalidades", label: "Vantagens" },
+  { hash: "#modos", label: "Carona ou corrida" },
+  { hash: "#como-funciona", label: "Como funciona" },
+  { hash: "#perguntas", label: "Perguntas" },
+];
 
 function NavBar() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [rolou, setRolou] = useState(false);
+  const [menuAberto, setMenuAberto] = useState(false);
   const [usuario, setUsuario] = useState(() => getUsuarioLogado());
   const location = useLocation();
   const navigate = useNavigate();
 
   // Fecha o menu e relê a sessão ao mudar de rota
   useEffect(() => {
-    setIsMenuOpen(false);
+    setMenuAberto(false);
     setUsuario(getUsuarioLogado());
   }, [location]);
 
-  // Efeito de scroll
+  // Sombra na barra depois que a página rola
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const aoRolar = () => setRolou(window.scrollY > 24);
+    aoRolar();
+    window.addEventListener("scroll", aoRolar, { passive: true });
+    return () => window.removeEventListener("scroll", aoRolar);
   }, []);
 
-  // Fecha o menu ao redimensionar para desktop
+  // Com o menu do celular aberto: trava a rolagem do fundo e fecha com Esc
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 768) setIsMenuOpen(false);
+    document.body.style.overflow = menuAberto ? "hidden" : "";
+    if (!menuAberto) return undefined;
+    const aoTeclar = (evento) => {
+      if (evento.key === "Escape") setMenuAberto(false);
     };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener("keydown", aoTeclar);
+    return () => {
+      window.removeEventListener("keydown", aoTeclar);
+      document.body.style.overflow = "";
+    };
+  }, [menuAberto]);
+
+  // Fecha o menu ao alargar a janela para o layout de desktop
+  useEffect(() => {
+    const aoRedimensionar = () => {
+      if (window.innerWidth > 900) setMenuAberto(false);
+    };
+    window.addEventListener("resize", aoRedimensionar);
+    return () => window.removeEventListener("resize", aoRedimensionar);
   }, []);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-    document.body.style.overflow = isMenuOpen ? "auto" : "hidden";
-  };
+  const fecharMenu = () => setMenuAberto(false);
 
-  const handleLogout = () => {
+  const sair = () => {
     logout();
     setUsuario(null);
-    setIsMenuOpen(false);
-    document.body.style.overflow = "auto";
+    setMenuAberto(false);
     navigate("/");
   };
 
   // Primeiro nome para a saudação; tolera sessão sem nome (valor alterado à mão)
   const primeiroNome = usuario?.nome ? String(usuario.nome).split(" ")[0] : "usuário";
+  const naLanding = location.pathname === "/";
+  const estaAtiva = (secao) => naLanding && location.hash === secao.hash;
 
-  const itensPublicos = [
-    { path: "/", label: "Início" },
-    { path: "/#como-funciona", label: "Como Funciona" },
-    { path: "/loginForm", label: "Cadastre-se" },
-  ];
-  // Logado: "Cadastre-se" dá lugar a "Abrir app"
-  const navItems = usuario
-    ? [...itensPublicos.filter((item) => item.path !== "/loginForm"), { path: "/app", label: "Abrir app" }]
-    : itensPublicos;
+  const linksSecoes = secoes.map((secao) => (
+    <li key={secao.hash}>
+      <a href={`/${secao.hash}`} className={estaAtiva(secao) ? "ativo" : ""} onClick={fecharMenu}>
+        {secao.label}
+      </a>
+    </li>
+  ));
 
   return (
-    <header className={`navbar ${isScrolled ? "scrolled" : ""}`}>
+    <header className={`navbar ${rolou ? "navbar-rolada" : ""} ${menuAberto ? "navbar-aberta" : ""}`}>
       <div className="navbar-container">
-        <a href="/" className="navbar-logo">
-          <img src={Logo} alt="EcoMove" width="40" height="40" />
-          <span>Eco Move</span>
-        </a>
+        <Link to="/" className="navbar-logo" onClick={fecharMenu}>
+          <img src={Logo} alt="" width="36" height="36" />
+          <span>
+            Eco<strong>Move</strong>
+          </span>
+        </Link>
 
-        {/* Menu Desktop */}
-        <nav className="navbar-desktop">
-          <ul>
-            {navItems.map((item) => (
-              <li key={item.path}>
-                <a
-                  href={item.path}
-                  className={location.pathname === item.path ? "active" : ""}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
-            {usuario ? (
-              <li className="user-item">
-                <img src={UserIcon} alt="" width="20" height="20" />
-                <span>Olá, {primeiroNome}</span>
-                <button type="button" className="logout-button" onClick={handleLogout}>
-                  Sair
-                </button>
-              </li>
-            ) : (
-              <li className="login-item">
-                <Link to="/entrar">
-                  <img src={UserIcon} alt="Entrar" width="20" height="20" />
-                  <span>Entrar</span>
-                </Link>
-              </li>
-            )}
-          </ul>
+        {/* Desktop: seções no centro, ações à direita */}
+        <nav className="navbar-links" aria-label="Seções do site">
+          <ul>{linksSecoes}</ul>
         </nav>
 
-        {/* Menu Mobile */}
-        <button
-          className={`menu-toggle ${isMenuOpen ? "open" : ""}`}
-          onClick={toggleMenu}
-          aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"}
-        >
-          {isMenuOpen ? (
-            <img src={CloseIcon} alt="Fechar" width="24" height="24" />
+        <div className="navbar-acoes">
+          {usuario ? (
+            <>
+              <span className="navbar-usuario">
+                <IconeUsuario tamanho={18} /> Olá, {primeiroNome}
+              </span>
+              <Link to="/app" className="navbar-btn navbar-btn-cheio">
+                Abrir o app
+              </Link>
+              <button type="button" className="navbar-btn navbar-btn-fantasma" onClick={sair}>
+                <IconeSair tamanho={18} /> Sair
+              </button>
+            </>
           ) : (
             <>
-              <span className="menu-bar"></span>
-              <span className="menu-bar"></span>
-              <span className="menu-bar"></span>
+              <Link
+                to="/entrar"
+                className={`navbar-btn navbar-btn-fantasma ${location.pathname === "/entrar" ? "ativo" : ""}`}
+              >
+                Entrar
+              </Link>
+              <Link to="/loginForm" className="navbar-btn navbar-btn-cheio">
+                Criar conta
+              </Link>
             </>
           )}
-        </button>
-
-        {/* Overlay e Menu Mobile */}
-        <div className={`mobile-menu-wrapper ${isMenuOpen ? "open" : ""}`}>
-          <div className="mobile-overlay" onClick={toggleMenu}></div>
-          <nav className="mobile-menu">
-            <ul>
-              {navItems.map((item) => (
-                <li key={item.path}>
-                  <a
-                    href={item.path}
-                    className={location.pathname === item.path ? "active" : ""}
-                    onClick={toggleMenu}
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-              {usuario ? (
-                <li className="mobile-user">
-                  <span className="mobile-login-text">Olá, {primeiroNome}</span>
-                  <button type="button" className="logout-button" onClick={handleLogout}>
-                    Sair
-                  </button>
-                </li>
-              ) : (
-                <li className="mobile-login">
-                  <Link to="/entrar" onClick={toggleMenu}>
-                    <img src={UserIcon} className="mobile-login-icon" alt="Entrar" width="24" height="24" />
-                    <span className="mobile-login-text">Entrar</span>
-                  </Link>
-                </li>
-              )}
-            </ul>
-          </nav>
         </div>
+
+        {/* Celular: botão hambúrguer que vira um X */}
+        <button
+          type="button"
+          className="navbar-hamburguer"
+          aria-expanded={menuAberto}
+          aria-controls="menu-celular"
+          aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
+          onClick={() => setMenuAberto((aberto) => !aberto)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+      </div>
+
+      {/* Celular: folha que desce abaixo da barra */}
+      <div className={`navbar-celular ${menuAberto ? "aberto" : ""}`} id="menu-celular">
+        <div className="navbar-celular-fundo" onClick={fecharMenu} aria-hidden="true" />
+        <nav className="navbar-celular-folha" aria-label="Menu">
+          <ul>{linksSecoes}</ul>
+          <div className="navbar-celular-acoes">
+            {usuario ? (
+              <>
+                <span className="navbar-celular-usuario">
+                  <IconeUsuario tamanho={18} /> Olá, {primeiroNome}
+                </span>
+                <Link to="/app" className="navbar-btn navbar-btn-cheio" onClick={fecharMenu}>
+                  Abrir o app
+                </Link>
+                <button type="button" className="navbar-btn navbar-btn-fantasma" onClick={sair}>
+                  <IconeSair tamanho={18} /> Sair
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/loginForm" className="navbar-btn navbar-btn-cheio" onClick={fecharMenu}>
+                  Criar conta grátis
+                </Link>
+                <Link to="/entrar" className="navbar-btn navbar-btn-fantasma" onClick={fecharMenu}>
+                  Já tenho conta
+                </Link>
+              </>
+            )}
+          </div>
+        </nav>
       </div>
     </header>
   );
