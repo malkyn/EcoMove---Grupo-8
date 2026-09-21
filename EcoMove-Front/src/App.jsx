@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/Home";
-import Usuarios from "./pages/Usuarios";
 import NavBar from "./components/NavBar/NavBar.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import CadastroUsuario from "./pages/CadastroUsuario.jsx";
@@ -27,8 +26,11 @@ function Site() {
   const hiddenPages = ["/entrar"]; // Páginas onde o balão não aparece
   return (
     <div className="app-container">
+      <a href="#conteudo" className="skip-link">
+        Pular para o conteúdo
+      </a>
       <NavBar />
-      <main className="main-content">
+      <main id="conteudo" className="main-content">
         <Outlet />
       </main>
       <Footer />
@@ -43,7 +45,6 @@ function App() {
       <Routes>
         <Route element={<Site />}>
           <Route path="/" element={<Home />} />
-          <Route path="/usuarios" element={<Usuarios />} />
           <Route path="/cadastrousuario" element={<CadastroUsuario />} />
           <Route path="/loginForm" element={<Login />} />
           <Route path="/entrar" element={<Entrar />} />

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./CadastroUsuario.css";
-import Info from "./icons/informacoes.svg";
+import Info from "./icons/ilustracao-app.webp";
 import api from "../services/api";
 
 const PERFIL_MOTORISTA = 1;
