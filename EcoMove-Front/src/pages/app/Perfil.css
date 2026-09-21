@@ -1,0 +1,159 @@
+.perfil {
+  padding: 1rem 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.perfil-cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  background: #ffffff;
+  border: 1px solid #e3e8e5;
+  border-radius: 14px;
+  padding: 1rem;
+}
+
+.perfil-avatar {
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #e3f5ec;
+  color: #036141;
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.perfil-dados {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.perfil-dados h1 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #1f2d27;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.perfil-dados p {
+  margin: 0.1rem 0 0.3rem;
+  font-size: 0.85rem;
+  color: #6b7a74;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.perfil-tipo {
+  display: inline-block;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  background: #e3f5ec;
+  color: #036141;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.perfil-nota {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.perfil-nota strong {
+  font-size: 1.5rem;
+  color: #036141;
+  line-height: 1;
+}
+
+.perfil-nota small {
+  font-size: 0.7rem;
+  color: #6b7a74;
+  text-align: center;
+}
+
+.perfil-erro {
+  margin: 0;
+  background: #fdecea;
+  color: #8a1c1c;
+  border: 1px solid #f5c2c0;
+  border-radius: 6px;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+/* ----- Menu ----- */
+.perfil-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  border: 1px solid #e3e8e5;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.perfil-menu li + li {
+  border-top: 1px solid #e3e8e5;
+}
+
+.perfil-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: none;
+  border: none;
+  border-radius: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1f2d27;
+  text-decoration: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.perfil-item:hover {
+  background: #f5f7f6;
+  color: #036141;
+  border-color: transparent;
+}
+
+.perfil-seta {
+  color: #9aa5a0;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.perfil-sair {
+  color: #b42318;
+}
+
+.perfil-sair:hover {
+  color: #b42318;
+  background: #fdecea;
+}
+
+.perfil-dica {
+  padding: 0.8rem 1rem;
+  font-size: 0.85rem;
+  color: #6b7a74;
+  background: #f5f7f6;
+}
+
+.perfil-rodape {
+  margin: 0;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #9aa5a0;
+}

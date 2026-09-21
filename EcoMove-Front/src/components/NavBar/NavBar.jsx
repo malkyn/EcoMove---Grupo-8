@@ -56,9 +56,9 @@ function NavBar() {
     { path: "/#como-funciona", label: "Como Funciona" },
     { path: "/loginForm", label: "Cadastre-se" },
   ];
-  // Logado: "Cadastre-se" dá lugar a "Painel"
+  // Logado: "Cadastre-se" dá lugar a "Abrir app"
   const navItems = usuario
-    ? [...itensPublicos.filter((item) => item.path !== "/loginForm"), { path: "/painel", label: "Painel" }]
+    ? [...itensPublicos.filter((item) => item.path !== "/loginForm"), { path: "/app", label: "Abrir app" }]
     : itensPublicos;
 
   return (
