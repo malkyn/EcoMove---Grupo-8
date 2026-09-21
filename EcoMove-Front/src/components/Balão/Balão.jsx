@@ -56,13 +56,13 @@ const Balão = ({ hiddenPages = ["/entrar"], autoCloseDelay = 5000 }) => {
         </p>
         <p className="texto-termos">
           Ao se cadastrar, você concorda com nossos{" "}
-          <a href="/termos" className="link-secundario">
+          <Link to="/termos" className="link-secundario">
             Termos de Uso
-          </a>{" "}
+          </Link>{" "}
           e{" "}
-          <a href="/privacidade" className="link-secundario">
+          <Link to="/privacidade" className="link-secundario">
             Política de Privacidade
-          </a>
+          </Link>
         </p>
       </div>
     </aside>

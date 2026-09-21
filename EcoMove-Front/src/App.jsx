@@ -6,6 +6,8 @@ import Footer from "./components/Footer/Footer.jsx";
 import Cadastro from "./pages/Cadastro.jsx";
 import BalãoFlutuante from "./components/Balão/Balão.jsx";
 import Entrar from "./pages/Entrar.jsx";
+import Termos from "./pages/Termos.jsx";
+import Privacidade from "./pages/Privacidade.jsx";
 import NaoEncontrada from "./pages/NaoEncontrada.jsx";
 import RotaProtegida from "./components/RotaProtegida.jsx";
 import AppShell from "./components/AppShell/AppShell.jsx";
@@ -23,7 +25,7 @@ const PERFIL_MOTORISTA = 1;
 /** Site público: landing page, cadastro e login, com navbar e rodapé. */
 function Site() {
   // Páginas onde o balão "Já possui uma conta?" não aparece: a landing já tem o botão no topo
-  const hiddenPages = ["/", "/entrar", "/loginForm", "/cadastrousuario"];
+  const hiddenPages = ["/", "/entrar", "/loginForm", "/cadastrousuario", "/termos", "/privacidade"];
   // Criar conta e entrar ocupam a tela inteira, sem rolagem: sem rodape
   const { pathname } = useLocation();
   const semRodape = ["/loginForm", "/cadastrousuario", "/entrar"].includes(pathname);
@@ -51,6 +53,8 @@ function App() {
           <Route path="/cadastrousuario" element={<Navigate to="/loginForm" replace />} />
           <Route path="/loginForm" element={<Cadastro />} />
           <Route path="/entrar" element={<Entrar />} />
+          <Route path="/termos" element={<Termos />} />
+          <Route path="/privacidade" element={<Privacidade />} />
           <Route path="*" element={<NaoEncontrada />} />
         </Route>
 

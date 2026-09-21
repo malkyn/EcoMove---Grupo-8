@@ -694,3 +694,8 @@
   border-color: var(--conta-verde);
   color: var(--conta-verde);
 }
+
+.conta-consentimento a {
+  color: var(--conta-verde);
+  font-weight: 600;
+}

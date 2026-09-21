@@ -1,0 +1,207 @@
+/* Páginas de documento (Termos de Uso, Política de Privacidade). Variáveis isoladas em .legal. */
+.legal {
+  --legal-verde: #036141;
+  --legal-verde-escuro: #024b30;
+  --legal-verde-claro: #e3f5ec;
+  --legal-texto: #1f2d27;
+  --legal-texto-suave: #5b6a64;
+  --legal-borda: #e3e8e5;
+  --legal-fundo-claro: #f4f7f5;
+
+  width: 100%;
+  padding: 72px 0 64px; /* barra fixa em cima */
+  background: #ffffff;
+  color: var(--legal-texto);
+  text-align: left;
+}
+
+.legal-wrap {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 40px 20px 0;
+}
+
+/* ===== Topo ===== */
+.legal-chapeu {
+  margin: 0 0 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--legal-verde);
+}
+
+.legal-topo h1 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--legal-texto);
+}
+
+.legal-data {
+  margin: 0 0 28px;
+  color: var(--legal-texto-suave);
+  font-size: 0.95rem;
+}
+
+/* ===== Resumo em linguagem simples ===== */
+.legal-resumo {
+  margin-bottom: 28px;
+  padding: 20px 24px;
+  border-radius: 20px;
+  background: var(--legal-verde-claro);
+}
+
+.legal-resumo h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--legal-verde-escuro);
+}
+
+.legal-resumo ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  line-height: 1.55;
+}
+
+.legal-resumo li::marker {
+  color: var(--legal-verde);
+}
+
+/* ===== Índice ===== */
+.legal-indice {
+  margin-bottom: 36px;
+  padding: 18px 22px;
+  border: 1px solid var(--legal-borda);
+  border-radius: 16px;
+}
+
+.legal-indice ol {
+  margin: 0;
+  padding-left: 1.3rem;
+  columns: 2;
+  column-gap: 2rem;
+  font-size: 0.95rem;
+  line-height: 1.9;
+}
+
+.legal-indice a {
+  color: var(--legal-texto);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.legal-indice a:hover {
+  color: var(--legal-verde);
+  text-decoration: underline;
+}
+
+/* ===== Seções ===== */
+.legal-secao {
+  margin-bottom: 32px;
+  scroll-margin-top: 88px; /* as âncoras param abaixo da barra fixa */
+}
+
+.legal-secao h2 {
+  margin: 0 0 0.8rem;
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--legal-texto);
+}
+
+.legal-numero {
+  color: var(--legal-verde);
+}
+
+.legal-secao p {
+  margin: 0 0 0.9rem;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--legal-texto);
+}
+
+.legal-secao ul {
+  margin: 0 0 0.9rem;
+  padding-left: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 1.02rem;
+  line-height: 1.6;
+}
+
+.legal-secao li::marker {
+  color: var(--legal-verde);
+}
+
+/* ===== Nota e link para o outro documento ===== */
+.legal-nota {
+  margin: 0 0 24px;
+  padding: 14px 18px;
+  border-left: 3px solid var(--legal-verde);
+  background: var(--legal-fundo-claro);
+  border-radius: 0 12px 12px 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--legal-texto-suave);
+}
+
+.legal-outro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 18px 22px;
+  border-radius: 16px;
+  border: 1px solid var(--legal-borda);
+  text-decoration: none;
+  color: var(--legal-texto);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.legal-outro:hover {
+  border-color: var(--legal-verde);
+  transform: translateY(-2px);
+}
+
+.legal-outro span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--legal-texto-suave);
+}
+
+.legal-outro strong {
+  font-size: 1.05rem;
+  color: var(--legal-verde);
+}
+
+/* ===== Responsividade ===== */
+@media (max-width: 600px) {
+  .legal {
+    padding-top: 64px;
+  }
+
+  .legal-wrap {
+    padding: 28px 16px 0;
+  }
+
+  .legal-resumo,
+  .legal-indice {
+    padding: 16px 18px;
+  }
+
+  .legal-indice ol {
+    columns: 1;
+  }
+
+  .legal-secao p {
+    font-size: 1rem;
+  }
+}
