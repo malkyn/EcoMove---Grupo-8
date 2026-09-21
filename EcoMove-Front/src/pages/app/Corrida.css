@@ -1,0 +1,234 @@
+.corrida {
+  padding: 1rem 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.corrida-carregando {
+  padding: 2rem 1rem;
+  color: #6b7a74;
+}
+
+.corrida-cabecalho {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.corrida-voltar {
+  align-self: flex-start;
+  color: #036141;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.corrida-titulo-linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.corrida-cabecalho h1 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #036141;
+}
+
+/* ----- Selo de status ----- */
+.corrida-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.corrida-status-aguardando {
+  background: #fff6e0;
+  color: #7a4d00;
+}
+
+.corrida-status-andamento {
+  background: #e0ecff;
+  color: #1d4ed8;
+}
+
+.corrida-status-ok {
+  background: #e3f5ec;
+  color: #036141;
+}
+
+.corrida-status-erro {
+  background: #fdecea;
+  color: #8a1c1c;
+}
+
+.corrida-mapa {
+  height: 200px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e3e8e5;
+}
+
+/* ----- Mensagens ----- */
+.corrida-msg {
+  margin: 0;
+  border-radius: 6px;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+.corrida-erro {
+  background: #fdecea;
+  color: #8a1c1c;
+  border: 1px solid #f5c2c0;
+}
+
+.corrida-sucesso {
+  background: #e3f5ec;
+  color: #036141;
+  border: 1px solid #bfe6d1;
+}
+
+/* ----- Cartões ----- */
+.corrida-cartao {
+  background: #ffffff;
+  border: 1px solid #e3e8e5;
+  border-radius: 14px;
+  padding: 1rem;
+  color: #1f2d27;
+}
+
+.corrida-cartao p {
+  margin: 0;
+}
+
+.corrida-aguardando {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.corrida-pulso {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #036141;
+  box-shadow: 0 0 0 0 rgba(3, 97, 65, 0.5);
+  animation: corrida-pulsar 1.6s ease-out infinite;
+}
+
+@keyframes corrida-pulsar {
+  0% {
+    box-shadow: 0 0 0 0 rgba(3, 97, 65, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 14px rgba(3, 97, 65, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .corrida-pulso {
+    animation: none;
+  }
+}
+
+.corrida-resumo-final {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.corrida-co2 strong,
+.corrida-resumo-final strong {
+  color: #036141;
+}
+
+.corrida-nota {
+  font-size: 0.8rem;
+  color: #6b7a74;
+}
+
+.corrida-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.7rem 1rem;
+  margin: 0;
+}
+
+.corrida-info dt {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7a74;
+}
+
+.corrida-info dd {
+  margin: 0.1rem 0 0;
+  font-size: 0.95rem;
+}
+
+.corrida-info small {
+  color: #6b7a74;
+}
+
+.corrida-preco {
+  color: #036141;
+  font-weight: 700;
+}
+
+/* ----- Ações ----- */
+.corrida-acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.corrida-botao {
+  display: block;
+  text-align: center;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: none;
+  background: #036141;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.corrida-botao:hover {
+  background: #088b60;
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.corrida-botao:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.corrida-botao-secundario {
+  background: #f0f3f1;
+  color: #1f2d27;
+}
+
+.corrida-botao-secundario:hover {
+  background: #e3e8e5;
+  color: #1f2d27;
+}
+
+.corrida-botao-perigo {
+  background: #fdecea;
+  color: #b42318;
+}
+
+.corrida-botao-perigo:hover {
+  background: #f9d3d0;
+  color: #b42318;
+}

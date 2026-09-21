@@ -7,11 +7,11 @@
 // demonstração ficam em texto puro no navegador, o que é inaceitável fora daqui.
 import { AxiosError } from "axios";
 import { distanciaHaversineKm } from "./geo";
-import { estimarCarona } from "../utils/estimativas";
+import { estimarCarona, estimarCorrida } from "../utils/estimativas";
 
 const CHAVE_DB = "ecomove_mock_db";
 // Aumente quando o formato dos dados mudar: o banco salvo no navegador é recriado.
-const VERSAO_BANCO = 3;
+const VERSAO_BANCO = 4;
 const LATENCIA_MS = 300;
 const PERFIL_MOTORISTA = 1;
 const PERFIL_PASSAGEIRO = 2;
@@ -45,7 +45,7 @@ function bancoInicial() {
 
   return {
     versao: VERSAO_BANCO,
-    proximoId: { usuario: 3, veiculo: 2, carona: 4, avaliacao: 1 },
+    proximoId: { usuario: 3, veiculo: 2, carona: 4, avaliacao: 1, corrida: 1 },
     usuarios: [
       {
         id_usuario: 1,
@@ -122,6 +122,8 @@ function bancoInicial() {
     ],
     reservas: [],
     avaliacoes: [],
+    corridas: [],
+    motoristas_online: [],
   };
 }
 
@@ -595,6 +597,282 @@ function listarAvaliacoesDoUsuario({ db, match }) {
 }
 
 // =============================================
+//               CORRIDAS (sob demanda)
+// =============================================
+const STATUS_CORRIDA_ATIVOS = ["pendente", "aceita", "em_andamento"];
+
+function corridaCompleta(db, c) {
+  const contato = (u) =>
+    u ? { id_usuario: u.id_usuario, nome: u.nome, telefone: u.telefone || null } : null;
+  const passageiro = db.usuarios.find((u) => u.id_usuario === c.id_passageiro);
+  const motorista = c.id_motorista
+    ? db.usuarios.find((u) => u.id_usuario === c.id_motorista)
+    : null;
+  const veiculo = c.id_veiculo ? db.veiculos.find((v) => v.id_veiculo === c.id_veiculo) : null;
+  return {
+    ...c,
+    passageiro: contato(passageiro),
+    motorista: contato(motorista),
+    veiculo: veiculo
+      ? {
+          id_veiculo: veiculo.id_veiculo,
+          modelo: veiculo.modelo,
+          placa: veiculo.placa,
+          categoria: veiculo.categoria,
+          propulsao: veiculo.propulsao,
+          cor: veiculo.cor,
+        }
+      : null,
+  };
+}
+
+function criarCorrida({ db, body }) {
+  const faltando = camposFaltando(body, [
+    "id_passageiro",
+    "origem",
+    "destino",
+    "origem_lat",
+    "origem_lng",
+    "destino_lat",
+    "destino_lng",
+  ]);
+  if (faltando) return faltando;
+
+  const passageiro = db.usuarios.find((u) => u.id_usuario === Number(body.id_passageiro));
+  if (!passageiro) return erro(404, "Usuário não encontrado");
+  if (passageiro.id_perfil !== PERFIL_PASSAGEIRO) {
+    return erro(403, "Apenas passageiros podem pedir corridas");
+  }
+  if (
+    db.corridas.some(
+      (c) => c.id_passageiro === passageiro.id_usuario && STATUS_CORRIDA_ATIVOS.includes(c.status)
+    )
+  ) {
+    return erro(409, "Você já tem uma corrida em andamento");
+  }
+
+  const coords = coordenadasDe(body);
+  if (coords.origem_lat === null || coords.destino_lat === null) {
+    return erro(400, "Coordenadas de origem e destino inválidas");
+  }
+  const origemPonto = { lat: coords.origem_lat, lng: coords.origem_lng };
+  const destinoPonto = { lat: coords.destino_lat, lng: coords.destino_lng };
+  const distanciaKm =
+    numeroOuNull(body.distancia_km) ??
+    Math.round(distanciaHaversineKm(origemPonto, destinoPonto) * 1.3 * 10) / 10;
+  const duracaoMin = numeroOuNull(body.duracao_min) ?? Math.round((distanciaKm / 30) * 60);
+
+  const nova = {
+    id_corrida: db.proximoId.corrida++,
+    id_passageiro: passageiro.id_usuario,
+    id_motorista: null,
+    id_veiculo: null,
+    origem: String(body.origem).trim(),
+    destino: String(body.destino).trim(),
+    ...coords,
+    distancia_km: distanciaKm,
+    duracao_min: duracaoMin,
+    preco_estimado: estimarCorrida(distanciaKm, duracaoMin),
+    status: "pendente",
+    criada_em: agoraISO(),
+    aceita_em: null,
+    iniciada_em: null,
+    concluida_em: null,
+    cancelada_por: null,
+  };
+  db.corridas.push(nova);
+  return criado({
+    mensagem: "Corrida solicitada! Procurando motorista...",
+    corrida: corridaCompleta(db, nova),
+  });
+}
+
+function listarCorridas({ db, params }) {
+  const statusFiltro = params.status
+    ? String(params.status)
+        .split(",")
+        .map((s) => s.trim())
+    : null;
+  const idUsuario = params.id_usuario ? Number(params.id_usuario) : null;
+  const somenteAtivas = String(params.ativas) === "true";
+  const ponto = pontoDe(params.lat, params.lng);
+  const raioKm = numeroOuNull(params.raio_km) ?? 10;
+
+  let lista = db.corridas
+    .filter((c) => !statusFiltro || statusFiltro.includes(c.status))
+    .filter(
+      (c) => idUsuario === null || c.id_passageiro === idUsuario || c.id_motorista === idUsuario
+    )
+    .filter((c) => !somenteAtivas || STATUS_CORRIDA_ATIVOS.includes(c.status))
+    .map((c) => corridaCompleta(db, c));
+
+  if (ponto) {
+    lista = lista
+      .map((c) => ({
+        ...c,
+        distancia_ate_voce_km:
+          Math.round(distanciaHaversineKm(ponto, { lat: c.origem_lat, lng: c.origem_lng }) * 10) /
+          10,
+      }))
+      .filter((c) => c.distancia_ate_voce_km <= raioKm)
+      .sort((a, b) => a.distancia_ate_voce_km - b.distancia_ate_voce_km);
+  } else {
+    lista.sort((a, b) => b.criada_em.localeCompare(a.criada_em));
+  }
+  return ok(lista);
+}
+
+function buscarCorrida({ db, match }) {
+  const c = db.corridas.find((x) => x.id_corrida === Number(match[1]));
+  return c ? ok(corridaCompleta(db, c)) : erro(404, "Corrida não encontrada");
+}
+
+function aceitarCorrida({ db, body, match }) {
+  const corrida = db.corridas.find((x) => x.id_corrida === Number(match[1]));
+  if (!corrida) return erro(404, "Corrida não encontrada");
+  const faltando = camposFaltando(body, ["id_motorista", "id_veiculo"]);
+  if (faltando) return faltando;
+
+  const motorista = db.usuarios.find((u) => u.id_usuario === Number(body.id_motorista));
+  if (!motorista) return erro(404, "Motorista não encontrado");
+  if (motorista.id_perfil !== PERFIL_MOTORISTA) {
+    return erro(403, "Apenas motoristas podem aceitar corridas");
+  }
+  const veiculo = db.veiculos.find((v) => v.id_veiculo === Number(body.id_veiculo));
+  if (!veiculo) return erro(404, "Veículo não encontrado");
+  if (veiculo.id_usuario !== motorista.id_usuario) {
+    return erro(403, "O veículo não pertence a este motorista");
+  }
+  if (corrida.status !== "pendente") return erro(409, "Esta corrida já foi aceita ou encerrada");
+  if (
+    db.corridas.some(
+      (c) => c.id_motorista === motorista.id_usuario && STATUS_CORRIDA_ATIVOS.includes(c.status)
+    )
+  ) {
+    return erro(409, "Você já está em uma corrida");
+  }
+
+  corrida.id_motorista = motorista.id_usuario;
+  corrida.id_veiculo = veiculo.id_veiculo;
+  corrida.status = "aceita";
+  corrida.aceita_em = agoraISO();
+  return {
+    ...ok({ mensagem: "Corrida aceita! Vá até o passageiro.", corrida: corridaCompleta(db, corrida) }),
+    gravar: true,
+  };
+}
+
+function atualizarStatusCorrida({ db, body, match }) {
+  const corrida = db.corridas.find((x) => x.id_corrida === Number(match[1]));
+  if (!corrida) return erro(404, "Corrida não encontrada");
+  const idUsuario = Number(body.id_usuario);
+  if (!idUsuario) return erro(400, "id_usuario é obrigatório");
+  const status = String(body.status || "");
+  const ehPassageiro = corrida.id_passageiro === idUsuario;
+  const ehMotorista = corrida.id_motorista === idUsuario;
+  if (!ehPassageiro && !ehMotorista) return erro(403, "Você não participa desta corrida");
+
+  const responder = (mensagem) => ({
+    ...ok({ mensagem, corrida: corridaCompleta(db, corrida) }),
+    gravar: true,
+  });
+
+  if (status === "em_andamento") {
+    if (!ehMotorista) return erro(403, "Só o motorista inicia a corrida");
+    if (corrida.status !== "aceita") return erro(409, "A corrida precisa estar aceita para iniciar");
+    corrida.status = "em_andamento";
+    corrida.iniciada_em = agoraISO();
+    return responder("Corrida iniciada. Boa viagem!");
+  }
+  if (status === "concluida") {
+    if (!ehMotorista) return erro(403, "Só o motorista conclui a corrida");
+    if (corrida.status !== "em_andamento") {
+      return erro(409, "A corrida precisa estar em andamento para concluir");
+    }
+    corrida.status = "concluida";
+    corrida.concluida_em = agoraISO();
+    return responder("Corrida concluída!");
+  }
+  if (status === "cancelada") {
+    if (corrida.status !== "pendente" && corrida.status !== "aceita") {
+      return erro(409, "Esta corrida não pode mais ser cancelada");
+    }
+    if (ehMotorista) {
+      // Motorista desiste: a corrida volta a procurar outro motorista
+      corrida.id_motorista = null;
+      corrida.id_veiculo = null;
+      corrida.status = "pendente";
+      corrida.aceita_em = null;
+      return responder("Você saiu da corrida. O passageiro continuará procurando motorista.");
+    }
+    corrida.status = "cancelada";
+    corrida.cancelada_por = "passageiro";
+    corrida.concluida_em = agoraISO();
+    return responder("Corrida cancelada.");
+  }
+  return erro(400, "status deve ser em_andamento, concluida ou cancelada");
+}
+
+// =============================================
+//               MOTORISTAS ONLINE
+// =============================================
+function definirOnline({ db, body }) {
+  const motorista = db.usuarios.find((u) => u.id_usuario === Number(body.id_usuario));
+  if (!motorista) return erro(404, "Usuário não encontrado");
+  if (motorista.id_perfil !== PERFIL_MOTORISTA) return erro(403, "Apenas motoristas ficam online");
+
+  const online = body.online === true || body.online === "true";
+  db.motoristas_online = db.motoristas_online.filter((m) => m.id_usuario !== motorista.id_usuario);
+
+  if (online) {
+    const ponto = pontoDe(body.lat, body.lng);
+    if (!ponto) return erro(400, "Informe lat e lng para ficar online");
+    const veiculo = db.veiculos.find((v) => v.id_veiculo === Number(body.id_veiculo));
+    if (!veiculo || veiculo.id_usuario !== motorista.id_usuario) {
+      return erro(400, "Selecione um veículo seu para ficar online");
+    }
+    db.motoristas_online.push({
+      id_usuario: motorista.id_usuario,
+      id_veiculo: veiculo.id_veiculo,
+      lat: ponto.lat,
+      lng: ponto.lng,
+      atualizado_em: agoraISO(),
+    });
+  }
+  return {
+    ...ok({
+      mensagem: online ? "Você está online e receberá pedidos próximos." : "Você está offline.",
+      online,
+    }),
+    gravar: true,
+  };
+}
+
+function listarOnline({ db, params }) {
+  const idUsuario = params.id_usuario ? Number(params.id_usuario) : null;
+  const ponto = pontoDe(params.lat, params.lng);
+  const raioKm = numeroOuNull(params.raio_km) ?? 15;
+  const lista = db.motoristas_online
+    .filter((m) => idUsuario === null || m.id_usuario === idUsuario)
+    .map((m) => {
+      const u = db.usuarios.find((x) => x.id_usuario === m.id_usuario);
+      const v = db.veiculos.find((x) => x.id_veiculo === m.id_veiculo);
+      return {
+        id_usuario: m.id_usuario,
+        nome: u ? u.nome : null,
+        lat: m.lat,
+        lng: m.lng,
+        atualizado_em: m.atualizado_em,
+        veiculo: v ? { modelo: v.modelo, categoria: v.categoria, propulsao: v.propulsao } : null,
+        distancia_km: ponto ? Math.round(distanciaHaversineKm(ponto, m) * 10) / 10 : null,
+      };
+    })
+    .filter((m) => !ponto || m.distancia_km <= raioKm)
+    .sort((a, b) => (a.distancia_km ?? 0) - (b.distancia_km ?? 0));
+  return ok(lista);
+}
+
+// =============================================
 //               ROTEADOR
 // =============================================
 const rotas = [
@@ -615,6 +893,13 @@ const rotas = [
   ["POST", /^\/caronas\/(\d+)\/reservas\/?$/, criarReserva],
   ["DELETE", /^\/caronas\/(\d+)\/reservas\/(\d+)\/?$/, cancelarReserva],
   ["POST", /^\/avaliacoes\/?$/, criarAvaliacao],
+  ["GET", /^\/corridas\/?$/, listarCorridas],
+  ["POST", /^\/corridas\/?$/, criarCorrida],
+  ["GET", /^\/corridas\/(\d+)\/?$/, buscarCorrida],
+  ["POST", /^\/corridas\/(\d+)\/aceitar\/?$/, aceitarCorrida],
+  ["POST", /^\/corridas\/(\d+)\/status\/?$/, atualizarStatusCorrida],
+  ["GET", /^\/motoristas\/online\/?$/, listarOnline],
+  ["POST", /^\/motoristas\/online\/?$/, definirOnline],
 ];
 
 function responder(config, status, data) {

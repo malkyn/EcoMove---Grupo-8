@@ -200,6 +200,66 @@ Requisição: `{ "id_carona": 2, "id_avaliador": 2, "id_avaliado": 1, "nota": 5,
 Resposta `201`: `{ "mensagem": "Avaliação registrada com sucesso!", "avaliacao": { ...campos acima } }`
 Erros: `400` nota fora de 1 a 5, avaliador igual ao avaliado, ou campo faltando · `404` carona ou usuário inexistente · `409` já avaliou este usuário nesta carona.
 
+## 7.1 Corridas sob demanda (novo)
+
+Modo "99/Uber": o passageiro pede uma corrida para agora, motoristas online por perto veem o pedido e um deles aceita. Sem pagamento nesta versão: `preco_estimado` é só referência.
+
+Estados: `pendente` (procurando motorista) → `aceita` (motorista a caminho) → `em_andamento` → `concluida`. O passageiro pode cancelar em `pendente` ou `aceita` (vira `cancelada`). Se o motorista desistir em `aceita`, a corrida volta para `pendente` sem motorista.
+
+Tabela nova `corrida`: `id_corrida`, `id_passageiro`, `id_motorista` (nulo até aceitar), `id_veiculo` (nulo até aceitar), `origem`, `destino`, `origem_lat`, `origem_lng`, `destino_lat`, `destino_lng`, `distancia_km`, `duracao_min`, `preco_estimado`, `status`, `criada_em`, `aceita_em`, `iniciada_em`, `concluida_em`, `cancelada_por`.
+
+### Formato completo de corrida
+```json
+{
+  "id_corrida": 1, "status": "aceita",
+  "id_passageiro": 2, "passageiro": { "id_usuario": 2, "nome": "Lucas Almeida", "telefone": "(15) 99999-0002" },
+  "id_motorista": 1, "motorista": { "id_usuario": 1, "nome": "Camila Ferreira", "telefone": "(15) 99999-0001" },
+  "id_veiculo": 1, "veiculo": { "id_veiculo": 1, "modelo": "Chevrolet Bolt EV", "placa": "BRA2E19", "categoria": "carro", "propulsao": "eletrico", "cor": "Branco" },
+  "origem": "Parque Campolim, Sorocaba", "destino": "Centro Universitário FACENS, Sorocaba",
+  "origem_lat": -23.5199, "origem_lng": -47.4642, "destino_lat": -23.4706, "destino_lng": -47.4295,
+  "distancia_km": 13.0, "duracao_min": 16, "preco_estimado": 39.05,
+  "criada_em": "2026-10-20T07:30", "aceita_em": "2026-10-20T07:31", "iniciada_em": null, "concluida_em": null, "cancelada_por": null
+}
+```
+`preco_estimado` = bandeirada R$ 5,00 + R$ 2,20/km + R$ 0,30/min, mínimo R$ 8,00 (mesma regra de `utils/estimativas.js`). Na busca por proximidade, cada item ganha `distancia_ate_voce_km`.
+
+### POST `/corridas/` — passageiro pede
+Requisição: `{ "id_passageiro": 2, "origem": "...", "destino": "...", "origem_lat", "origem_lng", "destino_lat", "destino_lng", "distancia_km": 13.0, "duracao_min": 16 }`. Coordenadas obrigatórias; distância e duração opcionais (o backend estima se faltarem).
+Resposta `201`: `{ "mensagem": "Corrida solicitada! Procurando motorista...", "corrida": { ... } }`.
+Erros: `400` · `403` usuário não é passageiro · `404` · `409` já tem corrida ativa.
+
+### GET `/corridas/` — listagem
+Filtros opcionais: `status` (um ou vários separados por vírgula), `id_usuario` (corridas em que participa, como passageiro ou motorista), `ativas=true` (só `pendente`, `aceita`, `em_andamento`), e proximidade `lat`, `lng`, `raio_km` (padrão 10): só corridas cuja origem está a até `raio_km`, com `distancia_ate_voce_km`, ordenadas pela distância. Sem proximidade, ordenar por `criada_em` decrescente.
+
+O motorista online consulta `GET /corridas/?status=pendente&lat=&lng=&raio_km=10` a cada 4 s. A tela de acompanhamento consulta `GET /corridas/{id}` a cada 3 s enquanto a corrida estiver ativa.
+
+### GET `/corridas/{id}`
+Resposta `200`: formato completo. `404` se não existir.
+
+### POST `/corridas/{id}/aceitar` — motorista aceita
+Requisição: `{ "id_motorista": 1, "id_veiculo": 1 }`.
+Resposta `200`: `{ "mensagem": "Corrida aceita! Vá até o passageiro.", "corrida": { ... } }`.
+Erros: `403` não é motorista ou veículo não é dele · `404` · `409` corrida já aceita/encerrada, ou motorista já está em outra corrida.
+
+### POST `/corridas/{id}/status` — muda o estado
+Requisição: `{ "status": "em_andamento" | "concluida" | "cancelada", "id_usuario": 1 }`.
+Regras: `em_andamento` e `concluida` só pelo motorista da corrida, na ordem `aceita` → `em_andamento` → `concluida`. `cancelada` pelo passageiro (em `pendente` ou `aceita`) encerra; pelo motorista (em `aceita`) devolve a corrida a `pendente` sem motorista.
+Resposta `200`: `{ "mensagem": "...", "corrida": { ... } }`. Erros: `400` status inválido · `403` não participa ou não pode fazer essa transição · `409` estado não permite.
+
+## 7.2 Motoristas online (novo)
+
+Tabela nova `motorista_online`: `id_usuario` (único), `id_veiculo`, `lat`, `lng`, `atualizado_em`. Um registro por motorista; sair de online remove o registro.
+
+### POST `/motoristas/online`
+Requisição: `{ "id_usuario": 1, "online": true, "lat": -23.50, "lng": -47.45, "id_veiculo": 1 }` (com `online: false`, os demais campos são ignorados).
+Resposta `200`: `{ "mensagem": "Você está online e receberá pedidos próximos.", "online": true }`.
+Erros: `400` sem coordenadas ou veículo inválido · `403` não é motorista · `404`.
+
+### GET `/motoristas/online?lat=&lng=&raio_km=&id_usuario=`
+Resposta `200`: `[ { "id_usuario": 1, "nome": "Camila Ferreira", "lat": -23.50, "lng": -47.45, "atualizado_em": "...", "veiculo": { "modelo": "...", "categoria": "carro", "propulsao": "eletrico" }, "distancia_km": 2.1 } ]`. Com `lat`/`lng`, filtra por `raio_km` (padrão 15) e ordena pela distância. Com `id_usuario`, devolve só aquele motorista (o front usa para saber se ele está online). O passageiro consulta a cada 10 s para mostrar os motoristas no mapa.
+
+Recomendação para o backend: descartar registros com `atualizado_em` mais antigo que 10 minutos (motorista que fechou o app sem ficar offline).
+
 ## 8. Alterações necessárias no modelo atual
 
 | Onde | O que |
@@ -209,6 +269,8 @@ Erros: `400` nota fora de 1 a 5, avaliador igual ao avaliado, ou campo faltando 
 | `Carona` | adicionar `origem_lat`, `origem_lng`, `destino_lat`, `destino_lng`, `distancia_km` (Float, opcionais); relacionamentos `usuario`, `veiculo` e `reservas` |
 | `Reserva` | tabela nova (seção 6) |
 | `Avaliacao` | tabela nova (seção 7) |
+| `Corrida` | tabela nova (seção 7.1) |
+| `MotoristaOnline` | tabela nova (seção 7.2) |
 | `PerfilUsuario` | popular com Motorista (1) e Passageiro (2) no `create_all` |
 
 Como o banco é SQLite de desenvolvimento, apagar o arquivo `.db` e deixar o `create_all` recriar é suficiente. O caminho do banco deve ser relativo ao projeto (`os.path`), nunca um caminho fixo de uma máquina.

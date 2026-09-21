@@ -37,7 +37,7 @@ export default defineConfig({
         globPatterns: ["**/*.{js,css,html,png,webp,woff2}"],
         navigateFallback: "/index.html",
         // Chamadas à API nunca devem cair no fallback do SPA
-        navigateFallbackDenylist: [/^\/(usuarios|veiculos|caronas|avaliacoes)/],
+        navigateFallbackDenylist: [/^\/(usuarios|veiculos|caronas|avaliacoes|corridas|motoristas)/],
         runtimeCaching: [
           {
             // Mapas do OpenStreetMap: cache para navegação repetida e uso offline parcial

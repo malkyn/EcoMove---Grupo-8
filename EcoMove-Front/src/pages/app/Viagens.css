@@ -30,6 +30,87 @@
   border: 1px solid #bfe6d1;
 }
 
+.viagens-secao {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.viagens-subtitulo {
+  margin: 0.3rem 0 0;
+  font-size: 1rem;
+  color: #1f2d27;
+}
+
+/* ----- Corridas ----- */
+.corrida-resumo {
+  background: #ffffff;
+  border: 1px solid #e3e8e5;
+  border-left: 4px solid #1d4ed8;
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.corrida-resumo-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.corrida-resumo-status {
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.tom-aguardando {
+  background: #fff6e0;
+  color: #7a4d00;
+}
+
+.tom-andamento {
+  background: #e0ecff;
+  color: #1d4ed8;
+}
+
+.tom-ok {
+  background: #e3f5ec;
+  color: #036141;
+}
+
+.tom-erro {
+  background: #fdecea;
+  color: #8a1c1c;
+}
+
+.corrida-resumo-data {
+  font-size: 0.8rem;
+  color: #6b7a74;
+}
+
+.corrida-resumo-rota {
+  font-weight: 600;
+  color: #1f2d27;
+}
+
+.corrida-resumo-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1rem;
+  font-size: 0.85rem;
+  color: #6b7a74;
+}
+
+.corrida-resumo-info strong {
+  color: #036141;
+}
+
 .viagens-passageiros {
   width: 100%;
   font-size: 0.85rem;
