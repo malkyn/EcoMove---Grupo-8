@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import "./AppShell.css";
-import Logo from "../../pages/icons/logo.svg";
+import Logo from "../../pages/icons/logo.webp";
 import { usandoMock } from "../../services/api";
 
 const IconeInicio = () => (

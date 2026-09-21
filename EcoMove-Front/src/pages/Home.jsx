@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./Home.css";
 import Logo from "../pages/icons/seguro-de-automovel.svg";
-import Info from "./icons/informacoes.svg";
+import Info from "./icons/ilustracao-app.webp";
 
 function Home() {
   return (
@@ -36,6 +36,8 @@ function Home() {
               <img
                 src={Info}
                 alt="Ilustração mostrando pessoas compartilhando caronas e usando transporte sustentável"
+                width="900"
+                height="900"
                 loading="lazy"
               />
             </div>

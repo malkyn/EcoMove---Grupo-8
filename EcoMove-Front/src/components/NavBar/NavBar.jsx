@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./NavBar.css";
-import Logo from "../../pages/icons/logo.svg";
+import Logo from "../../pages/icons/logo.webp";
 import UserIcon from "../../pages/icons/usuario2.svg";
 import CloseIcon from "../../pages/icons/fechar.svg";
 import { getUsuarioLogado, logout } from "../../services/auth";
