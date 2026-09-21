@@ -11,14 +11,49 @@
   color: #036141;
 }
 
-.viagens-erro {
+.viagens-msg {
   margin: 0;
-  background: #fdecea;
-  color: #8a1c1c;
-  border: 1px solid #f5c2c0;
   border-radius: 6px;
   padding: 0.7rem 0.9rem;
   font-size: 0.9rem;
+}
+
+.viagens-erro {
+  background: #fdecea;
+  color: #8a1c1c;
+  border: 1px solid #f5c2c0;
+}
+
+.viagens-sucesso {
+  background: #e3f5ec;
+  color: #036141;
+  border: 1px solid #bfe6d1;
+}
+
+.viagens-passageiros {
+  width: 100%;
+  font-size: 0.85rem;
+  color: #1f2d27;
+}
+
+.viagens-cancelar {
+  background: none;
+  border: 1px solid #f5c2c0;
+  color: #b42318;
+  border-radius: 8px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.viagens-cancelar:hover {
+  background: #fdecea;
+  border-color: #f5c2c0;
+}
+
+.viagens-cancelar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .viagens-vazio {

@@ -6,16 +6,25 @@
 // NUNCA usar em produção: é um simulador. As senhas dos usuários de
 // demonstração ficam em texto puro no navegador, o que é inaceitável fora daqui.
 import { AxiosError } from "axios";
+import { distanciaHaversineKm } from "./geo";
+import { estimarCarona } from "../utils/estimativas";
 
 const CHAVE_DB = "ecomove_mock_db";
 // Aumente quando o formato dos dados mudar: o banco salvo no navegador é recriado.
-const VERSAO_BANCO = 2;
+const VERSAO_BANCO = 3;
 const LATENCIA_MS = 300;
 const PERFIL_MOTORISTA = 1;
 const PERFIL_PASSAGEIRO = 2;
 const CATEGORIAS = ["carro", "moto"];
 const PROPULSOES = ["eletrico", "hibrido"]; // sem combustão: regra do produto
 const PLACA_VALIDA = /^[A-Z]{3}\d[A-Z0-9]\d{2}$/;
+const RAIO_PADRAO_KM = 3; // busca de caronas compatíveis: distância máxima entre pontos
+
+// Pontos de referência em Sorocaba para os dados de demonstração
+const CAMPOLIM = { lat: -23.5199, lng: -47.4642 };
+const FACENS = { lat: -23.4706, lng: -47.4295 };
+const CENTRO = { lat: -23.5015, lng: -47.4526 };
+const VOTORANTIM = { lat: -23.5446, lng: -47.4388 };
 
 // =============================================
 //               BANCO SIMULADO
@@ -72,28 +81,43 @@ function bancoInicial() {
         id_carona: 1,
         id_usuario: 1,
         id_veiculo: 1,
-        origem: "Campolim, Sorocaba",
-        destino: "FACENS, Sorocaba",
+        origem: "Parque Campolim, Sorocaba",
+        destino: "Centro Universitário FACENS, Sorocaba",
+        origem_lat: CAMPOLIM.lat,
+        origem_lng: CAMPOLIM.lng,
+        destino_lat: FACENS.lat,
+        destino_lng: FACENS.lng,
         horario: `${dataLocal(amanha)}T07:30`,
         vagas_disponiveis: 3,
+        distancia_km: 10.2,
       },
       {
         id_carona: 2,
         id_usuario: 1,
         id_veiculo: 1,
-        origem: "FACENS, Sorocaba",
+        origem: "Centro Universitário FACENS, Sorocaba",
         destino: "Centro, Sorocaba",
+        origem_lat: FACENS.lat,
+        origem_lng: FACENS.lng,
+        destino_lat: CENTRO.lat,
+        destino_lng: CENTRO.lng,
         horario: `${dataLocal(amanha)}T18:00`,
         vagas_disponiveis: 2,
+        distancia_km: 6.4,
       },
       {
         id_carona: 3,
         id_usuario: 1,
         id_veiculo: 1,
-        origem: "Votorantim",
-        destino: "FACENS, Sorocaba",
+        origem: "Centro, Votorantim",
+        destino: "Centro Universitário FACENS, Sorocaba",
+        origem_lat: VOTORANTIM.lat,
+        origem_lng: VOTORANTIM.lng,
+        destino_lat: FACENS.lat,
+        destino_lng: FACENS.lng,
         horario: `${dataLocal(depois)}T07:00`,
         vagas_disponiveis: 3,
+        distancia_km: 12.8,
       },
     ],
     reservas: [],
@@ -149,6 +173,7 @@ function caronaCompleta(db, c) {
   const reservas = db.reservas.filter((r) => r.id_carona === c.id_carona);
   return {
     ...c,
+    preco_estimado: c.distancia_km ? estimarCarona(c.distancia_km) : null,
     motorista: resumoUsuario(motorista),
     veiculo: veiculo
       ? {
@@ -309,23 +334,91 @@ function deletarVeiculo({ db, match }) {
 const normalizar = (s) => String(s || "").trim().toLowerCase();
 const HORARIO_ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/;
 
+const numeroOuNull = (v) =>
+  v === undefined || v === null || v === "" || Number.isNaN(Number(v)) ? null : Number(v);
+
+function pontoDe(lat, lng) {
+  const la = numeroOuNull(lat);
+  const lo = numeroOuNull(lng);
+  return la === null || lo === null ? null : { lat: la, lng: lo };
+}
+
+function coordenadasDe(body) {
+  const o = pontoDe(body.origem_lat, body.origem_lng);
+  const d = pontoDe(body.destino_lat, body.destino_lng);
+  return {
+    origem_lat: o ? o.lat : null,
+    origem_lng: o ? o.lng : null,
+    destino_lat: d ? d.lat : null,
+    destino_lng: d ? d.lng : null,
+  };
+}
+
+const temCoordenadas = (c) =>
+  c.origem_lat !== null && c.origem_lat !== undefined && c.destino_lat !== null && c.destino_lat !== undefined;
+
+/**
+ * Lista caronas com filtros opcionais. Com origem/destino em coordenadas, faz o "match":
+ * só caronas com saída e chegada a até `raio_km` dos pontos pedidos, ordenadas pela soma
+ * das distâncias, e devolve `compatibilidade` com essas distâncias.
+ */
 function listarCaronas({ db, params }) {
   const origem = normalizar(params.origem);
   const destino = normalizar(params.destino);
   const data = String(params.data || "").trim();
   const idMotorista = params.id_usuario ? Number(params.id_usuario) : null;
+  const excluirUsuario = params.excluir_usuario ? Number(params.excluir_usuario) : null;
+  const horarioDe = params.horario_de ? String(params.horario_de).slice(0, 16) : null;
+  const horarioAte = params.horario_ate ? String(params.horario_ate).slice(0, 16) : null;
+  const somenteComVagas = String(params.com_vagas) === "true";
+  const pontoOrigem = pontoDe(params.origem_lat, params.origem_lng);
+  const pontoDestino = pontoDe(params.destino_lat, params.destino_lng);
+  const raioKm = numeroOuNull(params.raio_km) ?? RAIO_PADRAO_KM;
+  const porProximidade = Boolean(pontoOrigem && pontoDestino);
+
+  const arred = (v) => Math.round(v * 10) / 10;
 
   const lista = db.caronas
+    .map((c) => caronaCompleta(db, c))
+    .filter((c) => !origem || normalizar(c.origem).includes(origem))
+    .filter((c) => !destino || normalizar(c.destino).includes(destino))
+    .filter((c) => !data || c.horario.startsWith(data))
+    .filter((c) => idMotorista === null || c.id_usuario === idMotorista)
+    .filter((c) => excluirUsuario === null || c.id_usuario !== excluirUsuario)
+    .filter((c) => !horarioDe || c.horario >= horarioDe)
+    .filter((c) => !horarioAte || c.horario <= horarioAte)
+    .filter((c) => !somenteComVagas || c.vagas_restantes > 0)
+    .map((c) => {
+      if (!porProximidade || !temCoordenadas(c)) return c;
+      return {
+        ...c,
+        compatibilidade: {
+          distancia_origem_km: arred(
+            distanciaHaversineKm(pontoOrigem, { lat: c.origem_lat, lng: c.origem_lng })
+          ),
+          distancia_destino_km: arred(
+            distanciaHaversineKm(pontoDestino, { lat: c.destino_lat, lng: c.destino_lng })
+          ),
+        },
+      };
+    })
     .filter(
       (c) =>
-        (!origem || normalizar(c.origem).includes(origem)) &&
-        (!destino || normalizar(c.destino).includes(destino)) &&
-        (!data || c.horario.startsWith(data)) &&
-        (idMotorista === null || c.id_usuario === idMotorista)
+        !porProximidade ||
+        (c.compatibilidade &&
+          c.compatibilidade.distancia_origem_km <= raioKm &&
+          c.compatibilidade.distancia_destino_km <= raioKm)
     )
-    .sort((a, b) => a.horario.localeCompare(b.horario));
+    .sort((a, b) => {
+      if (porProximidade) {
+        const pa = a.compatibilidade.distancia_origem_km + a.compatibilidade.distancia_destino_km;
+        const pb = b.compatibilidade.distancia_origem_km + b.compatibilidade.distancia_destino_km;
+        if (pa !== pb) return pa - pb;
+      }
+      return a.horario.localeCompare(b.horario);
+    });
 
-  return ok(lista.map((c) => caronaCompleta(db, c)));
+  return ok(lista);
 }
 
 function buscarCarona({ db, match }) {
@@ -368,6 +461,9 @@ function criarCarona({ db, body }) {
   if (!HORARIO_ISO.test(horario) || Number.isNaN(Date.parse(horario))) {
     return erro(400, "horario deve estar no formato AAAA-MM-DDTHH:MM");
   }
+  if (horario.slice(0, 16) < agoraISO()) {
+    return erro(400, "O horário da carona precisa ser no futuro");
+  }
 
   const nova = {
     id_carona: db.proximoId.carona++,
@@ -375,8 +471,10 @@ function criarCarona({ db, body }) {
     id_veiculo: veiculo.id_veiculo,
     origem: String(body.origem).trim(),
     destino: String(body.destino).trim(),
+    ...coordenadasDe(body),
     horario: horario.slice(0, 16),
     vagas_disponiveis: vagas,
+    distancia_km: numeroOuNull(body.distancia_km),
   };
   db.caronas.push(nova);
   return criado({ mensagem: "Carona publicada com sucesso!", carona: caronaCompleta(db, nova) });

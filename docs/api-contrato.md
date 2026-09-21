@@ -125,23 +125,48 @@ Resposta `200`: `{ "mensagem": "Veículo deletado com sucesso!" }`. `404` se nã
   "motorista": { "id_usuario": 1, "nome": "Camila Ferreira" },
   "id_veiculo": 1,
   "veiculo": { "id_veiculo": 1, "modelo": "Chevrolet Bolt EV", "placa": "BRA2E19", "categoria": "carro", "propulsao": "eletrico" },
-  "origem": "Campolim, Sorocaba",
-  "destino": "FACENS, Sorocaba",
+  "origem": "Parque Campolim, Sorocaba",
+  "destino": "Centro Universitário FACENS, Sorocaba",
+  "origem_lat": -23.5199, "origem_lng": -47.4642,
+  "destino_lat": -23.4706, "destino_lng": -47.4295,
   "horario": "2026-10-20T07:30",
   "vagas_disponiveis": 3,
   "vagas_restantes": 2,
-  "passageiros": [ { "id_usuario": 2, "nome": "Lucas Almeida" } ]
+  "distancia_km": 10.2,
+  "preco_estimado": 6.12,
+  "passageiros": [ { "id_usuario": 2, "nome": "Lucas Almeida" } ],
+  "compatibilidade": { "distancia_origem_km": 0.8, "distancia_destino_km": 0.3 }
 }
 ```
-`vagas_restantes` = `vagas_disponiveis` menos o número de reservas. Isso exige o relacionamento `Carona.veiculo` e `Carona.usuario` no modelo (hoje ausente, o que faz o `GET /caronas/` atual quebrar).
+`vagas_restantes` = `vagas_disponiveis` menos o número de reservas. `preco_estimado` = contribuição sugerida por passageiro, calculada da `distancia_km` (R$ 0,60/km, mínimo R$ 3,00; mesma regra de `utils/estimativas.js` no front). `compatibilidade` só aparece na busca por proximidade (abaixo). Isso exige o relacionamento `Carona.veiculo` e `Carona.usuario` no modelo (hoje ausente, o que faz o `GET /caronas/` atual quebrar).
 
-### GET `/caronas/?origem=&destino=&data=&id_usuario=`
-Todos os filtros são opcionais. `origem` e `destino` são busca parcial sem diferenciar maiúsculas. `data` no formato `AAAA-MM-DD` filtra pelo dia. `id_usuario` filtra as caronas de um motorista. Ordenar por `horario` crescente. Resposta `200`: lista no formato completo.
+### GET `/caronas/` — listagem e busca de caronas compatíveis
+Todos os filtros são opcionais e combináveis:
+
+| Parâmetro | Efeito |
+|---|---|
+| `origem`, `destino` | busca parcial no texto, sem diferenciar maiúsculas |
+| `data` | `AAAA-MM-DD`, filtra pelo dia |
+| `id_usuario` | caronas de um motorista |
+| `excluir_usuario` | remove as caronas desse motorista (o passageiro não vê as próprias) |
+| `horario_de`, `horario_ate` | janela de horário, formato ISO local |
+| `com_vagas=true` | só caronas com `vagas_restantes > 0` |
+| `origem_lat`, `origem_lng`, `destino_lat`, `destino_lng`, `raio_km` | **match por proximidade**: só caronas cuja saída está a até `raio_km` (padrão 3) do ponto de origem pedido **e** cuja chegada está a até `raio_km` do destino pedido (distância em linha reta, fórmula de Haversine). Cada item ganha `compatibilidade` e a lista vem ordenada pela soma das duas distâncias |
+
+Sem proximidade, ordenar por `horario` crescente. Resposta `200`: lista no formato completo.
+
+O front, na tela "Caronas compatíveis", chama com: coordenadas de origem e destino, `raio_km=3`, `com_vagas=true`, `excluir_usuario` do passageiro, e janela de horário: "agora" = das próximas 24 h; "agendar" = ±90 min do horário escolhido.
 
 ### POST `/caronas/`
-Requisição: `{ "origem": "Campolim, Sorocaba", "destino": "FACENS, Sorocaba", "horario": "2026-10-20T07:30", "vagas_disponiveis": 3, "id_usuario": 1, "id_veiculo": 1 }`
+Requisição:
+```json
+{ "origem": "Parque Campolim, Sorocaba", "destino": "Centro Universitário FACENS, Sorocaba",
+  "origem_lat": -23.5199, "origem_lng": -47.4642, "destino_lat": -23.4706, "destino_lng": -47.4295,
+  "horario": "2026-10-20T07:30", "vagas_disponiveis": 3, "distancia_km": 10.2,
+  "id_usuario": 1, "id_veiculo": 1 }
+```
 
-Todos obrigatórios. `vagas_disponiveis` inteiro de 1 a 8 (máximo 1 se o veículo for moto). `horario` no formato ISO acima (aceitar também `"HH:MM"` como hoje é opcional).
+Obrigatórios: `origem`, `destino`, `horario`, `vagas_disponiveis`, `id_usuario`, `id_veiculo`. As coordenadas e `distancia_km` são opcionais, mas sem coordenadas a carona não aparece na busca por proximidade. `vagas_disponiveis` inteiro de 1 a 8 (máximo 1 se o veículo for moto). `horario` no formato ISO acima e no futuro.
 
 Resposta `201`: `{ "mensagem": "Carona publicada com sucesso!", "carona": { ...formato completo } }`
 Erros: `400` inválido · `403` usuário não é motorista ou veículo não pertence a ele · `404` usuário ou veículo inexistente.
@@ -181,7 +206,7 @@ Erros: `400` nota fora de 1 a 5, avaliador igual ao avaliado, ou campo faltando 
 |---|---|
 | `Usuario` | adicionar `telefone`, `genero`, `data_nascimento`; `senha` para `String(255)` (o hash é longo); relacionamentos `veiculos`, `caronas` |
 | `Veiculo` | trocar `tipo` por `categoria` (`carro`/`moto`) e adicionar `propulsao` (`eletrico`/`hibrido`), ambos `String(20)` `nullable=False`; `id_usuario` `nullable=False`; relacionamento `caronas` |
-| `Carona` | relacionamentos `usuario` e `veiculo`; relacionamento `reservas` |
+| `Carona` | adicionar `origem_lat`, `origem_lng`, `destino_lat`, `destino_lng`, `distancia_km` (Float, opcionais); relacionamentos `usuario`, `veiculo` e `reservas` |
 | `Reserva` | tabela nova (seção 6) |
 | `Avaliacao` | tabela nova (seção 7) |
 | `PerfilUsuario` | popular com Motorista (1) e Passageiro (2) no `create_all` |

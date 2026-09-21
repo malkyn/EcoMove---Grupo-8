@@ -1,6 +1,7 @@
 import React from "react";
 import "./CaronaCard.css";
 import { formatarDataHora } from "../../utils/formatar";
+import { formatarKm, formatarReais } from "../../utils/estimativas";
 import { propulsaoSustentavel, rotuloPropulsao } from "../../utils/veiculos";
 
 /**
@@ -8,8 +9,17 @@ import { propulsaoSustentavel, rotuloPropulsao } from "../../utils/veiculos";
  * `children` recebe os botões de ação (reservar, cancelar, avaliar...).
  */
 function CaronaCard({ carona, children }) {
-  const { origem, destino, horario, motorista, veiculo, vagas_disponiveis, vagas_restantes } =
-    carona;
+  const {
+    origem,
+    destino,
+    horario,
+    motorista,
+    veiculo,
+    vagas_disponiveis,
+    vagas_restantes,
+    preco_estimado,
+    compatibilidade,
+  } = carona;
   const lotada = vagas_restantes === 0;
 
   return (
@@ -51,7 +61,20 @@ function CaronaCard({ carona, children }) {
             {lotada ? "Lotada" : `${vagas_restantes} de ${vagas_disponiveis} disponíveis`}
           </dd>
         </div>
+        {preco_estimado !== null && preco_estimado !== undefined && (
+          <div>
+            <dt>Contribuição</dt>
+            <dd className="carona-preco">{formatarReais(preco_estimado)}</dd>
+          </div>
+        )}
       </dl>
+
+      {compatibilidade && (
+        <p className="carona-compatibilidade">
+          Saída a {formatarKm(compatibilidade.distancia_origem_km)} de você · chegada a{" "}
+          {formatarKm(compatibilidade.distancia_destino_km)} do seu destino
+        </p>
+      )}
 
       {children && <div className="carona-acoes">{children}</div>}
     </article>
