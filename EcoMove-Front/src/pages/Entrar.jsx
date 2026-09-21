@@ -4,6 +4,7 @@ import "./Entrar.css";
 import usuario2 from "./icons/usuario2.svg";
 import cadeado from "./icons/cadeado.svg";
 import api from "../services/api";
+import { salvarUsuario } from "../services/auth";
 
 /**
  * Componente de Página de Login
@@ -32,12 +33,21 @@ function Entrar() {
         email: email.trim(),
         senha,
       });
-      alert(resposta.data.mensagem);
+
+      if (!resposta.data?.usuario) {
+        setErro("Resposta inesperada do servidor. Tente novamente.");
+        return;
+      }
+
+      salvarUsuario(resposta.data.usuario);
       navigate("/");
     } catch (err) {
-      if (err.response) {
-        // O servidor respondeu, mas com erro (400, 401, 500...)
-        setErro(err.response.data?.erro || "Não foi possível entrar. Tente novamente.");
+      if (err.response && err.response.status < 500) {
+        // 4xx: erro de validação ou credenciais, mensagem feita para o usuário
+        setErro(err.response.data?.erro || "Não foi possível entrar. Verifique os dados.");
+      } else if (err.response) {
+        // 5xx: erro interno do servidor, nunca expor detalhes
+        setErro("O servidor encontrou um problema. Tente novamente em instantes.");
       } else {
         // A requisição nem chegou: servidor fora do ar, sem rede, timeout
         setErro("Não foi possível conectar ao servidor.");

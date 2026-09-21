@@ -215,6 +215,46 @@
   font-weight: 500;
 }
 
+/* Usuário logado e botão Sair */
+.user-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.logout-button {
+  background: none;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 0.35rem 0.9rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.logout-button:hover {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+}
+
+.mobile-user {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mobile-user .mobile-login-text {
+  color: var(--primary-color);
+  font-size: 1.1rem;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
   .navbar-desktop {

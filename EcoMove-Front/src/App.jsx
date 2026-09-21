@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState } from "react";
 import "./App.css";
 import Home from "./pages/Home";
 import Usuarios from "./pages/Usuarios";
@@ -11,8 +10,7 @@ import BalãoFlutuante from "./components/Balão/Balão.jsx";
 import Entrar from "./pages/Entrar.jsx";
 
 function App() {
-  const [count, setCount] = useState(0);
-  const hiddenPages = ["/Entrar"]; // Páginas onde o balão não aparece
+  const hiddenPages = ["/entrar"]; // Páginas onde o balão não aparece
 
   return (
     <Router>

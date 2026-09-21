@@ -1,16 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./Balão.css";
 import CloseIcon from "../../pages/icons/fechar.svg";
+import { getUsuarioLogado } from "../../services/auth";
 
-const Balão = ({ hiddenPages = ["/Entrar"], autoCloseDelay = 5000 }) => {
+const Balão = ({ hiddenPages = ["/entrar"], autoCloseDelay = 5000 }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
   const location = useLocation();
   const balaoRef = useRef(null);
 
-  // Verifica se deve ocultar com base na página atual
-  const shouldHide = hiddenPages.includes(location.pathname);
+  // Oculta nas páginas listadas (sem diferenciar maiúsculas) e para quem já está logado
+  const paginaAtual = location.pathname.toLowerCase();
+  const estaLogado = getUsuarioLogado() !== null;
+  const shouldHide =
+    estaLogado || hiddenPages.some((pagina) => pagina.toLowerCase() === paginaAtual);
 
   // Função para fechar o balão com animação
   const handleClose = () => {
@@ -46,9 +50,9 @@ const Balão = ({ hiddenPages = ["/Entrar"], autoCloseDelay = 5000 }) => {
       <div className="conteudo-login">
         <p className="texto-login">
           Já possui uma conta?{" "}
-          <a href="/Entrar" className="link-destaque">
+          <Link to="/entrar" className="link-destaque">
             Entrar
-          </a>
+          </Link>
         </p>
         <p className="texto-termos">
           Ao se cadastrar, você concorda com nossos{" "}
