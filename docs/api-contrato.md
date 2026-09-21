@@ -192,13 +192,22 @@ Resposta `200`: `{ "mensagem": "Reserva cancelada com sucesso!" }`. `404` se nã
 
 ## 7. Avaliações (novo)
 
-Tabela nova `avaliacao`: `id_avaliacao`, `id_carona`, `id_avaliador`, `id_avaliado`, `nota` (1 a 5), `comentario` (até 300 caracteres), `criada_em`. Chave única em (`id_carona`, `id_avaliador`, `id_avaliado`).
+Depois de uma viagem (carona que já aconteceu ou corrida concluída), quem participou avalia a outra pessoa com nota de 1 a 5 e comentário opcional.
+
+Tabela nova `avaliacao`: `id_avaliacao`, `id_carona` (nulo se for corrida), `id_corrida` (nulo se for carona), `id_avaliador`, `id_avaliado`, `nota` (1 a 5), `comentario` (até 300 caracteres), `criada_em`. Chave única em (`id_carona`, `id_corrida`, `id_avaliador`, `id_avaliado`).
+
+**Reputação nos resumos de usuário:** onde a API devolve um usuário resumido (`motorista` e `passageiros` da carona, `motorista` e `passageiro` da corrida), incluir `media_avaliacao` (média com 1 casa, ou `null`) e `total_avaliacoes`. O front mostra "★ 4,8 (3)" ao lado do nome.
 
 ### POST `/avaliacoes/`
-Requisição: `{ "id_carona": 2, "id_avaliador": 2, "id_avaliado": 1, "nota": 5, "comentario": "Pontual e educada." }`
+Requisição: `{ "id_carona": 4, "id_avaliador": 2, "id_avaliado": 1, "nota": 5, "comentario": "Pontual e educada." }` ou, para corrida, `{ "id_corrida": 1, ... }`. Exatamente um de `id_carona`/`id_corrida`.
 
-Resposta `201`: `{ "mensagem": "Avaliação registrada com sucesso!", "avaliacao": { ...campos acima } }`
-Erros: `400` nota fora de 1 a 5, avaliador igual ao avaliado, ou campo faltando · `404` carona ou usuário inexistente · `409` já avaliou este usuário nesta carona.
+Regras: avaliador e avaliado precisam ter participado da viagem (motorista ou passageiro com reserva; passageiro ou motorista da corrida); carona só depois do `horario`; corrida só com status `concluida`; uma avaliação por par (avaliador, avaliado) por viagem.
+
+Resposta `201`: `{ "mensagem": "Avaliação registrada. Obrigado!", "avaliacao": { ...campos acima } }`
+Erros: `400` nota fora de 1 a 5, avaliador igual ao avaliado, campo faltando ou os dois ids informados · `403` não participou da viagem · `404` viagem ou usuário inexistente · `409` viagem ainda não aconteceu, ou já avaliou este usuário nesta viagem.
+
+### GET `/avaliacoes/?id_avaliador=&id_avaliado=&id_carona=&id_corrida=`
+Filtros opcionais e combináveis. Resposta `200`: lista de avaliações com `avaliador` e `avaliado` (nomes). O front usa `id_avaliador` = usuário logado para saber o que ele já avaliou.
 
 ## 7.1 Corridas sob demanda (novo)
 
@@ -268,7 +277,7 @@ Recomendação para o backend: descartar registros com `atualizado_em` mais anti
 | `Veiculo` | trocar `tipo` por `categoria` (`carro`/`moto`) e adicionar `propulsao` (`eletrico`/`hibrido`), ambos `String(20)` `nullable=False`; `id_usuario` `nullable=False`; relacionamento `caronas` |
 | `Carona` | adicionar `origem_lat`, `origem_lng`, `destino_lat`, `destino_lng`, `distancia_km` (Float, opcionais); relacionamentos `usuario`, `veiculo` e `reservas` |
 | `Reserva` | tabela nova (seção 6) |
-| `Avaliacao` | tabela nova (seção 7) |
+| `Avaliacao` | tabela nova (seção 7), com `id_carona` ou `id_corrida` |
 | `Corrida` | tabela nova (seção 7.1) |
 | `MotoristaOnline` | tabela nova (seção 7.2) |
 | `PerfilUsuario` | popular com Motorista (1) e Passageiro (2) no `create_all` |

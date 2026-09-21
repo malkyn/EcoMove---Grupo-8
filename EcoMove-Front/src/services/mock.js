@@ -11,7 +11,7 @@ import { estimarCarona, estimarCorrida } from "../utils/estimativas";
 
 const CHAVE_DB = "ecomove_mock_db";
 // Aumente quando o formato dos dados mudar: o banco salvo no navegador é recriado.
-const VERSAO_BANCO = 4;
+const VERSAO_BANCO = 5;
 const LATENCIA_MS = 300;
 const PERFIL_MOTORISTA = 1;
 const PERFIL_PASSAGEIRO = 2;
@@ -42,10 +42,12 @@ function bancoInicial() {
   amanha.setDate(hoje.getDate() + 1);
   const depois = new Date(hoje);
   depois.setDate(hoje.getDate() + 2);
+  const ontem = new Date(hoje);
+  ontem.setDate(hoje.getDate() - 1);
 
   return {
     versao: VERSAO_BANCO,
-    proximoId: { usuario: 3, veiculo: 2, carona: 4, avaliacao: 1, corrida: 1 },
+    proximoId: { usuario: 3, veiculo: 2, carona: 5, avaliacao: 1, corrida: 1 },
     usuarios: [
       {
         id_usuario: 1,
@@ -119,8 +121,23 @@ function bancoInicial() {
         vagas_disponiveis: 3,
         distancia_km: 12.8,
       },
+      {
+        // Carona que já aconteceu, com o Lucas a bordo: serve para demonstrar a avaliação
+        id_carona: 4,
+        id_usuario: 1,
+        id_veiculo: 1,
+        origem: "Parque Campolim, Sorocaba",
+        destino: "Centro Universitário FACENS, Sorocaba",
+        origem_lat: CAMPOLIM.lat,
+        origem_lng: CAMPOLIM.lng,
+        destino_lat: FACENS.lat,
+        destino_lng: FACENS.lng,
+        horario: `${dataLocal(ontem)}T07:30`,
+        vagas_disponiveis: 3,
+        distancia_km: 10.2,
+      },
     ],
-    reservas: [],
+    reservas: [{ id_carona: 4, id_usuario: 2, criada_em: `${dataLocal(ontem)}T06:10` }],
     avaliacoes: [],
     corridas: [],
     motoristas_online: [],
@@ -165,8 +182,17 @@ function usuarioPublico(u) {
   };
 }
 
-function resumoUsuario(u) {
-  return u ? { id_usuario: u.id_usuario, nome: u.nome } : null;
+/** Média e total de avaliações recebidas por um usuário. */
+function reputacaoDe(db, idUsuario) {
+  const lista = db.avaliacoes.filter((a) => a.id_avaliado === idUsuario);
+  const media = lista.length
+    ? Math.round((lista.reduce((soma, a) => soma + a.nota, 0) / lista.length) * 10) / 10
+    : null;
+  return { media_avaliacao: media, total_avaliacoes: lista.length };
+}
+
+function resumoUsuario(db, u) {
+  return u ? { id_usuario: u.id_usuario, nome: u.nome, ...reputacaoDe(db, u.id_usuario) } : null;
 }
 
 function caronaCompleta(db, c) {
@@ -176,7 +202,7 @@ function caronaCompleta(db, c) {
   return {
     ...c,
     preco_estimado: c.distancia_km ? estimarCarona(c.distancia_km) : null,
-    motorista: resumoUsuario(motorista),
+    motorista: resumoUsuario(db, motorista),
     veiculo: veiculo
       ? {
           id_veiculo: veiculo.id_veiculo,
@@ -188,7 +214,7 @@ function caronaCompleta(db, c) {
       : null,
     vagas_restantes: Math.max(0, c.vagas_disponiveis - reservas.length),
     passageiros: reservas
-      .map((r) => resumoUsuario(db.usuarios.find((u) => u.id_usuario === r.id_usuario)))
+      .map((r) => resumoUsuario(db, db.usuarios.find((u) => u.id_usuario === r.id_usuario)))
       .filter(Boolean),
   };
 }
@@ -541,32 +567,63 @@ function listarReservasDoUsuario({ db, match }) {
 // =============================================
 //               AVALIAÇÕES
 // =============================================
+const nomeDe = (db, idUsuario) => db.usuarios.find((u) => u.id_usuario === idUsuario)?.nome || null;
+
+/** Avaliação de uma carona (`id_carona`) ou de uma corrida (`id_corrida`), uma das duas. */
 function criarAvaliacao({ db, body }) {
-  const faltando = camposFaltando(body, ["id_carona", "id_avaliador", "id_avaliado", "nota"]);
+  const faltando = camposFaltando(body, ["id_avaliador", "id_avaliado", "nota"]);
   if (faltando) return faltando;
+
+  const idCarona = numeroOuNull(body.id_carona);
+  const idCorrida = numeroOuNull(body.id_corrida);
+  if ((idCarona === null) === (idCorrida === null)) {
+    return erro(400, "Informe id_carona ou id_corrida (apenas um dos dois)");
+  }
 
   const nota = Number(body.nota);
   if (!Number.isInteger(nota) || nota < 1 || nota > 5) {
     return erro(400, "nota deve ser um inteiro entre 1 e 5");
   }
-  const idCarona = Number(body.id_carona);
   const idAvaliador = Number(body.id_avaliador);
   const idAvaliado = Number(body.id_avaliado);
   if (idAvaliador === idAvaliado) return erro(400, "Você não pode avaliar a si mesmo");
-  if (!db.caronas.some((c) => c.id_carona === idCarona)) return erro(404, "Carona não encontrada");
   if (!db.usuarios.some((u) => u.id_usuario === idAvaliador)) return erro(404, "Avaliador não encontrado");
   if (!db.usuarios.some((u) => u.id_usuario === idAvaliado)) return erro(404, "Avaliado não encontrado");
+
+  // Só quem participou pode avaliar, e só depois que a viagem aconteceu
+  let participantes;
+  if (idCarona !== null) {
+    const carona = db.caronas.find((c) => c.id_carona === idCarona);
+    if (!carona) return erro(404, "Carona não encontrada");
+    if (carona.horario > agoraISO()) return erro(409, "A carona ainda não aconteceu");
+    participantes = [
+      carona.id_usuario,
+      ...db.reservas.filter((r) => r.id_carona === idCarona).map((r) => r.id_usuario),
+    ];
+  } else {
+    const corrida = db.corridas.find((c) => c.id_corrida === idCorrida);
+    if (!corrida) return erro(404, "Corrida não encontrada");
+    if (corrida.status !== "concluida") return erro(409, "Só corridas concluídas podem ser avaliadas");
+    participantes = [corrida.id_passageiro, corrida.id_motorista];
+  }
+  if (!participantes.includes(idAvaliador) || !participantes.includes(idAvaliado)) {
+    return erro(403, "Avaliador e avaliado precisam ter participado da viagem");
+  }
+
+  const mesmaViagem = (a) =>
+    idCarona !== null ? a.id_carona === idCarona : a.id_corrida === idCorrida;
   if (
     db.avaliacoes.some(
-      (a) => a.id_carona === idCarona && a.id_avaliador === idAvaliador && a.id_avaliado === idAvaliado
+      (a) => mesmaViagem(a) && a.id_avaliador === idAvaliador && a.id_avaliado === idAvaliado
     )
   ) {
-    return erro(409, "Você já avaliou este usuário nesta carona");
+    return erro(409, "Você já avaliou este usuário nesta viagem");
   }
 
   const nova = {
     id_avaliacao: db.proximoId.avaliacao++,
     id_carona: idCarona,
+    id_corrida: idCorrida,
     id_avaliador: idAvaliador,
     id_avaliado: idAvaliado,
     nota,
@@ -574,7 +631,23 @@ function criarAvaliacao({ db, body }) {
     criada_em: agoraISO(),
   };
   db.avaliacoes.push(nova);
-  return criado({ mensagem: "Avaliação registrada com sucesso!", avaliacao: nova });
+  return criado({ mensagem: "Avaliação registrada. Obrigado!", avaliacao: nova });
+}
+
+/** Lista avaliações por avaliador, avaliado, carona ou corrida (filtros combináveis). */
+function listarAvaliacoes({ db, params }) {
+  const filtro = (campo) => numeroOuNull(params[campo]);
+  const idAvaliador = filtro("id_avaliador");
+  const idAvaliado = filtro("id_avaliado");
+  const idCarona = filtro("id_carona");
+  const idCorrida = filtro("id_corrida");
+  const lista = db.avaliacoes
+    .filter((a) => idAvaliador === null || a.id_avaliador === idAvaliador)
+    .filter((a) => idAvaliado === null || a.id_avaliado === idAvaliado)
+    .filter((a) => idCarona === null || a.id_carona === idCarona)
+    .filter((a) => idCorrida === null || a.id_corrida === idCorrida)
+    .map((a) => ({ ...a, avaliador: nomeDe(db, a.id_avaliador), avaliado: nomeDe(db, a.id_avaliado) }));
+  return ok(lista);
 }
 
 function listarAvaliacoesDoUsuario({ db, match }) {
@@ -582,17 +655,14 @@ function listarAvaliacoesDoUsuario({ db, match }) {
   if (!db.usuarios.some((u) => u.id_usuario === idUsuario)) {
     return erro(404, "Usuário não encontrado");
   }
-  const lista = db.avaliacoes.filter((a) => a.id_avaliado === idUsuario);
-  const media = lista.length
-    ? Math.round((lista.reduce((soma, a) => soma + a.nota, 0) / lista.length) * 10) / 10
-    : null;
+  const lista = db.avaliacoes
+    .filter((a) => a.id_avaliado === idUsuario)
+    .sort((a, b) => b.criada_em.localeCompare(a.criada_em));
+  const { media_avaliacao: media, total_avaliacoes: total } = reputacaoDe(db, idUsuario);
   return ok({
     media,
-    total: lista.length,
-    avaliacoes: lista.map((a) => ({
-      ...a,
-      avaliador: db.usuarios.find((u) => u.id_usuario === a.id_avaliador)?.nome || null,
-    })),
+    total,
+    avaliacoes: lista.map((a) => ({ ...a, avaliador: nomeDe(db, a.id_avaliador) })),
   });
 }
 
@@ -603,7 +673,14 @@ const STATUS_CORRIDA_ATIVOS = ["pendente", "aceita", "em_andamento"];
 
 function corridaCompleta(db, c) {
   const contato = (u) =>
-    u ? { id_usuario: u.id_usuario, nome: u.nome, telefone: u.telefone || null } : null;
+    u
+      ? {
+          id_usuario: u.id_usuario,
+          nome: u.nome,
+          telefone: u.telefone || null,
+          ...reputacaoDe(db, u.id_usuario),
+        }
+      : null;
   const passageiro = db.usuarios.find((u) => u.id_usuario === c.id_passageiro);
   const motorista = c.id_motorista
     ? db.usuarios.find((u) => u.id_usuario === c.id_motorista)
@@ -893,6 +970,7 @@ const rotas = [
   ["POST", /^\/caronas\/(\d+)\/reservas\/?$/, criarReserva],
   ["DELETE", /^\/caronas\/(\d+)\/reservas\/(\d+)\/?$/, cancelarReserva],
   ["POST", /^\/avaliacoes\/?$/, criarAvaliacao],
+  ["GET", /^\/avaliacoes\/?$/, listarAvaliacoes],
   ["GET", /^\/corridas\/?$/, listarCorridas],
   ["POST", /^\/corridas\/?$/, criarCorrida],
   ["GET", /^\/corridas\/(\d+)\/?$/, buscarCorrida],
