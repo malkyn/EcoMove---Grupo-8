@@ -3,8 +3,11 @@ import { useNavigate } from "react-router-dom";
 import "./Destino.css";
 import Mapa, { Marcador, TracadoRota } from "../../components/Mapa/Mapa";
 import CampoEndereco from "../../components/CampoEndereco/CampoEndereco";
+import api from "../../services/api";
+import { getUsuarioLogado } from "../../services/auth";
 import { calcularRota, enderecoDe } from "../../services/geo";
 import { useLocalizacao } from "../../hooks/useLocalizacao";
+import { mensagemDeErro } from "../../utils/erros";
 import { agoraLocal, proximaHoraCheia } from "../../utils/formatar";
 import {
   co2EvitadoKg,
@@ -38,6 +41,8 @@ function Destino() {
   const [rota, setRota] = useState(null);
   const [calculando, setCalculando] = useState(false);
   const [erro, setErro] = useState("");
+  const [pedindo, setPedindo] = useState(false);
+  const usuario = getUsuarioLogado();
 
   // Localização atual como origem (com nome da rua via geocodificação reversa)
   const usarMinhaLocalizacao = useCallback(async () => {
@@ -96,6 +101,31 @@ function Destino() {
         rota: rota ? { distanciaKm: rota.distanciaKm, duracaoMin: rota.duracaoMin } : null,
       },
     });
+  };
+
+  // Corrida sob demanda: cria o pedido e vai para a tela de acompanhamento
+  const pedirCorrida = async () => {
+    if (!origem || !destino || !rota) return;
+    setPedindo(true);
+    setErro("");
+    try {
+      const resposta = await api.post("/corridas/", {
+        id_passageiro: usuario?.id_usuario,
+        origem: origem.nome.replace(/^Minha localização · /, ""),
+        destino: destino.nome,
+        origem_lat: origem.lat,
+        origem_lng: origem.lng,
+        destino_lat: destino.lat,
+        destino_lng: destino.lng,
+        distancia_km: Math.round(rota.distanciaKm * 10) / 10,
+        duracao_min: Math.round(rota.duracaoMin),
+      });
+      navigate(`/app/corridas/${resposta.data.corrida.id_corrida}`);
+    } catch (err) {
+      setErro(mensagemDeErro(err, "Não foi possível pedir a corrida."));
+    } finally {
+      setPedindo(false);
+    }
   };
 
   const centro = origem || posicaoUsuario || SOROCABA;
@@ -222,8 +252,17 @@ function Destino() {
               <button type="button" className="destino-botao" onClick={verCaronas}>
                 Ver caronas compatíveis
               </button>
-              <button type="button" className="destino-botao destino-botao-secundario" disabled>
-                Pedir corrida agora (em breve)
+              <button
+                type="button"
+                className="destino-botao destino-botao-secundario"
+                onClick={pedirCorrida}
+                disabled={quando !== "agora" || pedindo}
+              >
+                {pedindo
+                  ? "Solicitando..."
+                  : quando === "agora"
+                    ? "Pedir corrida agora"
+                    : "Corrida só está disponível para agora"}
               </button>
             </div>
             <p className="destino-nota">Valores estimados para comparação. Sem cobrança nesta versão.</p>

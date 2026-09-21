@@ -18,6 +18,7 @@ import Veiculos from "./pages/app/Veiculos.jsx";
 import Destino from "./pages/app/Destino.jsx";
 import CaronasCompativeis from "./pages/app/CaronasCompativeis.jsx";
 import OferecerCarona from "./pages/app/OferecerCarona.jsx";
+import Corrida from "./pages/app/Corrida.jsx";
 
 const PERFIL_MOTORISTA = 1;
 
@@ -63,6 +64,7 @@ function App() {
           <Route path="perfil" element={<Perfil />} />
           <Route path="destino" element={<Destino />} />
           <Route path="caronas" element={<CaronasCompativeis />} />
+          <Route path="corridas/:id" element={<Corrida />} />
           <Route
             path="caronas/nova"
             element={

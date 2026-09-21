@@ -4,11 +4,14 @@ import "./Viagens.css";
 import api from "../../services/api";
 import { getUsuarioLogado } from "../../services/auth";
 import { mensagemDeErro } from "../../utils/erros";
+import { formatarDataHora } from "../../utils/formatar";
+import { formatarReais } from "../../utils/estimativas";
+import { corridaAtiva, rotuloStatus, tomStatus } from "../../utils/corridas";
 import CaronaCard from "../../components/CaronaCard/CaronaCard";
 
 const PERFIL_MOTORISTA = 1;
 
-/** Motorista: caronas que ofereceu. Passageiro: caronas que reservou. */
+/** Caronas (oferecidas ou reservadas) e corridas (pedidas ou atendidas) do usuário. */
 function Viagens() {
   const location = useLocation();
   const usuario = getUsuarioLogado();
@@ -16,6 +19,7 @@ function Viagens() {
   const ehMotorista = usuario?.id_perfil === PERFIL_MOTORISTA;
 
   const [caronas, setCaronas] = useState([]);
+  const [corridas, setCorridas] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
   const [mensagem, setMensagem] = useState(location.state?.mensagem || "");
@@ -26,10 +30,14 @@ function Viagens() {
     setCarregando(true);
     setErro("");
     try {
-      const resposta = ehMotorista
-        ? await api.get("/caronas/", { params: { id_usuario: idUsuario } })
-        : await api.get(`/usuarios/${idUsuario}/reservas`);
-      setCaronas(resposta.data);
+      const [respCaronas, respCorridas] = await Promise.all([
+        ehMotorista
+          ? api.get("/caronas/", { params: { id_usuario: idUsuario } })
+          : api.get(`/usuarios/${idUsuario}/reservas`),
+        api.get("/corridas/", { params: { id_usuario: idUsuario } }),
+      ]);
+      setCaronas(respCaronas.data);
+      setCorridas(respCorridas.data);
     } catch (err) {
       setErro(mensagemDeErro(err, "Não foi possível carregar suas viagens."));
     } finally {
@@ -94,41 +102,87 @@ function Viagens() {
 
       {carregando ? (
         <p className="viagens-vazio">Carregando...</p>
-      ) : caronas.length === 0 ? (
-        <div className="viagens-vazio">
-          <p>
-            {ehMotorista
-              ? "Você ainda não ofereceu nenhuma carona."
-              : "Você ainda não reservou nenhuma carona."}
-          </p>
-          <Link to={ehMotorista ? "/app/caronas/nova" : "/app/destino"} className="viagens-botao">
-            {ehMotorista ? "Oferecer carona" : "Buscar carona"}
-          </Link>
-        </div>
       ) : (
-        <div className="viagens-lista">
-          {caronas.map((c) => (
-            <CaronaCard key={c.id_carona} carona={c}>
-              {ehMotorista && c.passageiros?.length > 0 && (
-                <span className="viagens-passageiros">
-                  Passageiros: {c.passageiros.map((p) => p.nome).join(", ")}
-                </span>
-              )}
-              <button
-                type="button"
-                className="viagens-cancelar"
-                onClick={() => (ehMotorista ? cancelarCarona(c) : cancelarReserva(c))}
-                disabled={processando === c.id_carona}
-              >
-                {processando === c.id_carona
-                  ? "..."
-                  : ehMotorista
-                    ? "Cancelar carona"
-                    : "Cancelar reserva"}
-              </button>
-            </CaronaCard>
-          ))}
-        </div>
+        <>
+          <section className="viagens-secao">
+            <h2 className="viagens-subtitulo">
+              {ehMotorista ? "Caronas oferecidas" : "Caronas reservadas"}
+            </h2>
+            {caronas.length === 0 ? (
+              <div className="viagens-vazio">
+                <p>
+                  {ehMotorista
+                    ? "Você ainda não ofereceu nenhuma carona."
+                    : "Você ainda não reservou nenhuma carona."}
+                </p>
+                <Link to={ehMotorista ? "/app/caronas/nova" : "/app/destino"} className="viagens-botao">
+                  {ehMotorista ? "Oferecer carona" : "Buscar carona"}
+                </Link>
+              </div>
+            ) : (
+              <div className="viagens-lista">
+                {caronas.map((c) => (
+                  <CaronaCard key={c.id_carona} carona={c}>
+                    {ehMotorista && c.passageiros?.length > 0 && (
+                      <span className="viagens-passageiros">
+                        Passageiros: {c.passageiros.map((p) => p.nome).join(", ")}
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      className="viagens-cancelar"
+                      onClick={() => (ehMotorista ? cancelarCarona(c) : cancelarReserva(c))}
+                      disabled={processando === c.id_carona}
+                    >
+                      {processando === c.id_carona
+                        ? "..."
+                        : ehMotorista
+                          ? "Cancelar carona"
+                          : "Cancelar reserva"}
+                    </button>
+                  </CaronaCard>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section className="viagens-secao">
+            <h2 className="viagens-subtitulo">Corridas</h2>
+            {corridas.length === 0 ? (
+              <p className="viagens-vazio">
+                {ehMotorista
+                  ? "Nenhuma corrida atendida ainda. Fique online no Início para receber pedidos."
+                  : "Nenhuma corrida pedida ainda."}
+              </p>
+            ) : (
+              <div className="viagens-lista">
+                {corridas.map((c) => (
+                  <article key={c.id_corrida} className="corrida-resumo">
+                    <div className="corrida-resumo-topo">
+                      <span className={`corrida-resumo-status tom-${tomStatus(c.status)}`}>
+                        {rotuloStatus(c.status)}
+                      </span>
+                      <span className="corrida-resumo-data">{formatarDataHora(c.criada_em)}</span>
+                    </div>
+                    <div className="corrida-resumo-rota">
+                      {c.origem} → {c.destino}
+                    </div>
+                    <div className="corrida-resumo-info">
+                      <strong>{formatarReais(c.preco_estimado)}</strong>
+                      {ehMotorista && c.passageiro && <span>Passageiro: {c.passageiro.nome}</span>}
+                      {!ehMotorista && c.motorista && <span>Motorista: {c.motorista.nome}</span>}
+                    </div>
+                    {corridaAtiva(c) && (
+                      <Link to={`/app/corridas/${c.id_corrida}`} className="viagens-botao">
+                        Acompanhar
+                      </Link>
+                    )}
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+        </>
       )}
     </div>
   );

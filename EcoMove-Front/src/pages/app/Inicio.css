@@ -17,6 +17,8 @@
   right: 0;
   bottom: 0;
   z-index: 1;
+  max-height: 65%;
+  overflow-y: auto;
   background: #ffffff;
   border-radius: 18px 18px 0 0;
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
@@ -27,6 +29,7 @@
 }
 
 .inicio-alca {
+  flex: 0 0 auto;
   width: 40px;
   height: 4px;
   border-radius: 2px;
@@ -43,11 +46,69 @@
   padding: 0.4rem 0.7rem;
 }
 
+.inicio-erro {
+  color: #8a1c1c;
+  background: #fdecea;
+}
+
+.inicio-ok {
+  color: #036141;
+  background: #e3f5ec;
+}
+
 .inicio-saudacao {
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
   font-size: 1.05rem;
   font-weight: 600;
   color: #1f2d27;
+}
+
+.inicio-estado {
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  background: #eef1ef;
+  color: #6b7a74;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.inicio-estado-online {
+  background: #e3f5ec;
+  color: #036141;
+}
+
+/* Corrida ativa */
+.inicio-corrida-ativa {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  background: #e0ecff;
+  color: #1d4ed8;
+  text-decoration: none;
+}
+
+.inicio-corrida-status {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.inicio-corrida-rota {
+  color: #1f2d27;
+  font-weight: 600;
+}
+
+.inicio-corrida-acao {
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
 /* Campo "Para onde?" (passageiro) */
@@ -68,6 +129,12 @@
 .inicio-busca:hover {
   background: #e3f5ec;
   color: #036141;
+}
+
+.inicio-motoristas {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6b7a74;
 }
 
 /* Ações do motorista */
@@ -95,13 +162,110 @@
 .inicio-botao:hover {
   background: #088b60;
   color: #ffffff;
+  border-color: transparent;
+}
+
+.inicio-botao:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .inicio-botao-secundario {
   background: #f0f3f1;
+  color: #1f2d27;
+}
+
+.inicio-botao-secundario:hover {
+  background: #e3e8e5;
+  color: #1f2d27;
+}
+
+.inicio-botao-online {
+  background: #1d4ed8;
+}
+
+.inicio-botao-online:hover {
+  background: #1e40af;
+}
+
+/* Pedidos (motorista online) */
+.inicio-pedidos h2 {
+  margin: 0.3rem 0 0.5rem;
+  font-size: 0.95rem;
+  color: #1f2d27;
+}
+
+.inicio-pedidos ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.inicio-pedidos-vazio {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
   color: #6b7a74;
 }
 
-.inicio-botao-secundario:disabled {
-  cursor: not-allowed;
+.inicio-pulso {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #1d4ed8;
+  box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.5);
+  animation: inicio-pulsar 1.6s ease-out infinite;
+}
+
+@keyframes inicio-pulsar {
+  0% {
+    box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 12px rgba(29, 78, 216, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inicio-pulso {
+    animation: none;
+  }
+}
+
+.inicio-pedido {
+  border: 1px solid #e3e8e5;
+  border-left: 4px solid #1d4ed8;
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.inicio-pedido-rota {
+  font-weight: 600;
+  color: #1f2d27;
+}
+
+.inicio-pedido-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.9rem;
+  font-size: 0.8rem;
+  color: #6b7a74;
+}
+
+.inicio-pedido-info strong {
+  color: #036141;
+}
+
+.inicio-botao-aceitar {
+  padding: 0.6rem 1rem;
+  font-size: 0.95rem;
 }
