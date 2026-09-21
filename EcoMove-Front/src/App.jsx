@@ -14,9 +14,10 @@ import AppShell from "./components/AppShell/AppShell.jsx";
 import Inicio from "./pages/app/Inicio.jsx";
 import Viagens from "./pages/app/Viagens.jsx";
 import Perfil from "./pages/app/Perfil.jsx";
-import EmConstrucao from "./pages/app/EmConstrucao.jsx";
 import Veiculos from "./pages/app/Veiculos.jsx";
 import Destino from "./pages/app/Destino.jsx";
+import CaronasCompativeis from "./pages/app/CaronasCompativeis.jsx";
+import OferecerCarona from "./pages/app/OferecerCarona.jsx";
 
 const PERFIL_MOTORISTA = 1;
 
@@ -61,8 +62,15 @@ function App() {
           <Route path="viagens" element={<Viagens />} />
           <Route path="perfil" element={<Perfil />} />
           <Route path="destino" element={<Destino />} />
-          <Route path="caronas" element={<EmConstrucao titulo="Caronas compatíveis" />} />
-          <Route path="caronas/nova" element={<EmConstrucao titulo="Oferecer carona" />} />
+          <Route path="caronas" element={<CaronasCompativeis />} />
+          <Route
+            path="caronas/nova"
+            element={
+              <RotaProtegida perfil={PERFIL_MOTORISTA}>
+                <OferecerCarona />
+              </RotaProtegida>
+            }
+          />
           <Route
             path="veiculos"
             element={

@@ -1,9 +1,11 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Destino.css";
 import Mapa, { Marcador, TracadoRota } from "../../components/Mapa/Mapa";
 import CampoEndereco from "../../components/CampoEndereco/CampoEndereco";
 import { calcularRota, enderecoDe } from "../../services/geo";
+import { useLocalizacao } from "../../hooks/useLocalizacao";
+import { agoraLocal, proximaHoraCheia } from "../../utils/formatar";
 import {
   co2EvitadoKg,
   compararCorridaECarona,
@@ -16,17 +18,6 @@ const SOROCABA = { lat: -23.5015, lng: -47.4526 };
 const COR_ORIGEM = "#036141";
 const COR_DESTINO = "#d9480f";
 
-const pad = (n) => String(n).padStart(2, "0");
-/** Data/hora local no formato do input datetime-local (AAAA-MM-DDTHH:MM). */
-function paraInputLocal(data) {
-  return `${data.getFullYear()}-${pad(data.getMonth() + 1)}-${pad(data.getDate())}T${pad(data.getHours())}:${pad(data.getMinutes())}`;
-}
-function daquiAUmaHora() {
-  const d = new Date(Date.now() + 60 * 60 * 1000);
-  d.setMinutes(0, 0, 0);
-  return paraInputLocal(d);
-}
-
 const IconeAlvo = () => (
   <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
     <circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" strokeWidth="2" />
@@ -37,52 +28,38 @@ const IconeAlvo = () => (
 
 function Destino() {
   const navigate = useNavigate();
+  const { obter: obterLocalizacao, posicao: posicaoUsuario, buscando: buscandoGps } = useLocalizacao();
 
-  const [posicaoUsuario, setPosicaoUsuario] = useState(null);
   const [origem, setOrigem] = useState(null);
   const [destino, setDestino] = useState(null);
   const [quando, setQuando] = useState("agora"); // "agora" | "agendar"
-  const [dataHora, setDataHora] = useState(daquiAUmaHora);
+  const [dataHora, setDataHora] = useState(proximaHoraCheia);
 
   const [rota, setRota] = useState(null);
   const [calculando, setCalculando] = useState(false);
-  const [buscandoGps, setBuscandoGps] = useState(false);
   const [erro, setErro] = useState("");
 
   // Localização atual como origem (com nome da rua via geocodificação reversa)
-  const usarMinhaLocalizacao = () => {
-    if (!("geolocation" in navigator)) {
-      setErro("Seu navegador não oferece localização.");
+  const usarMinhaLocalizacao = useCallback(async () => {
+    setErro("");
+    const ponto = await obterLocalizacao();
+    if (!ponto) {
+      setErro("Sem acesso à sua localização. Digite o endereço de origem.");
       return;
     }
-    setBuscandoGps(true);
-    setErro("");
-    navigator.geolocation.getCurrentPosition(
-      async (p) => {
-        const ponto = { lat: p.coords.latitude, lng: p.coords.longitude };
-        setPosicaoUsuario(ponto);
-        setOrigem({ id: "gps", nome: "Minha localização", ...ponto });
-        try {
-          const nome = await enderecoDe(ponto.lat, ponto.lng);
-          setOrigem({ id: "gps", nome: `Minha localização · ${nome}`, ...ponto });
-        } catch {
-          // mantém "Minha localização" sem o nome da rua
-        } finally {
-          setBuscandoGps(false);
-        }
-      },
-      () => {
-        setBuscandoGps(false);
-        setErro("Sem acesso à sua localização. Digite o endereço de origem.");
-      },
-      { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
-    );
-  };
+    setOrigem({ id: "gps", nome: "Minha localização", ...ponto });
+    try {
+      const nome = await enderecoDe(ponto.lat, ponto.lng);
+      setOrigem({ id: "gps", nome: `Minha localização · ${nome}`, ...ponto });
+    } catch {
+      // mantém "Minha localização" sem o nome da rua
+    }
+  }, [obterLocalizacao]);
 
-  // Tenta a localização atual só na abertura da tela
+  // Tenta a localização atual na abertura da tela
   useEffect(() => {
     usarMinhaLocalizacao();
-  }, []);
+  }, [usarMinhaLocalizacao]);
 
   // Recalcula a rota sempre que origem e destino estiverem definidos
   useEffect(() => {
@@ -180,7 +157,7 @@ function Destino() {
               type="datetime-local"
               className="destino-data"
               value={dataHora}
-              min={paraInputLocal(new Date())}
+              min={agoraLocal()}
               onChange={(e) => setDataHora(e.target.value)}
               aria-label="Data e hora da viagem"
             />

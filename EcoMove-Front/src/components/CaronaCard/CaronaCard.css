@@ -59,6 +59,17 @@
   font-weight: 600;
 }
 
+.carona-preco {
+  color: #036141;
+  font-weight: 700;
+}
+
+.carona-compatibilidade {
+  margin: 0.7rem 0 0;
+  font-size: 0.8rem;
+  color: #6b7a74;
+}
+
 .badge-categoria {
   display: inline-block;
   margin-left: 0.5rem;

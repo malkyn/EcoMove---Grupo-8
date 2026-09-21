@@ -1,0 +1,131 @@
+.compativeis {
+  padding: 1rem 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.compativeis-cabecalho {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.compativeis-voltar {
+  align-self: flex-start;
+  color: #036141;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.compativeis-cabecalho h1 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #036141;
+}
+
+.compativeis-trajeto {
+  margin: 0.2rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  color: #1f2d27;
+}
+
+.compativeis-seta {
+  color: #036141;
+}
+
+.compativeis-quando {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6b7a74;
+}
+
+.compativeis-msg {
+  margin: 0;
+  border-radius: 6px;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+.compativeis-erro {
+  background: #fdecea;
+  color: #8a1c1c;
+  border: 1px solid #f5c2c0;
+}
+
+.compativeis-sucesso {
+  background: #e3f5ec;
+  color: #036141;
+  border: 1px solid #bfe6d1;
+}
+
+.compativeis-sucesso a {
+  color: #036141;
+  font-weight: 600;
+}
+
+.compativeis-vazio {
+  color: #6b7a74;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem 0;
+}
+
+.compativeis-vazio p {
+  margin: 0;
+}
+
+.compativeis-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.compativeis-botao {
+  align-self: flex-start;
+  padding: 0.65rem 1.2rem;
+  border-radius: 10px;
+  border: none;
+  background: #036141;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.compativeis-botao:hover {
+  background: #088b60;
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.compativeis-botao:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.compativeis-botao-secundario {
+  background: #f0f3f1;
+  color: #1f2d27;
+}
+
+.compativeis-botao-secundario:hover {
+  background: #e3e8e5;
+  color: #1f2d27;
+}
+
+.compativeis-reservada {
+  padding: 0.5rem 0.9rem;
+  border-radius: 10px;
+  background: #e3f5ec;
+  color: #036141;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
