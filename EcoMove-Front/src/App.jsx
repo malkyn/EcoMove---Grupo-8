@@ -24,9 +24,9 @@ const PERFIL_MOTORISTA = 1;
 function Site() {
   // Páginas onde o balão "Já possui uma conta?" não aparece: a landing já tem o botão no topo
   const hiddenPages = ["/", "/entrar", "/loginForm", "/cadastrousuario"];
-  // O cadastro ocupa a tela inteira, sem rolagem: nao mostra o rodape
+  // Criar conta e entrar ocupam a tela inteira, sem rolagem: sem rodape
   const { pathname } = useLocation();
-  const semRodape = ["/loginForm", "/cadastrousuario"].includes(pathname);
+  const semRodape = ["/loginForm", "/cadastrousuario", "/entrar"].includes(pathname);
   return (
     <div className="app-container">
       <a href="#conteudo" className="skip-link">

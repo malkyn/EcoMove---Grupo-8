@@ -1,153 +1,229 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import "./Entrar.css";
-import usuario2 from "./icons/usuario2.svg";
-import cadeado from "./icons/cadeado.svg";
-import api from "../services/api";
+import "./Conta.css";
+import FotoLateral from "./icons/hero-carona.webp";
+import api, { usandoMock } from "../services/api";
 import { salvarUsuario } from "../services/auth";
+import { mensagemDeErro } from "../utils/erros";
+import { emailValido } from "../utils/validacao";
+import { IconeOlho, IconeOlhoFechado, IconeRaio, IconeRelogio, IconeFolha } from "../components/Icones";
 
-/**
- * Componente de Página de Login
- * Permite que usuários acessem suas contas
- */
+/** Contas prontas do modo demonstração (VITE_USE_MOCK=true). Não existem no backend real. */
+const CONTAS_DEMO = [
+  { rotulo: "Camila (motorista)", email: "camila@exemplo.com", senha: "123456" },
+  { rotulo: "Lucas (passageiro)", email: "lucas@exemplo.com", senha: "123456" },
+];
+
 function Entrar() {
-  // =============================================
-  //               ESTADO DO FORMULÁRIO
-  // =============================================
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // E-mail e mensagem vindos do cadastro recém-concluído
   const [email, setEmail] = useState(location.state?.email || "");
   const [senha, setSenha] = useState("");
-  const [erro, setErro] = useState("");
+  const [erros, setErros] = useState({});
+  const [erroGeral, setErroGeral] = useState("");
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [mostrarAjuda, setMostrarAjuda] = useState(false);
   const [carregando, setCarregando] = useState(false);
-  const navigate = useNavigate();
-  // Mensagem vinda de outra tela (ex.: cadastro concluído)
   const sucesso = location.state?.mensagem || "";
 
-  // =============================================
-  //               MANIPULAÇÃO DE FORMULÁRIO
-  // =============================================
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErro("");
-    setCarregando(true);
+  const validar = () => {
+    const proximos = {};
+    if (!emailValido(email)) proximos.email = "Informe um e-mail válido.";
+    if (!senha) proximos.senha = "Informe sua senha.";
+    return proximos;
+  };
 
+  const aoEnviar = async (evento) => {
+    evento.preventDefault();
+    setErroGeral("");
+
+    const problemas = validar();
+    setErros(problemas);
+    const primeiro = Object.keys(problemas)[0];
+    if (primeiro) {
+      document.getElementById(primeiro)?.focus();
+      return;
+    }
+
+    setCarregando(true);
     try {
       const resposta = await api.post("/usuarios/login", {
-        email: email.trim(),
+        email: email.trim().toLowerCase(),
         senha,
       });
 
       if (!resposta.data?.usuario) {
-        setErro("Resposta inesperada do servidor. Tente novamente.");
+        setErroGeral("Resposta inesperada do servidor. Tente novamente.");
         return;
       }
 
       salvarUsuario(resposta.data.usuario);
-      // Volta para a página que exigiu login, ou vai ao painel
+      // Volta para a página que exigiu login, ou vai ao app
       navigate(location.state?.de || "/app", { replace: true });
     } catch (err) {
-      if (err.response && err.response.status < 500) {
-        // 4xx: erro de validação ou credenciais, mensagem feita para o usuário
-        setErro(err.response.data?.erro || "Não foi possível entrar. Verifique os dados.");
-      } else if (err.response) {
-        // 5xx: erro interno do servidor, nunca expor detalhes
-        setErro("O servidor encontrou um problema. Tente novamente em instantes.");
-      } else {
-        // A requisição nem chegou: servidor fora do ar, sem rede, timeout
-        setErro("Não foi possível conectar ao servidor.");
-      }
+      setErroGeral(mensagemDeErro(err, "Não foi possível entrar. Verifique os dados."));
     } finally {
       setCarregando(false);
     }
   };
 
-  // =============================================
-  //               RENDERIZAÇÃO
-  // =============================================
+  const usarContaDemo = (conta) => {
+    setEmail(conta.email);
+    setSenha(conta.senha);
+    setErros({});
+    setErroGeral("");
+  };
+
+  const renderErro = (nome) =>
+    erros[nome] ? (
+      <p className="conta-erro" id={`erro-${nome}`} role="alert">
+        {erros[nome]}
+      </p>
+    ) : null;
+
+  const propsInvalido = (nome) => ({
+    "aria-invalid": erros[nome] ? "true" : undefined,
+    "aria-describedby": erros[nome] ? `erro-${nome}` : undefined,
+  });
+
   return (
-    <div className="bodyentrar">
-      {/* Container da Imagem de Fundo */}
-      <div className="imagem">
-        {/* Card do Formulário */}
-        <div className="box">
-          <form onSubmit={handleSubmit}>
-            {/* Título */}
+    <div className="conta">
+      {/* Lateral: foto com argumento (só em telas largas) */}
+      <aside className="conta-lateral" aria-hidden="true">
+        <img src={FotoLateral} alt="" width="1600" height="1067" />
+        <div className="conta-lateral-texto">
+          <p className="conta-lateral-chapeu">Bem-vindo de volta</p>
+          <h2>Seu próximo trajeto está a um toque</h2>
+          <ul>
+            <li>
+              <IconeRelogio tamanho={18} /> Caronas agendadas no seu horário
+            </li>
+            <li>
+              <IconeRaio tamanho={18} /> Corrida agora com quem está por perto
+            </li>
+            <li>
+              <IconeFolha tamanho={18} /> CO₂ evitado em cada viagem
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+      {/* Formulário */}
+      <main className="conta-conteudo">
+        <form className="conta-form" onSubmit={aoEnviar} noValidate>
+          <header className="conta-topo">
             <h1>Entrar</h1>
+            <p>
+              Não tem conta? <Link to="/loginForm">Criar conta</Link>
+            </p>
+          </header>
 
-            {/* Mensagem de sucesso vinda do cadastro */}
-            {sucesso && !erro && (
-              <p className="form-success" role="status">
-                {sucesso}
-              </p>
-            )}
+          {sucesso && !erroGeral && (
+            <p className="conta-sucesso" role="status">
+              {sucesso}
+            </p>
+          )}
 
-            {/* Mensagem de erro (só aparece quando existe) */}
-            {erro && (
-              <p className="form-error" role="alert">
-                {erro}
-              </p>
-            )}
+          {erroGeral && (
+            <p className="conta-alerta" role="alert">
+              {erroGeral}
+            </p>
+          )}
 
-            {/* Campo de Email */}
-            <div className="input-container">
-              <input
-                type="email"
-                placeholder="Email"
-                required
-                aria-label="Endereço de e-mail"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <img
-                src={usuario2}
-                width={20}
-                height={15}
-                alt="Ícone de usuário"
-                className="input-icon"
-              />
-            </div>
+          <div className="conta-campo">
+            <label htmlFor="email">E-mail</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              maxLength={100}
+              placeholder="voce@exemplo.com"
+              value={email}
+              onChange={(evento) => {
+                setEmail(evento.target.value);
+                if (erros.email) setErros((anterior) => ({ ...anterior, email: "" }));
+              }}
+              {...propsInvalido("email")}
+            />
+            {renderErro("email")}
+          </div>
 
-            {/* Campo de Senha */}
-            <div className="input-container">
-              <input
-                type="password"
-                placeholder="Senha"
-                required
-                aria-label="Senha"
-                autoComplete="current-password"
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-              />
-              <img
-                src={cadeado}
-                width={20}
-                height={15}
-                alt="Ícone de cadeado"
-                className="input-icon"
-              />
-              <a href="#recuperar-senha" className="forgot-password">
+          <div className="conta-campo">
+            <div className="conta-campo-topo">
+              <label htmlFor="senha">Senha</label>
+              <button
+                type="button"
+                className="conta-esqueci"
+                onClick={() => setMostrarAjuda((aberto) => !aberto)}
+                aria-expanded={mostrarAjuda}
+              >
                 Esqueci minha senha
-              </a>
+              </button>
             </div>
+            <div className="conta-senha">
+              <input
+                id="senha"
+                name="senha"
+                type={mostrarSenha ? "text" : "password"}
+                autoComplete="current-password"
+                maxLength={72}
+                placeholder="Sua senha"
+                value={senha}
+                onChange={(evento) => {
+                  setSenha(evento.target.value);
+                  if (erros.senha) setErros((anterior) => ({ ...anterior, senha: "" }));
+                }}
+                {...propsInvalido("senha")}
+              />
+              <button
+                type="button"
+                className="conta-senha-olho"
+                onClick={() => setMostrarSenha((v) => !v)}
+                aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
+                aria-pressed={mostrarSenha}
+              >
+                {mostrarSenha ? <IconeOlhoFechado tamanho={20} /> : <IconeOlho tamanho={20} />}
+              </button>
+            </div>
+            {renderErro("senha")}
+            {mostrarAjuda && (
+              <p className="conta-ajuda">
+                A recuperação de senha por e-mail ainda não está disponível nesta versão. Fale com a
+                gente em <a href="mailto:contato@ecomove.com.br">contato@ecomove.com.br</a> que
+                ajudamos a recuperar o acesso.
+              </p>
+            )}
+          </div>
 
-            {/* Botão de Submit */}
-            <button className="submit-button" type="submit" disabled={carregando}>
+          <div className="conta-acoes">
+            <button type="submit" className="conta-btn" disabled={carregando}>
               {carregando ? "Entrando..." : "Entrar"}
             </button>
+          </div>
 
-            {/* Link para Cadastro */}
-            <div className="link-registro">
-              <p>
-                Não está cadastrado?{" "}
-                <Link to="/loginForm" className="register-link">
-                  Cadastre-se
-                </Link>
-              </p>
+          {usandoMock && (
+            <div className="conta-demo">
+              <p>Modo demonstração: use uma conta pronta (senha 123456).</p>
+              <div className="conta-demo-botoes">
+                {CONTAS_DEMO.map((conta) => (
+                  <button
+                    key={conta.email}
+                    type="button"
+                    className="conta-demo-btn"
+                    onClick={() => usarContaDemo(conta)}
+                  >
+                    {conta.rotulo}
+                  </button>
+                ))}
+              </div>
             </div>
-          </form>
-        </div>
-      </div>
+          )}
+        </form>
+      </main>
     </div>
   );
 }

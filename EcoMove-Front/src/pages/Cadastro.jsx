@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import "./Cadastro.css";
+import "./Conta.css";
 import FotoLateral from "./icons/fundologin.webp";
 import api from "../services/api";
 import { mensagemDeErro } from "../utils/erros";
@@ -123,7 +123,7 @@ function Cadastro() {
 
   // Ao trocar de passo, leva o foco ao primeiro campo e volta o painel ao topo
   useEffect(() => {
-    const painel = formRef.current?.closest(".cad-conteudo");
+    const painel = formRef.current?.closest(".conta-conteudo");
     if (painel) painel.scrollTop = 0;
     if (passo > 0) formRef.current?.querySelector("input, select")?.focus();
   }, [passo]);
@@ -245,7 +245,7 @@ function Cadastro() {
 
   const renderErro = (nome) =>
     erros[nome] ? (
-      <p className="cad-erro" id={`erro-${nome}`} role="alert">
+      <p className="conta-erro" id={`erro-${nome}`} role="alert">
         {erros[nome]}
       </p>
     ) : null;
@@ -253,12 +253,12 @@ function Cadastro() {
   const progresso = `${((passo + 1) / PASSOS.length) * 100}%`;
 
   return (
-    <div className="cad">
+    <div className="conta">
       {/* Lateral: foto com argumento (só em telas largas) */}
-      <aside className="cad-lateral" aria-hidden="true">
+      <aside className="conta-lateral" aria-hidden="true">
         <img src={FotoLateral} alt="" width="1600" height="1067" />
-        <div className="cad-lateral-texto">
-          <p className="cad-lateral-chapeu">Sorocaba e região</p>
+        <div className="conta-lateral-texto">
+          <p className="conta-lateral-chapeu">Sorocaba e região</p>
           <h2>Compartilhe o caminho, conecte pessoas</h2>
           <ul>
             <li>
@@ -275,39 +275,39 @@ function Cadastro() {
       </aside>
 
       {/* Formulário em passos */}
-      <main className="cad-conteudo">
-        <form ref={formRef} className="cad-form" onSubmit={aoEnviar} noValidate>
-          <header className="cad-topo">
+      <main className="conta-conteudo">
+        <form ref={formRef} className="conta-form" onSubmit={aoEnviar} noValidate>
+          <header className="conta-topo">
             <h1>Criar conta</h1>
             <p>
               Leva um minuto. Já tem conta? <Link to="/entrar">Entrar</Link>
             </p>
           </header>
 
-          <div className="cad-progresso" aria-label={`Passo ${passo + 1} de ${PASSOS.length}`}>
+          <div className="conta-progresso" aria-label={`Passo ${passo + 1} de ${PASSOS.length}`}>
             <span>
               Passo {passo + 1} de {PASSOS.length}
             </span>
-            <span className="cad-progresso-barra" aria-hidden="true">
+            <span className="conta-progresso-barra" aria-hidden="true">
               <i style={{ width: progresso }} />
             </span>
           </div>
 
           {erroGeral && (
-            <p className="cad-alerta" role="alert">
+            <p className="conta-alerta" role="alert">
               {erroGeral}
             </p>
           )}
 
           {/* key={passo}: remonta o bloco para a animação de entrada rodar a cada passo */}
-          <div className="cad-passo" key={passo}>
-            <h2 className="cad-passo-titulo">{PASSOS[passo].titulo}</h2>
+          <div className="conta-passo" key={passo}>
+            <h2 className="conta-passo-titulo">{PASSOS[passo].titulo}</h2>
 
             {passo === 0 && (
-              <fieldset className="cad-perfis" data-campo="perfil" tabIndex={-1}>
-                <legend className="cad-oculto">Perfil</legend>
-                <div className="cad-perfis-opcoes">
-                  <label className={`cad-perfil ${perfil === PERFIL_PASSAGEIRO ? "escolhido" : ""}`}>
+              <fieldset className="conta-perfis" data-campo="perfil" tabIndex={-1}>
+                <legend className="conta-oculto">Perfil</legend>
+                <div className="conta-perfis-opcoes">
+                  <label className={`conta-perfil ${perfil === PERFIL_PASSAGEIRO ? "escolhido" : ""}`}>
                     <input
                       type="radio"
                       name="perfil"
@@ -315,15 +315,15 @@ function Cadastro() {
                       checked={perfil === PERFIL_PASSAGEIRO}
                       onChange={() => escolherPerfil(PERFIL_PASSAGEIRO)}
                     />
-                    <span className="cad-perfil-icone">
+                    <span className="conta-perfil-icone">
                       <IconePessoas tamanho={26} />
                     </span>
-                    <span className="cad-perfil-texto">
+                    <span className="conta-perfil-texto">
                       <strong>Passageiro</strong>
                       <span>Reservo caronas no meu trajeto ou peço uma corrida agora.</span>
                     </span>
                   </label>
-                  <label className={`cad-perfil ${perfil === PERFIL_MOTORISTA ? "escolhido" : ""}`}>
+                  <label className={`conta-perfil ${perfil === PERFIL_MOTORISTA ? "escolhido" : ""}`}>
                     <input
                       type="radio"
                       name="perfil"
@@ -331,10 +331,10 @@ function Cadastro() {
                       checked={perfil === PERFIL_MOTORISTA}
                       onChange={() => escolherPerfil(PERFIL_MOTORISTA)}
                     />
-                    <span className="cad-perfil-icone">
+                    <span className="conta-perfil-icone">
                       <IconeCarro tamanho={26} />
                     </span>
-                    <span className="cad-perfil-texto">
+                    <span className="conta-perfil-texto">
                       <strong>Motorista</strong>
                       <span>Ofereço caronas no meu carro ou moto elétrica ou híbrida.</span>
                     </span>
@@ -346,35 +346,35 @@ function Cadastro() {
 
             {passo === 1 && (
               <>
-                <div className="cad-campo">
+                <div className="conta-campo">
                   <label htmlFor="nome">Nome completo</label>
                   <input type="text" autoComplete="name" maxLength={100} placeholder="Como no seu documento" {...propsCampo("nome")} />
                   {renderErro("nome")}
                 </div>
 
-                <div className="cad-grade">
-                  <div className="cad-campo">
+                <div className="conta-grade">
+                  <div className="conta-campo">
                     <label htmlFor="email">E-mail</label>
                     <input type="email" autoComplete="email" inputMode="email" maxLength={100} placeholder="voce@exemplo.com" {...propsCampo("email")} />
                     {renderErro("email")}
                   </div>
-                  <div className="cad-campo">
+                  <div className="conta-campo">
                     <label htmlFor="telefone">Celular</label>
                     <input type="tel" autoComplete="tel-national" inputMode="tel" maxLength={15} placeholder="(15) 99999-9999" {...propsCampo("telefone")} />
                     {renderErro("telefone")}
                   </div>
                 </div>
 
-                <div className="cad-grade">
-                  <div className="cad-campo">
+                <div className="conta-grade">
+                  <div className="conta-campo">
                     <label htmlFor="data_nascimento">Data de nascimento</label>
                     <input type="date" autoComplete="bday" max={hojeISO()} {...propsCampo("data_nascimento")} />
-                    <p className="cad-dica">{ehMotorista ? "Motoristas: 18 anos ou mais." : "A partir de 16 anos."}</p>
+                    <p className="conta-dica">{ehMotorista ? "Motoristas: 18 anos ou mais." : "A partir de 16 anos."}</p>
                     {renderErro("data_nascimento")}
                   </div>
-                  <div className="cad-campo">
+                  <div className="conta-campo">
                     <label htmlFor="genero">
-                      Gênero <span className="cad-opcional">(opcional)</span>
+                      Gênero <span className="conta-opcional">(opcional)</span>
                     </label>
                     <select {...propsCampo("genero")}>
                       <option value="">Prefiro não informar</option>
@@ -389,17 +389,17 @@ function Cadastro() {
 
             {passo === 2 && (
               <>
-                <p className="cad-grupo-texto">
+                <p className="conta-grupo-texto">
                   Documentos confirmam que cada conta é de uma pessoa real. Não aparecem para outros usuários.
                 </p>
-                <div className="cad-grade">
-                  <div className="cad-campo">
+                <div className="conta-grade">
+                  <div className="conta-campo">
                     <label htmlFor="cpf">CPF</label>
                     <input type="text" inputMode="numeric" autoComplete="off" maxLength={14} placeholder="000.000.000-00" {...propsCampo("cpf")} />
                     {renderErro("cpf")}
                   </div>
                   {ehMotorista && (
-                    <div className="cad-campo">
+                    <div className="conta-campo">
                       <label htmlFor="cnh">CNH (número de registro)</label>
                       <input type="text" inputMode="numeric" autoComplete="off" maxLength={11} placeholder="11 dígitos" {...propsCampo("cnh")} />
                       {renderErro("cnh")}
@@ -407,10 +407,10 @@ function Cadastro() {
                   )}
                 </div>
 
-                <div className="cad-grade">
-                  <div className="cad-campo">
+                <div className="conta-grade">
+                  <div className="conta-campo">
                     <label htmlFor="senha">Senha</label>
-                    <div className="cad-senha">
+                    <div className="conta-senha">
                       <input
                         type={mostrarSenha ? "text" : "password"}
                         autoComplete="new-password"
@@ -421,7 +421,7 @@ function Cadastro() {
                       />
                       <button
                         type="button"
-                        className="cad-senha-olho"
+                        className="conta-senha-olho"
                         onClick={() => setMostrarSenha((v) => !v)}
                         aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
                         aria-pressed={mostrarSenha}
@@ -430,18 +430,18 @@ function Cadastro() {
                       </button>
                     </div>
                     {form.senha && (
-                      <div className={`cad-forca cad-forca-${forca}`} aria-live="polite">
-                        <span className="cad-forca-barra">
+                      <div className={`conta-forca conta-forca-${forca}`} aria-live="polite">
+                        <span className="conta-forca-barra">
                           <i />
                           <i />
                           <i />
                         </span>
-                        <span className="cad-forca-texto">Senha {ROTULOS_FORCA[forca].toLowerCase()}</span>
+                        <span className="conta-forca-texto">Senha {ROTULOS_FORCA[forca].toLowerCase()}</span>
                       </div>
                     )}
                     {renderErro("senha")}
                   </div>
-                  <div className="cad-campo">
+                  <div className="conta-campo">
                     <label htmlFor="confirmesenha">Confirmar senha</label>
                     <input
                       type={mostrarSenha ? "text" : "password"}
@@ -458,19 +458,19 @@ function Cadastro() {
             )}
           </div>
 
-          <div className="cad-acoes">
+          <div className="conta-acoes">
             {passo > 0 && (
-              <button type="button" className="cad-btn-voltar" onClick={voltar} disabled={carregando}>
+              <button type="button" className="conta-btn-voltar" onClick={voltar} disabled={carregando}>
                 Voltar
               </button>
             )}
-            <button type="submit" className="cad-btn" disabled={carregando}>
+            <button type="submit" className="conta-btn" disabled={carregando}>
               {ultimoPasso ? (carregando ? "Criando a conta..." : "Criar conta") : "Continuar"}
             </button>
           </div>
 
           {ultimoPasso && (
-            <p className="cad-consentimento">
+            <p className="conta-consentimento">
               Ao criar a conta, você concorda em usar o EcoMove de forma responsável e com o
               tratamento dos seus dados para o funcionamento do serviço.
             </p>
