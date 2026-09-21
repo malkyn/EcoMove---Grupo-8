@@ -51,11 +51,15 @@ function NavBar() {
   // Primeiro nome para a saudação; tolera sessão sem nome (valor alterado à mão)
   const primeiroNome = usuario?.nome ? String(usuario.nome).split(" ")[0] : "usuário";
 
-  const navItems = [
+  const itensPublicos = [
     { path: "/", label: "Início" },
     { path: "/#como-funciona", label: "Como Funciona" },
     { path: "/loginForm", label: "Cadastre-se" },
   ];
+  // Logado: "Cadastre-se" dá lugar a "Painel"
+  const navItems = usuario
+    ? [...itensPublicos.filter((item) => item.path !== "/loginForm"), { path: "/painel", label: "Painel" }]
+    : itensPublicos;
 
   return (
     <header className={`navbar ${isScrolled ? "scrolled" : ""}`}>

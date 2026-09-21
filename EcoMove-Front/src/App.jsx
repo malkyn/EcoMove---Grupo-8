@@ -8,9 +8,12 @@ import CadastroUsuario from "./pages/CadastroUsuario.jsx";
 import Login from "./pages/Login.jsx";
 import BalãoFlutuante from "./components/Balão/Balão.jsx";
 import Entrar from "./pages/Entrar.jsx";
+import Painel from "./pages/Painel.jsx";
+import NaoEncontrada from "./pages/NaoEncontrada.jsx";
+import RotaProtegida from "./components/RotaProtegida.jsx";
 
 function App() {
-  const hiddenPages = ["/entrar"]; // Páginas onde o balão não aparece
+  const hiddenPages = ["/entrar", "/painel"]; // Páginas onde o balão não aparece
 
   return (
     <Router>
@@ -23,6 +26,15 @@ function App() {
             <Route path="/cadastrousuario" element={<CadastroUsuario />} />
             <Route path="/loginForm" element={<Login />} />
             <Route path="/entrar" element={<Entrar />} />
+            <Route
+              path="/painel"
+              element={
+                <RotaProtegida>
+                  <Painel />
+                </RotaProtegida>
+              }
+            />
+            <Route path="*" element={<NaoEncontrada />} />
           </Routes>
         </main>
         <Footer />
