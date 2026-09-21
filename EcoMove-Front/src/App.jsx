@@ -15,6 +15,9 @@ import Inicio from "./pages/app/Inicio.jsx";
 import Viagens from "./pages/app/Viagens.jsx";
 import Perfil from "./pages/app/Perfil.jsx";
 import EmConstrucao from "./pages/app/EmConstrucao.jsx";
+import Veiculos from "./pages/app/Veiculos.jsx";
+
+const PERFIL_MOTORISTA = 1;
 
 /** Site público: landing page, cadastro e login, com navbar e rodapé. */
 function Site() {
@@ -58,7 +61,14 @@ function App() {
           <Route path="perfil" element={<Perfil />} />
           <Route path="destino" element={<EmConstrucao titulo="Para onde?" />} />
           <Route path="caronas/nova" element={<EmConstrucao titulo="Oferecer carona" />} />
-          <Route path="veiculos" element={<EmConstrucao titulo="Meus veículos" />} />
+          <Route
+            path="veiculos"
+            element={
+              <RotaProtegida perfil={PERFIL_MOTORISTA}>
+                <Veiculos />
+              </RotaProtegida>
+            }
+          />
         </Route>
 
         {/* Rota antiga do painel */}

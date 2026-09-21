@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./Inicio.css";
 import Mapa from "../../components/Mapa/Mapa";
 import { getUsuarioLogado } from "../../services/auth";
@@ -16,6 +16,8 @@ const IconeBusca = () => (
 );
 
 function Inicio() {
+  const location = useLocation();
+  const avisoDeRota = location.state?.erro; // ex.: passageiro tentou abrir área de motorista
   const usuario = getUsuarioLogado();
   const ehMotorista = usuario?.id_perfil === PERFIL_MOTORISTA;
   const primeiroNome = usuario?.nome ? String(usuario.nome).split(" ")[0] : "";
@@ -44,6 +46,11 @@ function Inicio() {
       {/* Folha inferior, no padrão dos apps de mobilidade */}
       <section className="inicio-folha" aria-label="Ações rápidas">
         <div className="inicio-alca" aria-hidden="true" />
+        {avisoDeRota && (
+          <p className="inicio-aviso" role="alert">
+            {avisoDeRota}
+          </p>
+        )}
         {avisoGps && <p className="inicio-aviso">{avisoGps}</p>}
         <p className="inicio-saudacao">Olá, {primeiroNome}</p>
 

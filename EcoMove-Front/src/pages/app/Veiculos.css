@@ -1,0 +1,283 @@
+.veiculos {
+  padding: 1rem 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.veiculos-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.veiculos-cabecalho h1 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #036141;
+}
+
+.veiculos-contador {
+  min-width: 2rem;
+  text-align: center;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: #e3f5ec;
+  color: #036141;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* ----- Mensagens ----- */
+.veiculos-msg {
+  margin: 0;
+  border-radius: 6px;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+.veiculos-erro {
+  background: #fdecea;
+  color: #8a1c1c;
+  border: 1px solid #f5c2c0;
+}
+
+.veiculos-sucesso {
+  background: #e3f5ec;
+  color: #036141;
+  border: 1px solid #bfe6d1;
+}
+
+.veiculos-vazio {
+  margin: 0;
+  color: #6b7a74;
+  padding: 0.5rem 0;
+}
+
+/* ----- Lista ----- */
+.veiculos-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.veiculo-card {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: #ffffff;
+  border: 1px solid #e3e8e5;
+  border-radius: 12px;
+  padding: 0.8rem 0.9rem;
+}
+
+.veiculo-icone {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #e3f5ec;
+  color: #036141;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.veiculo-dados {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.veiculo-dados strong {
+  color: #1f2d27;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.veiculo-detalhes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #6b7a74;
+}
+
+.veiculo-placa {
+  font-family: monospace;
+  padding: 0.05rem 0.4rem;
+  border: 1px solid #e3e8e5;
+  border-radius: 4px;
+}
+
+.veiculo-badge {
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  background: #eef1ef;
+  color: #6b7a74;
+  font-weight: 600;
+  font-size: 0.72rem;
+}
+
+.veiculo-badge-verde {
+  background: #e3f5ec;
+  color: #036141;
+}
+
+.veiculo-remover {
+  flex: 0 0 auto;
+  background: none;
+  border: 1px solid #f5c2c0;
+  color: #b42318;
+  border-radius: 8px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.veiculo-remover:hover {
+  background: #fdecea;
+  border-color: #f5c2c0;
+}
+
+.veiculo-remover:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ----- Botões ----- */
+.veiculos-botao {
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: none;
+  background: #036141;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.veiculos-botao:hover {
+  background: #088b60;
+  border-color: transparent;
+}
+
+.veiculos-botao:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.veiculos-botao-secundario {
+  background: #f0f3f1;
+  color: #1f2d27;
+}
+
+.veiculos-botao-secundario:hover {
+  background: #e3e8e5;
+}
+
+/* ----- Formulário ----- */
+.veiculos-form {
+  background: #ffffff;
+  border: 1px solid #e3e8e5;
+  border-radius: 14px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.veiculos-form h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #1f2d27;
+}
+
+.veiculos-categoria {
+  border: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.veiculos-categoria legend {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1f2d27;
+  margin-bottom: 0.4rem;
+}
+
+.veiculos-opcao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem;
+  border: 2px solid #e3e8e5;
+  border-radius: 10px;
+  color: #6b7a74;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.veiculos-opcao input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.veiculos-opcao.selecionada {
+  border-color: #036141;
+  background: #e3f5ec;
+  color: #036141;
+}
+
+.veiculos-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1f2d27;
+}
+
+.veiculos-campo input,
+.veiculos-campo select {
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid #d5dcd8;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1f2d27;
+}
+
+.veiculos-campo input:focus,
+.veiculos-campo select:focus {
+  outline: none;
+  border-color: #036141;
+  box-shadow: 0 0 0 3px rgba(3, 97, 65, 0.15);
+}
+
+.veiculos-dica {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6b7a74;
+}
+
+.veiculos-form-acoes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}

@@ -90,22 +90,27 @@ Resposta `200`: `{ "mensagem": "Usuário deletado com sucesso!" }`. `404` se nã
 
 ## 4. Veículos
 
-Somente motoristas (`id_perfil = 1`) cadastram veículos.
+Somente motoristas (`id_perfil = 1`) cadastram veículos. Duas modalidades, e **apenas veículos 100% elétricos ou híbridos** (regra do produto: combustão é recusada com `400`):
+
+| Campo | Valores | Observação |
+|---|---|---|
+| `categoria` | `carro`, `moto` | Moto leva no máximo 1 passageiro por carona |
+| `propulsao` | `eletrico`, `hibrido` | Qualquer outro valor é recusado |
 
 ### GET `/veiculos/?id_usuario={id}`
 `id_usuario` é opcional; sem ele, lista todos. Resposta `200`:
 ```json
-[ { "id_veiculo": 1, "id_usuario": 1, "modelo": "Chevrolet Bolt EV", "placa": "BRA2E19", "tipo": "Hatch", "cor": "Branco", "eletrico": true } ]
+[ { "id_veiculo": 1, "id_usuario": 1, "modelo": "Chevrolet Bolt EV", "placa": "BRA2E19", "categoria": "carro", "propulsao": "eletrico", "cor": "Branco" } ]
 ```
-Observação: a coluna no modelo chama-se `id_placa`, mas o JSON usa `placa`. O campo `eletrico` (booleano) é novo e precisa ser adicionado ao modelo `Veiculo`.
+Observação: a coluna no modelo chama-se `id_placa`, mas o JSON usa `placa`. Os campos `categoria` e `propulsao` são novos e substituem o antigo `tipo` livre.
 
 ### POST `/veiculos/`
-Requisição: `{ "modelo": "Chevrolet Bolt EV", "placa": "BRA2E19", "tipo": "Hatch", "cor": "Branco", "eletrico": true, "id_usuario": 1 }`
+Requisição: `{ "modelo": "Chevrolet Bolt EV", "placa": "BRA1D23", "categoria": "carro", "propulsao": "eletrico", "cor": "Branco", "id_usuario": 1 }`
 
-Obrigatórios: `modelo`, `placa`, `id_usuario`. A placa é normalizada (maiúsculas, sem hífen) e única.
+Obrigatórios: `modelo`, `placa`, `categoria`, `propulsao`, `id_usuario`. A placa é normalizada (maiúsculas, sem hífen), deve seguir o padrão Mercosul `ABC1D23` ou o antigo `ABC1234`, e é única.
 
 Resposta `201`: `{ "mensagem": "Veículo cadastrado com sucesso!", "veiculo": { ...formato acima } }`
-Erros: `400` campo faltando ou placa inválida · `403` usuário não é motorista · `404` usuário inexistente · `409` placa já cadastrada.
+Erros: `400` campo faltando, placa, categoria ou propulsão inválida · `403` usuário não é motorista · `404` usuário inexistente · `409` placa já cadastrada.
 
 ### DELETE `/veiculos/{id}`
 Resposta `200`: `{ "mensagem": "Veículo deletado com sucesso!" }`. `404` se não existir · `409` se houver caronas vinculadas.
@@ -119,7 +124,7 @@ Resposta `200`: `{ "mensagem": "Veículo deletado com sucesso!" }`. `404` se nã
   "id_usuario": 1,
   "motorista": { "id_usuario": 1, "nome": "Camila Ferreira" },
   "id_veiculo": 1,
-  "veiculo": { "id_veiculo": 1, "modelo": "Chevrolet Bolt EV", "placa": "BRA2E19", "eletrico": true },
+  "veiculo": { "id_veiculo": 1, "modelo": "Chevrolet Bolt EV", "placa": "BRA2E19", "categoria": "carro", "propulsao": "eletrico" },
   "origem": "Campolim, Sorocaba",
   "destino": "FACENS, Sorocaba",
   "horario": "2026-10-20T07:30",
@@ -136,7 +141,7 @@ Todos os filtros são opcionais. `origem` e `destino` são busca parcial sem dif
 ### POST `/caronas/`
 Requisição: `{ "origem": "Campolim, Sorocaba", "destino": "FACENS, Sorocaba", "horario": "2026-10-20T07:30", "vagas_disponiveis": 3, "id_usuario": 1, "id_veiculo": 1 }`
 
-Todos obrigatórios. `vagas_disponiveis` inteiro de 1 a 8. `horario` no formato ISO acima (aceitar também `"HH:MM"` como hoje é opcional).
+Todos obrigatórios. `vagas_disponiveis` inteiro de 1 a 8 (máximo 1 se o veículo for moto). `horario` no formato ISO acima (aceitar também `"HH:MM"` como hoje é opcional).
 
 Resposta `201`: `{ "mensagem": "Carona publicada com sucesso!", "carona": { ...formato completo } }`
 Erros: `400` inválido · `403` usuário não é motorista ou veículo não pertence a ele · `404` usuário ou veículo inexistente.
@@ -175,7 +180,7 @@ Erros: `400` nota fora de 1 a 5, avaliador igual ao avaliado, ou campo faltando 
 | Onde | O que |
 |---|---|
 | `Usuario` | adicionar `telefone`, `genero`, `data_nascimento`; `senha` para `String(255)` (o hash é longo); relacionamentos `veiculos`, `caronas` |
-| `Veiculo` | adicionar `eletrico` (Boolean, padrão `False`); `id_usuario` `nullable=False`; relacionamento `caronas` |
+| `Veiculo` | trocar `tipo` por `categoria` (`carro`/`moto`) e adicionar `propulsao` (`eletrico`/`hibrido`), ambos `String(20)` `nullable=False`; `id_usuario` `nullable=False`; relacionamento `caronas` |
 | `Carona` | relacionamentos `usuario` e `veiculo`; relacionamento `reservas` |
 | `Reserva` | tabela nova (seção 6) |
 | `Avaliacao` | tabela nova (seção 7) |

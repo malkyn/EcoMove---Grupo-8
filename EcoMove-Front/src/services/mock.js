@@ -8,9 +8,14 @@
 import { AxiosError } from "axios";
 
 const CHAVE_DB = "ecomove_mock_db";
+// Aumente quando o formato dos dados mudar: o banco salvo no navegador é recriado.
+const VERSAO_BANCO = 2;
 const LATENCIA_MS = 300;
 const PERFIL_MOTORISTA = 1;
 const PERFIL_PASSAGEIRO = 2;
+const CATEGORIAS = ["carro", "moto"];
+const PROPULSOES = ["eletrico", "hibrido"]; // sem combustão: regra do produto
+const PLACA_VALIDA = /^[A-Z]{3}\d[A-Z0-9]\d{2}$/;
 
 // =============================================
 //               BANCO SIMULADO
@@ -30,6 +35,7 @@ function bancoInicial() {
   depois.setDate(hoje.getDate() + 2);
 
   return {
+    versao: VERSAO_BANCO,
     proximoId: { usuario: 3, veiculo: 2, carona: 4, avaliacao: 1 },
     usuarios: [
       {
@@ -56,9 +62,9 @@ function bancoInicial() {
         id_usuario: 1,
         modelo: "Chevrolet Bolt EV",
         placa: "BRA2E19",
-        tipo: "Hatch",
+        categoria: "carro",
+        propulsao: "eletrico",
         cor: "Branco",
-        eletrico: true,
       },
     ],
     caronas: [
@@ -104,7 +110,7 @@ function carregarBanco() {
     const bruto = localStorage.getItem(CHAVE_DB);
     if (bruto) {
       const db = JSON.parse(bruto);
-      if (db && Array.isArray(db.usuarios)) return db;
+      if (db && Array.isArray(db.usuarios) && db.versao === VERSAO_BANCO) return db;
     }
   } catch {
     // banco corrompido: recria abaixo
@@ -149,7 +155,8 @@ function caronaCompleta(db, c) {
           id_veiculo: veiculo.id_veiculo,
           modelo: veiculo.modelo,
           placa: veiculo.placa,
-          eletrico: Boolean(veiculo.eletrico),
+          categoria: veiculo.categoria,
+          propulsao: veiculo.propulsao,
         }
       : null,
     vagas_restantes: Math.max(0, c.vagas_disponiveis - reservas.length),
@@ -248,7 +255,7 @@ function listarVeiculos({ db, params }) {
 }
 
 function criarVeiculo({ db, body }) {
-  const faltando = camposFaltando(body, ["modelo", "placa", "id_usuario"]);
+  const faltando = camposFaltando(body, ["modelo", "placa", "id_usuario", "categoria", "propulsao"]);
   if (faltando) return faltando;
 
   const dono = db.usuarios.find((u) => u.id_usuario === Number(body.id_usuario));
@@ -257,8 +264,17 @@ function criarVeiculo({ db, body }) {
     return erro(403, "Apenas motoristas podem cadastrar veículos");
   }
 
+  const categoria = String(body.categoria).toLowerCase();
+  if (!CATEGORIAS.includes(categoria)) return erro(400, "categoria deve ser carro ou moto");
+  const propulsao = String(body.propulsao).toLowerCase();
+  if (!PROPULSOES.includes(propulsao)) {
+    return erro(400, "Só aceitamos veículos elétricos ou híbridos (propulsao: eletrico ou hibrido)");
+  }
+
   const placa = String(body.placa).toUpperCase().replace(/[^A-Z0-9]/g, "");
-  if (placa.length !== 7) return erro(400, "Placa inválida: use 7 letras e números");
+  if (!PLACA_VALIDA.test(placa)) {
+    return erro(400, "Placa inválida: use o formato ABC1D23 ou ABC1234");
+  }
   if (db.veiculos.some((v) => v.placa === placa)) {
     return erro(409, "Já existe um veículo com esta placa");
   }
@@ -268,9 +284,9 @@ function criarVeiculo({ db, body }) {
     id_usuario: dono.id_usuario,
     modelo: String(body.modelo).trim(),
     placa,
-    tipo: body.tipo || null,
-    cor: body.cor || null,
-    eletrico: body.eletrico === true || body.eletrico === "true",
+    categoria,
+    propulsao,
+    cor: body.cor ? String(body.cor).trim() : null,
   };
   db.veiculos.push(novo);
   return criado({ mensagem: "Veículo cadastrado com sucesso!", veiculo: novo });
@@ -343,6 +359,9 @@ function criarCarona({ db, body }) {
   const vagas = Number(body.vagas_disponiveis);
   if (!Number.isInteger(vagas) || vagas < 1 || vagas > 8) {
     return erro(400, "vagas_disponiveis deve ser um inteiro entre 1 e 8");
+  }
+  if (veiculo.categoria === "moto" && vagas > 1) {
+    return erro(400, "Moto leva no máximo 1 passageiro");
   }
 
   const horario = String(body.horario).trim();
