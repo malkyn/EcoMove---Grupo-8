@@ -1,0 +1,55 @@
+.viagens {
+  padding: 1rem 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.viagens-titulo {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #036141;
+}
+
+.viagens-erro {
+  margin: 0;
+  background: #fdecea;
+  color: #8a1c1c;
+  border: 1px solid #f5c2c0;
+  border-radius: 6px;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+.viagens-vazio {
+  color: #6b7a74;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1.5rem 0;
+}
+
+.viagens-vazio p {
+  margin: 0;
+}
+
+.viagens-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.viagens-botao {
+  align-self: flex-start;
+  padding: 0.7rem 1.3rem;
+  border-radius: 10px;
+  background: #036141;
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.viagens-botao:hover {
+  background: #088b60;
+  color: #ffffff;
+}

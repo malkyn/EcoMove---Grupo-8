@@ -44,7 +44,7 @@ function Entrar() {
 
       salvarUsuario(resposta.data.usuario);
       // Volta para a página que exigiu login, ou vai ao painel
-      navigate(location.state?.de || "/painel", { replace: true });
+      navigate(location.state?.de || "/app", { replace: true });
     } catch (err) {
       if (err.response && err.response.status < 500) {
         // 4xx: erro de validação ou credenciais, mensagem feita para o usuário

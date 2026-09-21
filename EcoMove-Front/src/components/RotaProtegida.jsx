@@ -28,7 +28,7 @@ function RotaProtegida({ children, perfil }) {
   if (perfil && usuario.id_perfil !== perfil) {
     const exclusivo = perfil === PERFIL_MOTORISTA ? "motoristas" : "passageiros";
     return (
-      <Navigate to="/painel" replace state={{ erro: `Esta área é exclusiva para ${exclusivo}.` }} />
+      <Navigate to="/app" replace state={{ erro: `Esta área é exclusiva para ${exclusivo}.` }} />
     );
   }
 

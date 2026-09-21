@@ -1,0 +1,102 @@
+/* Casca do app logado: ocupa a tela inteira do celular */
+.app-shell {
+  --app-verde: #036141;
+  --app-verde-claro: #e3f5ec;
+  --app-texto: #1f2d27;
+  --app-texto-suave: #6b7a74;
+  --app-borda: #e3e8e5;
+  --app-fundo: #f5f7f6;
+  --app-topo-altura: 52px;
+  --app-abas-altura: 60px;
+
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  width: 100%;
+  background: var(--app-fundo);
+  color: var(--app-texto);
+  text-align: left;
+  overflow: hidden;
+}
+
+/* ----- Barra superior ----- */
+.app-topo {
+  flex: 0 0 auto;
+  height: calc(var(--app-topo-altura) + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  background: #ffffff;
+  border-bottom: 1px solid var(--app-borda);
+}
+
+.app-topo-titulo {
+  font-weight: 700;
+  color: var(--app-verde);
+  font-size: 1.1rem;
+}
+
+.app-topo-demo {
+  margin-left: auto;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  background: #fff6e0;
+  color: #7a4d00;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ----- Conteúdo ----- */
+.app-conteudo {
+  flex: 1 1 auto;
+  position: relative;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ----- Abas inferiores ----- */
+.app-abas {
+  flex: 0 0 auto;
+  height: calc(var(--app-abas-altura) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  display: flex;
+  background: #ffffff;
+  border-top: 1px solid var(--app-borda);
+}
+
+.app-aba {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--app-texto-suave);
+  text-decoration: none;
+  font-size: 0.72rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.app-aba.ativa {
+  color: var(--app-verde);
+}
+
+.app-aba:hover {
+  color: var(--app-verde);
+}
+
+/* Em telas largas (desktop), limita a largura como um celular centralizado */
+@media (min-width: 900px) {
+  .app-shell {
+    max-width: 480px;
+    margin: 0 auto;
+    border-left: 1px solid var(--app-borda);
+    border-right: 1px solid var(--app-borda);
+  }
+}
