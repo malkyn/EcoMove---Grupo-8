@@ -1,71 +1,141 @@
-import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./CadastroUsuario.css";
 import Info from "./icons/informacoes.svg";
 import api from "../services/api";
 
+const PERFIL_MOTORISTA = 1;
+const PERFIL_PASSAGEIRO = 2;
+
+const apenasDigitos = (valor) => String(valor || "").replace(/\D/g, "");
+
+/** Valida CPF pelos dígitos verificadores (rejeita sequências repetidas). */
+function cpfValido(cpf) {
+  const d = apenasDigitos(cpf);
+  if (d.length !== 11 || /^(\d)\1{10}$/.test(d)) return false;
+  const digito = (tamanho) => {
+    let soma = 0;
+    for (let i = 0; i < tamanho; i++) soma += Number(d[i]) * (tamanho + 1 - i);
+    const resto = (soma * 10) % 11;
+    return resto === 10 ? 0 : resto;
+  };
+  return digito(9) === Number(d[9]) && digito(10) === Number(d[10]);
+}
+
+/** Idade em anos completos a partir de uma data ISO (AAAA-MM-DD); null se inválida. */
+function calcularIdade(dataISO) {
+  const nascimento = new Date(`${dataISO}T00:00:00`);
+  if (!dataISO || Number.isNaN(nascimento.getTime())) return null;
+  const hoje = new Date();
+  let idade = hoje.getFullYear() - nascimento.getFullYear();
+  const mes = hoje.getMonth() - nascimento.getMonth();
+  if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) idade--;
+  return idade;
+}
+
+const ESTADO_INICIAL = {
+  nome: "",
+  email: "",
+  telefone: "",
+  data_nascimento: "",
+  cpf: "",
+  cnh: "",
+  senha: "",
+  confirmesenha: "",
+  genero: "",
+};
 
 function CadastroUsuario() {
   // =============================================
   //               ESTADO E ROTEAMENTO
   // =============================================
-  const [formData, setFormData] = useState({
-    nome: "",
-    email: "",
-    senha: "",
-    id_perfil: 2,
-    cnh: "",
-    rg: "",
-    cpf: "",
-    genero: "",
-    data_nascimento: "",
-  });
-
-  const [docTipo, setDocTipo] = useState("cpf");
   const location = useLocation();
-  const perfilId = location.state?.id_perfil || 2;
+  const navigate = useNavigate();
+  const perfilId =
+    location.state?.id_perfil === PERFIL_MOTORISTA ? PERFIL_MOTORISTA : PERFIL_PASSAGEIRO;
+  const ehMotorista = perfilId === PERFIL_MOTORISTA;
 
-  // =============================================
-  //               EFEITOS
-  // =============================================
-  useEffect(() => {
-    setFormData((prev) => ({
-      ...prev,
-      id_perfil: perfilId,
-    }));
-  }, [perfilId]);
+  const [form, setForm] = useState(ESTADO_INICIAL);
+  const [erro, setErro] = useState("");
+  const [carregando, setCarregando] = useState(false);
 
   // =============================================
   //               MANIPULAÇÃO DE FORMULÁRIO
   // =============================================
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
 
-    if (name === "doctipo") {
-      setDocTipo(value);
-    } else if (name === "numerodoc") {
-      setFormData((prev) => ({
-        ...prev,
-        [docTipo]: value,
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+  // Validação no cliente: conforto para o usuário. O backend valida de novo.
+  const validar = () => {
+    if (form.nome.trim().length < 3) return "Informe seu nome completo.";
+
+    const telefone = apenasDigitos(form.telefone);
+    if (telefone.length < 10 || telefone.length > 11) {
+      return "Telefone inválido. Use DDD e número, por exemplo (15) 99999-9999.";
     }
+
+    const idade = calcularIdade(form.data_nascimento);
+    if (idade === null || idade < 0 || idade > 120) return "Data de nascimento inválida.";
+    if (ehMotorista && idade < 18) return "Motoristas precisam ter pelo menos 18 anos.";
+    if (!ehMotorista && idade < 16) return "É preciso ter pelo menos 16 anos para se cadastrar.";
+
+    if (!cpfValido(form.cpf)) return "CPF inválido.";
+    if (ehMotorista && apenasDigitos(form.cnh).length !== 11) {
+      return "CNH inválida. Informe os 11 dígitos do número de registro.";
+    }
+
+    if (form.senha.length < 8 || !/[A-Za-z]/.test(form.senha) || !/\d/.test(form.senha)) {
+      return "A senha deve ter pelo menos 8 caracteres, com letras e números.";
+    }
+    if (form.senha !== form.confirmesenha) return "As senhas não conferem.";
+
+    if (!form.genero) return "Selecione o gênero.";
+    return "";
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const problema = validar();
+    if (problema) {
+      setErro(problema);
+      return;
+    }
+
+    setErro("");
+    setCarregando(true);
+
     try {
-      const resposta = await api.post("/usuarios/", formData);
-      alert(resposta.data.mensagem);
-      // Limpar formulário ou redirecionar após sucesso
+      await api.post("/usuarios/", {
+        nome: form.nome.trim(),
+        email: form.email.trim().toLowerCase(),
+        senha: form.senha,
+        id_perfil: perfilId,
+        telefone: form.telefone.trim(),
+        cpf: apenasDigitos(form.cpf),
+        cnh: ehMotorista ? apenasDigitos(form.cnh) : "",
+        rg: "",
+        genero: form.genero,
+        data_nascimento: form.data_nascimento,
+      });
+
+      navigate("/entrar", {
+        state: { mensagem: "Cadastro realizado! Entre com seu e-mail e senha." },
+      });
     } catch (err) {
-      const errorMessage = err.response?.data?.erro || err.message;
-      alert(`Erro ao cadastrar: ${errorMessage}`);
+      if (err.response && err.response.status < 500) {
+        // 4xx: validação ou conflito (e-mail já cadastrado), mensagem feita para o usuário
+        setErro(err.response.data?.erro || "Não foi possível cadastrar. Verifique os dados.");
+      } else if (err.response) {
+        // 5xx: erro interno do servidor, nunca expor detalhes
+        setErro("O servidor encontrou um problema. Tente novamente em instantes.");
+      } else {
+        setErro("Não foi possível conectar ao servidor.");
+      }
+    } finally {
+      setCarregando(false);
     }
   };
 
@@ -82,25 +152,35 @@ function CadastroUsuario() {
 
         {/* Seção do Formulário */}
         <div className="form">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} noValidate={false}>
             {/* Cabeçalho */}
             <div className="form-header">
               <div className="title">
-                <h1>
-                  Cadastro de {perfilId === 1 ? "Motorista" : "Passageiro"}
-                </h1>
+                <h1>Cadastro de {ehMotorista ? "Motorista" : "Passageiro"}</h1>
               </div>
               <div className="login-button">
-                <button type="button">
-                  <a href="#login">Entrar</a>
-                </button>
+                <Link to="/entrar" className="link-entrar">
+                  Entrar
+                </Link>
               </div>
             </div>
 
             {/* Subtítulo */}
             <div className="sub-t">
-              <p>Preencha seus dados para começar a usar a plataforma</p>
+              <p>
+                Preencha seus dados para começar a usar a plataforma.{" "}
+                <Link to="/loginForm" className="trocar-perfil">
+                  Trocar perfil
+                </Link>
+              </p>
             </div>
+
+            {/* Mensagem de erro (só aparece quando existe) */}
+            {erro && (
+              <p className="cadastro-erro" role="alert">
+                {erro}
+              </p>
+            )}
 
             {/* Grupo de Campos do Formulário */}
             <div className="input-group">
@@ -112,18 +192,23 @@ function CadastroUsuario() {
                   type="text"
                   name="nome"
                   placeholder="Seu nome completo"
+                  autoComplete="name"
+                  maxLength={100}
                   required
+                  value={form.nome}
                   onChange={handleChange}
                 />
               </div>
 
               <div className="input-box">
-                <label htmlFor="numerodata">Data de Nascimento</label>
+                <label htmlFor="data_nascimento">Data de Nascimento</label>
                 <input
-                  id="numerodata"
+                  id="data_nascimento"
                   type="date"
                   name="data_nascimento"
+                  autoComplete="bday"
                   required
+                  value={form.data_nascimento}
                   onChange={handleChange}
                 />
               </div>
@@ -136,7 +221,10 @@ function CadastroUsuario() {
                   type="email"
                   name="email"
                   placeholder="seuemail@exemplo.com"
+                  autoComplete="email"
+                  maxLength={100}
                   required
+                  value={form.email}
                   onChange={handleChange}
                 />
               </div>
@@ -147,50 +235,63 @@ function CadastroUsuario() {
                   id="telefone"
                   type="tel"
                   name="telefone"
-                  placeholder="(99) 99999-9999"
+                  placeholder="(15) 99999-9999"
+                  autoComplete="tel"
+                  maxLength={20}
                   required
+                  value={form.telefone}
                   onChange={handleChange}
                 />
               </div>
 
               {/* Documentos */}
               <div className="input-box">
-                <label htmlFor="doctipo">Tipo de Documento</label>
-                <select
-                  id="doctipo"
-                  name="doctipo"
-                  value={docTipo}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="cpf">CPF</option>
-                  <option value="rg">RG</option>
-                  <option value="cnh">CNH</option>
-                </select>
-              </div>
-
-              <div className="input-box">
-                <label htmlFor="numerodoc">Número do Documento</label>
+                <label htmlFor="cpf">CPF</label>
                 <input
-                  id="numerodoc"
+                  id="cpf"
                   type="text"
-                  name="numerodoc"
-                  placeholder={`Digite o número do ${docTipo.toUpperCase()}`}
+                  name="cpf"
+                  inputMode="numeric"
+                  placeholder="000.000.000-00"
+                  autoComplete="off"
+                  maxLength={14}
                   required
-                  value={formData[docTipo]}
+                  value={form.cpf}
                   onChange={handleChange}
                 />
               </div>
 
+              {ehMotorista && (
+                <div className="input-box">
+                  <label htmlFor="cnh">CNH (número de registro)</label>
+                  <input
+                    id="cnh"
+                    type="text"
+                    name="cnh"
+                    inputMode="numeric"
+                    placeholder="11 dígitos"
+                    autoComplete="off"
+                    maxLength={14}
+                    required
+                    value={form.cnh}
+                    onChange={handleChange}
+                  />
+                </div>
+              )}
+
               {/* Segurança */}
               <div className="input-box">
-                <label htmlFor="senha">Digite sua Senha</label>
+                <label htmlFor="senha">Senha</label>
                 <input
                   id="senha"
                   type="password"
                   name="senha"
-                  placeholder="Deve conter números/letras/especial"
+                  placeholder="Mínimo 8 caracteres, letras e números"
+                  autoComplete="new-password"
+                  minLength={8}
+                  maxLength={72}
                   required
+                  value={form.senha}
                   onChange={handleChange}
                 />
               </div>
@@ -202,7 +303,12 @@ function CadastroUsuario() {
                   type="password"
                   name="confirmesenha"
                   placeholder="Repita sua senha"
+                  autoComplete="new-password"
+                  minLength={8}
+                  maxLength={72}
                   required
+                  value={form.confirmesenha}
+                  onChange={handleChange}
                 />
               </div>
 
@@ -212,7 +318,7 @@ function CadastroUsuario() {
                 <select
                   id="genero"
                   name="genero"
-                  value={formData.genero || ""}
+                  value={form.genero}
                   onChange={handleChange}
                   required
                 >
@@ -227,7 +333,9 @@ function CadastroUsuario() {
 
             {/* Botão de Submissão */}
             <div className="botao-continue">
-              <button type="submit">Continuar</button>
+              <button type="submit" disabled={carregando}>
+                {carregando ? "Cadastrando..." : "Continuar"}
+              </button>
             </div>
           </form>
         </div>

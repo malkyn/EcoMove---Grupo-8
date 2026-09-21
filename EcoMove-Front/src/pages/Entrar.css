@@ -180,6 +180,15 @@
   cursor: not-allowed;
 }
 
+.form-success {
+  color: #d9ffe9;
+  background: rgba(3, 97, 65, 0.55);
+  border-radius: var(--border-radius);
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  text-align: center;
+}
 
 /* ==================== RESPONSIVIDADE ==================== */
 @media (max-width: 480px) {

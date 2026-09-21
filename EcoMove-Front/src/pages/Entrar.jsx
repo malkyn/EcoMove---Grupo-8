@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Entrar.css";
 import usuario2 from "./icons/usuario2.svg";
 import cadeado from "./icons/cadeado.svg";
@@ -19,6 +19,9 @@ function Entrar() {
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  // Mensagem vinda de outra tela (ex.: cadastro concluído)
+  const sucesso = location.state?.mensagem || "";
 
   // =============================================
   //               MANIPULAÇÃO DE FORMULÁRIO
@@ -69,6 +72,13 @@ function Entrar() {
           <form onSubmit={handleSubmit}>
             {/* Título */}
             <h1>Entrar</h1>
+
+            {/* Mensagem de sucesso vinda do cadastro */}
+            {sucesso && !erro && (
+              <p className="form-success" role="status">
+                {sucesso}
+              </p>
+            )}
 
             {/* Mensagem de erro (só aparece quando existe) */}
             {erro && (
