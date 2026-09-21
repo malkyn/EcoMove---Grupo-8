@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Entrar.css";
 import usuario2 from "./icons/usuario2.svg";
 import cadeado from "./icons/cadeado.svg";
@@ -8,6 +8,12 @@ import cadeado from "./icons/cadeado.svg";
  * Permite que usuários acessem suas contas
  */
 function Entrar() {
+  // =============================================
+  //               ESTADO DO FORMULÁRIO
+  // =============================================
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+
   // =============================================
   //               MANIPULAÇÃO DE FORMULÁRIO
   // =============================================
@@ -37,6 +43,9 @@ function Entrar() {
                 placeholder="Email"
                 required
                 aria-label="Endereço de e-mail"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <img
                 src={usuario2}
@@ -54,6 +63,9 @@ function Entrar() {
                 placeholder="Senha"
                 required
                 aria-label="Senha"
+                autoComplete="current-password"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
               />
               <img
                 src={cadeado}
