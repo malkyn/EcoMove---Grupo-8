@@ -164,6 +164,23 @@
   text-decoration: underline;
 }
 
+/* ==================== FEEDBACK ==================== */
+.form-error {
+  color: #ffd6d6;
+  background: rgba(160, 0, 0, 0.45);
+  border-radius: var(--border-radius);
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
 /* ==================== RESPONSIVIDADE ==================== */
 @media (max-width: 480px) {
   .bodyentrar {
