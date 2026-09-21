@@ -1,5 +1,12 @@
 import React, { useEffect } from "react";
-import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  CircleMarker,
+  Polyline,
+  Popup,
+  useMap,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "./Mapa.css";
 
@@ -10,6 +17,35 @@ function Recentrar({ centro, zoom }) {
     mapa.setView([centro.lat, centro.lng], zoom, { animate: true });
   }, [mapa, centro.lat, centro.lng, zoom]);
   return null;
+}
+
+/** Ponto colorido com rótulo (origem, destino, motorista...). */
+export function Marcador({ posicao, cor = "#036141", rotulo }) {
+  return (
+    <CircleMarker
+      center={[posicao.lat, posicao.lng]}
+      radius={8}
+      pathOptions={{ color: "#ffffff", fillColor: cor, fillOpacity: 1, weight: 3 }}
+    >
+      {rotulo && <Popup>{rotulo}</Popup>}
+    </CircleMarker>
+  );
+}
+
+/**
+ * Traçado de rota ([[lat, lng], ...]) que enquadra o mapa para caber inteiro.
+ * `margemInferior` reserva espaço para a folha que cobre a base do mapa.
+ */
+export function TracadoRota({ pontos, cor = "#036141", margemInferior = 40 }) {
+  const mapa = useMap();
+  useEffect(() => {
+    if (pontos && pontos.length > 1) {
+      mapa.fitBounds(pontos, { paddingTopLeft: [30, 30], paddingBottomRight: [30, margemInferior] });
+    }
+  }, [mapa, pontos, margemInferior]);
+
+  if (!pontos || pontos.length < 2) return null;
+  return <Polyline positions={pontos} pathOptions={{ color: cor, weight: 5, opacity: 0.85 }} />;
 }
 
 /**
@@ -30,13 +66,7 @@ function Mapa({ centro, zoom = 14, posicaoUsuario = null, children }) {
       />
       <Recentrar centro={centro} zoom={zoom} />
       {posicaoUsuario && (
-        <CircleMarker
-          center={[posicaoUsuario.lat, posicaoUsuario.lng]}
-          radius={9}
-          pathOptions={{ color: "#ffffff", fillColor: "#036141", fillOpacity: 1, weight: 3 }}
-        >
-          <Popup>Você está aqui</Popup>
-        </CircleMarker>
+        <Marcador posicao={posicaoUsuario} cor="#036141" rotulo="Você está aqui" />
       )}
       {children}
     </MapContainer>

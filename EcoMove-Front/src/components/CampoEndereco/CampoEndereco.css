@@ -1,0 +1,88 @@
+.campo-endereco {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.campo-endereco-rotulo {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7a74;
+}
+
+.campo-endereco-linha {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.campo-endereco input {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 1rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #d5dcd8;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1f2d27;
+}
+
+.campo-endereco input:focus {
+  outline: none;
+  border-color: #036141;
+  box-shadow: 0 0 0 3px rgba(3, 97, 65, 0.15);
+}
+
+.campo-endereco-lista {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  list-style: none;
+  margin: 0.25rem 0 0;
+  padding: 0.25rem 0;
+  background: #ffffff;
+  border: 1px solid #d5dcd8;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.campo-endereco-lista button {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  text-align: left;
+  padding: 0.6rem 0.9rem;
+  background: none;
+  border: none;
+  border-radius: 0;
+  color: #1f2d27;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.campo-endereco-lista button:hover {
+  background: #e3f5ec;
+  border-color: transparent;
+}
+
+.campo-endereco-lista small {
+  color: #6b7a74;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.campo-endereco-info {
+  padding: 0.6rem 0.9rem;
+  color: #6b7a74;
+  font-size: 0.85rem;
+}
