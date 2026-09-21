@@ -122,11 +122,42 @@
   font-size: 0.9rem;
 }
 
+/* Link "Entrar" com aparência de botão (link dentro de botão é HTML inválido) */
+.login-button .link-entrar {
+  display: inline-block;
+  background-color: var(--primary-color);
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+  transition: var(--transition);
+}
+
+.login-button .link-entrar:hover {
+  background-color: var(--primary-hover);
+}
+
 /* ----- Subtítulo ----- */
 .sub-t p {
   color: var(--text-light);
   margin-bottom: 2rem;
   font-size: 0.95rem;
+}
+
+.trocar-perfil {
+  color: var(--primary-color);
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+/* ----- Mensagem de erro ----- */
+.cadastro-erro {
+  background-color: #fdecea;
+  color: #8a1c1c;
+  border: 1px solid #f5c2c0;
+  border-radius: 6px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  text-align: left;
 }
 
 /* ----- Grupo de Inputs ----- */
@@ -210,6 +241,11 @@
 
 .botao-continue button:hover {
   background-color: var(--primary-hover);
+}
+
+.botao-continue button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* ============================================= */
