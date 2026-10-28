@@ -12,6 +12,7 @@ import { rotuloStatus } from "../../utils/corridas";
 import { agoraLocal } from "../../utils/formatar";
 import { montarHistorico, sugerirPeloHistorico } from "../../utils/recomendacao";
 import CaronaCard from "../../components/CaronaCard/CaronaCard";
+import { useToast } from "../../components/Feedback/FeedbackContext";
 
 const PERFIL_MOTORISTA = 1;
 // Centro de Sorocaba: usado enquanto a localização do celular não chega
@@ -35,6 +36,7 @@ function Inicio() {
   const idUsuario = usuario?.id_usuario;
   const ehMotorista = usuario?.id_perfil === PERFIL_MOTORISTA;
   const primeiroNome = usuario?.nome ? String(usuario.nome).split(" ")[0] : "";
+  const toast = useToast();
 
   const { obter: obterLocalizacao, posicao, erro: erroGps } = useLocalizacao();
   const centro = posicao || SOROCABA;
@@ -45,7 +47,6 @@ function Inicio() {
   const [online, setOnline] = useState(false);
   const [pedidos, setPedidos] = useState([]);
   const [aceitando, setAceitando] = useState(null);
-  const [mensagem, setMensagem] = useState("");
   const [erro, setErro] = useState("");
   const [sugestoes, setSugestoes] = useState([]);
   const [reservando, setReservando] = useState(null);
@@ -113,13 +114,14 @@ function Inicio() {
 
   const reservarSugestao = async (carona) => {
     setErro("");
-    setMensagem("");
     setReservando(carona.id_carona);
     try {
       const resposta = await api.post(`/caronas/${carona.id_carona}/reservas`, {
         id_usuario: idUsuario,
       });
-      setMensagem(resposta.data?.mensagem || "Vaga reservada com sucesso!");
+      toast(resposta.data?.mensagem || "Vaga reservada!", {
+        acao: { rotulo: "Ver em Viagens", para: "/app/viagens" },
+      });
       setSugestoes((prev) => prev.filter((c) => c.id_carona !== carona.id_carona));
     } catch (err) {
       setErro(mensagemDeErro(err, "Não foi possível reservar a vaga."));
@@ -151,7 +153,6 @@ function Inicio() {
 
   const alternarOnline = async () => {
     setErro("");
-    setMensagem("");
     const ponto = posicao || (await obterLocalizacao()) || SOROCABA;
     try {
       const resposta = await api.post("/motoristas/online", {
@@ -162,7 +163,7 @@ function Inicio() {
         id_veiculo: veiculos[0]?.id_veiculo,
       });
       setOnline(resposta.data.online);
-      setMensagem(resposta.data.mensagem || "");
+      if (resposta.data.mensagem) toast(resposta.data.mensagem);
       if (!resposta.data.online) setPedidos([]);
     } catch (err) {
       setErro(mensagemDeErro(err, "Não foi possível mudar seu estado."));
@@ -235,12 +236,6 @@ function Inicio() {
             {erro}
           </p>
         )}
-        {mensagem && (
-          <p className="app-alerta app-alerta-ok" role="status">
-            {mensagem}
-          </p>
-        )}
-
         {corridaAtual && (
           <Link to={`/app/corridas/${corridaAtual.id_corrida}`} className="inicio-corrida-ativa">
             <span className="inicio-corrida-status">{rotuloStatus(corridaAtual.status)}</span>

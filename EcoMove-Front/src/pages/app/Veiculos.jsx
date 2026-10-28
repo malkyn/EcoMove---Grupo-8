@@ -12,6 +12,8 @@ import {
   rotuloCategoria,
   rotuloPropulsao,
 } from "../../utils/veiculos";
+import { useConfirmacao, useToast } from "../../components/Feedback/FeedbackContext";
+import { EsqueletoLista } from "../../components/Feedback/Esqueleto";
 
 const FORM_INICIAL = { categoria: "carro", modelo: "", placa: "", cor: "", propulsao: "eletrico" };
 
@@ -48,11 +50,12 @@ const IconeMoto = () => (
 function Veiculos() {
   const usuario = getUsuarioLogado();
   const idUsuario = usuario?.id_usuario;
+  const confirmar = useConfirmacao();
+  const toast = useToast();
 
   const [veiculos, setVeiculos] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
-  const [sucesso, setSucesso] = useState("");
   const [mostrarForm, setMostrarForm] = useState(false);
   const [form, setForm] = useState(FORM_INICIAL);
   const [enviando, setEnviando] = useState(false);
@@ -83,7 +86,6 @@ function Veiculos() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErro("");
-    setSucesso("");
 
     if (form.modelo.trim().length < 2) {
       setErro("Informe o modelo do veículo.");
@@ -104,7 +106,7 @@ function Veiculos() {
         cor: form.cor.trim(),
         propulsao: form.propulsao,
       });
-      setSucesso(resposta.data?.mensagem || "Veículo cadastrado com sucesso!");
+      toast(resposta.data?.mensagem || "Veículo cadastrado!");
       setForm(FORM_INICIAL);
       setMostrarForm(false);
       await carregar();
@@ -116,14 +118,19 @@ function Veiculos() {
   };
 
   const remover = async (veiculo) => {
-    const confirmou = window.confirm(`Remover ${veiculo.modelo} (${veiculo.placa})?`);
+    const confirmou = await confirmar({
+      titulo: `Remover ${veiculo.modelo}?`,
+      mensagem: `Placa ${veiculo.placa}. Caronas futuras com ele deixam de ser oferecidas; dá para cadastrar de novo depois.`,
+      confirmar: "Remover veículo",
+      cancelar: "Manter",
+      perigo: true,
+    });
     if (!confirmou) return;
     setErro("");
-    setSucesso("");
     setRemovendo(veiculo.id_veiculo);
     try {
       const resposta = await api.delete(`/veiculos/${veiculo.id_veiculo}`);
-      setSucesso(resposta.data?.mensagem || "Veículo removido.");
+      toast(resposta.data?.mensagem || "Veículo removido.");
       await carregar();
     } catch (err) {
       setErro(mensagemDeErro(err, "Não foi possível remover o veículo."));
@@ -144,14 +151,8 @@ function Veiculos() {
           {erro}
         </p>
       )}
-      {sucesso && (
-        <p className="app-alerta app-alerta-ok" role="status">
-          {sucesso}
-        </p>
-      )}
-
       {carregando ? (
-        <p className="app-vazio">Carregando...</p>
+        <EsqueletoLista itens={2} linhas={1} acao={false} rotulo="Carregando veículos" />
       ) : veiculos.length === 0 ? (
         <p className="app-vazio">
           Nenhum veículo cadastrado. Você precisa de um para oferecer caronas.

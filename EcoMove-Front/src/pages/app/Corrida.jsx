@@ -12,6 +12,8 @@ import { corridaAtiva, rotuloStatus, tomStatus } from "../../utils/corridas";
 import { rotuloPropulsao } from "../../utils/veiculos";
 import Mapa, { Marcador, TracadoRota } from "../../components/Mapa/Mapa";
 import { AvaliacaoFeita, AvaliacaoForm, Estrelas } from "../../components/Avaliacao/Avaliacao";
+import { useConfirmacao, useToast } from "../../components/Feedback/FeedbackContext";
+import { Carregando, Esqueleto, EsqueletoCartao } from "../../components/Feedback/Esqueleto";
 
 const COR_ORIGEM = "#036141";
 const COR_DESTINO = "#d9480f";
@@ -23,12 +25,13 @@ function Corrida() {
   const navigate = useNavigate();
   const usuario = getUsuarioLogado();
   const idUsuario = usuario?.id_usuario;
+  const confirmar = useConfirmacao();
+  const toast = useToast();
 
   const [corrida, setCorrida] = useState(null);
   const [rota, setRota] = useState(null);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
-  const [mensagem, setMensagem] = useState("");
   const [acao, setAcao] = useState(false);
   const [avaliacaoFeita, setAvaliacaoFeita] = useState(null);
   const [avaliacaoVerificada, setAvaliacaoVerificada] = useState(false);
@@ -87,13 +90,13 @@ function Corrida() {
   }, [corrida, idUsuario, avaliacaoVerificada]);
 
   const mudarStatus = async (status, confirmacao) => {
-    if (confirmacao && !window.confirm(confirmacao)) return;
+    if (confirmacao && !(await confirmar(confirmacao))) return;
     setAcao(true);
     setErro("");
     try {
       const resposta = await api.post(`/corridas/${id}/status`, { status, id_usuario: idUsuario });
       setCorrida(resposta.data.corrida);
-      setMensagem(resposta.data.mensagem || "");
+      if (resposta.data.mensagem) toast(resposta.data.mensagem);
     } catch (err) {
       setErro(mensagemDeErro(err, "Não foi possível atualizar a corrida."));
     } finally {
@@ -101,7 +104,15 @@ function Corrida() {
     }
   };
 
-  if (carregando) return <p className="app-vazio">Carregando corrida...</p>;
+  if (carregando) {
+    return (
+      <Carregando rotulo="Carregando corrida" className="corrida">
+        <Esqueleto altura="200px" raio="16px" />
+        <EsqueletoCartao linhas={2} acao={false} />
+        <EsqueletoCartao linhas={5} acao={false} />
+      </Carregando>
+    );
+  }
   if (!corrida) {
     return (
       <div className="corrida">
@@ -151,12 +162,6 @@ function Corrida() {
           {erro}
         </p>
       )}
-      {mensagem && (
-        <p className="app-alerta app-alerta-ok" role="status">
-          {mensagem}
-        </p>
-      )}
-
       {/* Situação atual */}
       <section className="app-cartao" aria-live="polite">
         {corrida.status === "pendente" && (
@@ -205,7 +210,7 @@ function Corrida() {
                   nomeAvaliado={outraPessoa.nome}
                   onEnviada={(avaliacao, texto) => {
                     setAvaliacaoFeita(avaliacao);
-                    setMensagem(texto || "Avaliação enviada.");
+                    toast(texto || "Avaliação enviada.");
                   }}
                 />
               )
@@ -305,7 +310,15 @@ function Corrida() {
           <button
             type="button"
             className="app-btn app-btn-perigo"
-            onClick={() => mudarStatus("cancelada", "Cancelar esta corrida?")}
+            onClick={() =>
+              mudarStatus("cancelada", {
+                titulo: "Cancelar esta corrida?",
+                mensagem: "Se um motorista já aceitou, ele será avisado.",
+                confirmar: "Cancelar corrida",
+                cancelar: "Manter corrida",
+                perigo: true,
+              })
+            }
             disabled={acao}
           >
             Cancelar corrida
@@ -316,7 +329,13 @@ function Corrida() {
             type="button"
             className="app-btn app-btn-secundario"
             onClick={() =>
-              mudarStatus("cancelada", "Sair desta corrida? O passageiro voltará a procurar motorista.")
+              mudarStatus("cancelada", {
+                titulo: "Sair desta corrida?",
+                mensagem: "O passageiro volta a procurar outro motorista.",
+                confirmar: "Sair da corrida",
+                cancelar: "Continuar na corrida",
+                perigo: true,
+              })
             }
             disabled={acao}
           >

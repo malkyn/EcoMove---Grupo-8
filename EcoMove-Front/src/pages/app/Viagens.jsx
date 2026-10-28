@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Viagens.css";
 import api from "../../services/api";
 import { getUsuarioLogado } from "../../services/auth";
@@ -9,12 +9,17 @@ import { formatarReais } from "../../utils/estimativas";
 import { corridaAtiva, rotuloStatus, tomStatus } from "../../utils/corridas";
 import CaronaCard from "../../components/CaronaCard/CaronaCard";
 import { AvaliacaoForm, Estrelas } from "../../components/Avaliacao/Avaliacao";
+import { useConfirmacao, useToast } from "../../components/Feedback/FeedbackContext";
+import { EsqueletoLista } from "../../components/Feedback/Esqueleto";
 
 const PERFIL_MOTORISTA = 1;
 
 /** Caronas (oferecidas ou reservadas) e corridas (pedidas ou atendidas) do usuário. */
 function Viagens() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const confirmar = useConfirmacao();
+  const toast = useToast();
   const usuario = getUsuarioLogado();
   const idUsuario = usuario?.id_usuario;
   const ehMotorista = usuario?.id_perfil === PERFIL_MOTORISTA;
@@ -24,8 +29,8 @@ function Viagens() {
   const [minhasAvaliacoes, setMinhasAvaliacoes] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
-  const [mensagem, setMensagem] = useState(location.state?.mensagem || "");
   const [processando, setProcessando] = useState(null);
+  const avisoMostrado = useRef(false);
   // Quem está sendo avaliado agora: { tipo: "carona" | "corrida", id, idAvaliado, nome }
   const [avaliando, setAvaliando] = useState(null);
 
@@ -55,6 +60,16 @@ function Viagens() {
     carregar();
   }, [carregar]);
 
+  // Aviso trazido por outra tela (ex.: "Carona publicada"). Limpa o estado da rota para
+  // não repetir ao voltar; a ref evita o toast em dobro no modo estrito do React.
+  useEffect(() => {
+    const aviso = location.state?.mensagem;
+    if (!aviso || avisoMostrado.current) return;
+    avisoMostrado.current = true;
+    toast(aviso);
+    navigate(location.pathname, { replace: true, state: null });
+  }, [location.state, location.pathname, navigate, toast]);
+
   const jaAvaliei = (tipo, id, idAvaliado) =>
     minhasAvaliacoes.some(
       (a) =>
@@ -67,21 +82,24 @@ function Viagens() {
   const aoEnviarAvaliacao = (avaliacao, texto) => {
     setMinhasAvaliacoes((prev) => [...prev, avaliacao]);
     setAvaliando(null);
-    setMensagem(texto || "Avaliação enviada.");
+    toast(texto || "Avaliação enviada.");
     carregar(); // atualiza as médias mostradas nos cards
   };
 
   const cancelarCarona = async (carona) => {
-    const confirmou = window.confirm(
-      `Cancelar a carona ${carona.origem} → ${carona.destino}? Os passageiros perderão a reserva.`
-    );
+    const confirmou = await confirmar({
+      titulo: "Cancelar esta carona?",
+      mensagem: `${carona.origem} → ${carona.destino}. Quem já reservou perde a vaga.`,
+      confirmar: "Cancelar carona",
+      cancelar: "Manter carona",
+      perigo: true,
+    });
     if (!confirmou) return;
     setProcessando(carona.id_carona);
     setErro("");
-    setMensagem("");
     try {
       const resposta = await api.delete(`/caronas/${carona.id_carona}`);
-      setMensagem(resposta.data?.mensagem || "Carona cancelada.");
+      toast(resposta.data?.mensagem || "Carona cancelada.");
       await carregar();
     } catch (err) {
       setErro(mensagemDeErro(err, "Não foi possível cancelar a carona."));
@@ -91,14 +109,19 @@ function Viagens() {
   };
 
   const cancelarReserva = async (carona) => {
-    const confirmou = window.confirm(`Cancelar sua reserva na carona ${carona.origem} → ${carona.destino}?`);
+    const confirmou = await confirmar({
+      titulo: "Cancelar sua reserva?",
+      mensagem: `${carona.origem} → ${carona.destino}. A vaga volta para outras pessoas.`,
+      confirmar: "Cancelar reserva",
+      cancelar: "Manter reserva",
+      perigo: true,
+    });
     if (!confirmou) return;
     setProcessando(carona.id_carona);
     setErro("");
-    setMensagem("");
     try {
       const resposta = await api.delete(`/caronas/${carona.id_carona}/reservas/${idUsuario}`);
-      setMensagem(resposta.data?.mensagem || "Reserva cancelada.");
+      toast(resposta.data?.mensagem || "Reserva cancelada.");
       await carregar();
     } catch (err) {
       setErro(mensagemDeErro(err, "Não foi possível cancelar a reserva."));
@@ -147,14 +170,8 @@ function Viagens() {
           {erro}
         </p>
       )}
-      {mensagem && (
-        <p className="app-alerta app-alerta-ok" role="status">
-          {mensagem}
-        </p>
-      )}
-
       {carregando ? (
-        <p className="app-vazio">Carregando...</p>
+        <EsqueletoLista itens={2} rotulo="Carregando suas viagens" />
       ) : (
         <>
           <section className="viagens-secao">

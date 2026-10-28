@@ -7,6 +7,7 @@ import { mensagemDeErro } from "../../utils/erros";
 import { useInstalarApp } from "../../hooks/useInstalarApp";
 import { formatarData } from "../../utils/formatar";
 import { Estrelas } from "../../components/Avaliacao/Avaliacao";
+import { useConfirmacao } from "../../components/Feedback/FeedbackContext";
 
 const PERFIL_MOTORISTA = 1;
 
@@ -16,6 +17,7 @@ function Perfil() {
   const idUsuario = usuario?.id_usuario;
   const ehMotorista = usuario?.id_perfil === PERFIL_MOTORISTA;
   const { jaInstalado, podeInstalar, precisaDeInstrucaoIOS, instalar } = useInstalarApp();
+  const confirmar = useConfirmacao();
 
   const [avaliacoes, setAvaliacoes] = useState({ media: null, total: 0, avaliacoes: [] });
   const [erro, setErro] = useState("");
@@ -36,7 +38,14 @@ function Perfil() {
     };
   }, [idUsuario]);
 
-  const sair = () => {
+  const sair = async () => {
+    const confirmou = await confirmar({
+      titulo: "Sair da conta?",
+      mensagem: "Você pode entrar de novo a qualquer momento.",
+      confirmar: "Sair",
+      cancelar: "Ficar",
+    });
+    if (!confirmou) return;
     logout();
     navigate("/", { replace: true });
   };
