@@ -924,6 +924,7 @@ function atualizarStatusCorrida({ db, body, match }) {
     }
     corrida.status = "cancelada";
     corrida.cancelada_por = "passageiro";
+    corrida.motivo_cancelamento = body.motivo ? String(body.motivo).slice(0, 40) : null;
     corrida.concluida_em = agoraISO();
     return responder("Corrida cancelada.");
   }

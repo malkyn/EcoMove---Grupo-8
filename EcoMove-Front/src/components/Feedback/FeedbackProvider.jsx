@@ -70,17 +70,33 @@ export function FeedbackProvider({ children }) {
   );
 }
 
-/** Folha que sobe de baixo com a pergunta, a ação principal e "voltar". */
-function FolhaConfirmacao({ titulo, mensagem, confirmar = "Confirmar", cancelar = "Voltar", perigo = false, onFechar }) {
+/**
+ * Folha que sobe de baixo com a pergunta, a ação principal e "voltar".
+ * Com `opcoes` ([{ valor, rotulo }]), mostra uma lista de escolha única (ex.: motivo do
+ * cancelamento) e resolve com o valor escolhido em vez de true.
+ */
+function FolhaConfirmacao({
+  titulo,
+  mensagem,
+  opcoes = null,
+  rotuloOpcoes = "Motivo",
+  confirmar = "Confirmar",
+  cancelar = "Voltar",
+  perigo = false,
+  onFechar,
+}) {
   const folhaRef = useRef(null);
   const tituloId = useId();
   const mensagemId = useId();
+  const [escolha, setEscolha] = useState(null);
+  const podeConfirmar = !opcoes || escolha !== null;
 
   useEffect(() => {
     const anterior = document.activeElement;
     const folha = folhaRef.current;
     // Ação destrutiva começa com o foco em "voltar": Enter sem querer não cancela nada
-    const botoes = folha.querySelectorAll("button");
+    // (só os botões de ação; as opções, quando existem, ficam acima deles)
+    const botoes = folha.querySelectorAll(".folha-acoes button");
     (perigo ? botoes[1] : botoes[0])?.focus();
 
     const aoTeclar = (evento) => {
@@ -130,11 +146,28 @@ function FolhaConfirmacao({ titulo, mensagem, confirmar = "Confirmar", cancelar 
             {mensagem}
           </p>
         )}
+        {opcoes && (
+          <div className="folha-opcoes" role="radiogroup" aria-label={rotuloOpcoes}>
+            {opcoes.map((opcao) => (
+              <button
+                key={opcao.valor}
+                type="button"
+                role="radio"
+                aria-checked={escolha === opcao.valor}
+                className={`folha-opcao ${escolha === opcao.valor ? "ativa" : ""}`}
+                onClick={() => setEscolha(opcao.valor)}
+              >
+                {opcao.rotulo}
+              </button>
+            ))}
+          </div>
+        )}
         <div className="folha-acoes">
           <button
             type="button"
             className={`app-btn ${perigo ? "app-btn-perigo" : "app-btn-primario"}`}
-            onClick={() => onFechar(true)}
+            onClick={() => onFechar(opcoes ? escolha : true)}
+            disabled={!podeConfirmar}
           >
             {confirmar}
           </button>

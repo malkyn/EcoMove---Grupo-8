@@ -8,7 +8,15 @@ import { useIntervalo } from "../../hooks/useIntervalo";
 import { mensagemDeErro } from "../../utils/erros";
 import { formatarDataHora } from "../../utils/formatar";
 import { co2EvitadoKg, formatarKm, formatarMinutos, formatarReais } from "../../utils/estimativas";
-import { corridaAtiva, rotuloStatus, tomStatus } from "../../utils/corridas";
+import {
+  ETAPAS_CORRIDA,
+  LIMITE_ESPERA_MIN,
+  MOTIVOS_CANCELAMENTO,
+  corridaAtiva,
+  rotuloMotivo,
+  rotuloStatus,
+  tomStatus,
+} from "../../utils/corridas";
 import { rotuloCategoria, rotuloPropulsao } from "../../utils/veiculos";
 import Mapa, { Marcador, TracadoRota } from "../../components/Mapa/Mapa";
 import { AvaliacaoFeita, AvaliacaoForm, Estrelas } from "../../components/Avaliacao/Avaliacao";
@@ -59,6 +67,7 @@ function Corrida() {
   const [erro, setErro] = useState("");
   const [acao, setAcao] = useState(false);
   const [codigo, setCodigo] = useState(""); // código de embarque digitado pelo motorista
+  const [esperaAdiadaAte, setEsperaAdiadaAte] = useState(0); // "continuar procurando" adia o aviso
   const [avaliacaoFeita, setAvaliacaoFeita] = useState(null);
   const [avaliacaoVerificada, setAvaliacaoVerificada] = useState(false);
 
@@ -116,7 +125,12 @@ function Corrida() {
   }, [corrida, idUsuario, avaliacaoVerificada]);
 
   const mudarStatus = async (status, confirmacao) => {
-    if (confirmacao && !(await confirmar(confirmacao))) return;
+    let motivo = null;
+    if (confirmacao) {
+      const resultado = await confirmar(confirmacao);
+      if (!resultado) return;
+      if (typeof resultado === "string") motivo = resultado; // folha com opções devolve a escolha
+    }
     setAcao(true);
     setErro("");
     try {
@@ -124,6 +138,7 @@ function Corrida() {
         status,
         id_usuario: idUsuario,
         ...(status === "em_andamento" ? { codigo } : {}),
+        ...(motivo ? { motivo } : {}),
       });
       setCorrida(resposta.data.corrida);
       if (resposta.data.mensagem) toast(resposta.data.mensagem);
@@ -166,6 +181,28 @@ function Corrida() {
           mensagem: `Oi, ${nomeOutra}! Sou ${primeiroNome(usuario?.nome)}, da corrida pelo EcoMove.`,
         })
       : null;
+  const cancelarCorrida = () =>
+    mudarStatus("cancelada", {
+      titulo: "Cancelar esta corrida?",
+      mensagem:
+        corrida.status === "aceita"
+          ? "O motorista já está a caminho e será avisado. Conte o motivo:"
+          : "Conte o motivo, para a gente melhorar o serviço:",
+      opcoes: MOTIVOS_CANCELAMENTO,
+      rotuloOpcoes: "Motivo do cancelamento",
+      confirmar: "Cancelar corrida",
+      cancelar: "Manter corrida",
+      perigo: true,
+    });
+
+  // Procurando há mais de LIMITE_ESPERA_MIN: oferece continuar ou cancelar (a cada consulta a tela redesenha)
+  const esperaMs = Date.now() - new Date(corrida.criada_em).getTime();
+  const esperandoDemais =
+    souPassageiro &&
+    corrida.status === "pendente" &&
+    esperaMs > LIMITE_ESPERA_MIN * 60000 &&
+    Date.now() > esperaAdiadaAte;
+  const etapaAtual = ETAPAS_CORRIDA.findIndex((e) => e.status === corrida.status);
   const origem = { lat: corrida.origem_lat, lng: corrida.origem_lng };
   const destino = { lat: corrida.destino_lat, lng: corrida.destino_lng };
   const pontos = rota?.pontos || [
@@ -196,23 +233,58 @@ function Corrida() {
       )}
       {/* Situação atual */}
       <section className="app-cartao" aria-live="polite">
+        {etapaAtual >= 0 && (
+          <ol className="corrida-etapas" aria-label="Andamento da corrida">
+            {ETAPAS_CORRIDA.map((etapa, i) => (
+              <li
+                key={etapa.status}
+                className={i < etapaAtual ? "feita" : i === etapaAtual ? "atual" : ""}
+                aria-current={i === etapaAtual ? "step" : undefined}
+              >
+                {etapa.rotulo}
+              </li>
+            ))}
+          </ol>
+        )}
         {corrida.status === "pendente" && (
           <div className="corrida-aguardando">
             <span className="corrida-pulso" aria-hidden="true" />
             <p>
               {souPassageiro
-                ? "Procurando um motorista próximo. Você será avisado assim que alguém aceitar."
+                ? "Procurando um motorista por perto. Avisamos assim que alguém aceitar."
                 : "Aguardando um motorista aceitar."}
             </p>
           </div>
         )}
+        {esperandoDemais && (
+          <div className="corrida-espera">
+            <p>Ninguém aceitou ainda. Pode levar mais um pouco, ou você cancela e tenta mais tarde.</p>
+            <div className="corrida-espera-acoes">
+              <button
+                type="button"
+                className="app-btn app-btn-secundario app-btn-pequeno"
+                onClick={() => setEsperaAdiadaAte(Date.now() + LIMITE_ESPERA_MIN * 60000)}
+              >
+                Continuar procurando
+              </button>
+              <button
+                type="button"
+                className="app-btn app-btn-perigo app-btn-pequeno"
+                onClick={cancelarCorrida}
+                disabled={acao}
+              >
+                Cancelar corrida
+              </button>
+            </div>
+          </div>
+        )}
         {corrida.status === "aceita" && souPassageiro && (
-          <p>Seu motorista está a caminho do ponto de encontro.</p>
+          <p>Seu motorista está a caminho do ponto de encontro. Tenha o código de embarque à mão.</p>
         )}
         {corrida.status === "aceita" && souMotorista && (
-          <p>Vá até o passageiro. Quando ele embarcar, toque em Iniciar corrida.</p>
+          <p>Vá até o passageiro, peça o código de embarque e toque em Iniciar corrida.</p>
         )}
-        {corrida.status === "em_andamento" && <p>Corrida em andamento. Boa viagem!</p>}
+        {corrida.status === "em_andamento" && <p>Boa viagem! Acompanhe o trajeto no mapa.</p>}
         {corrida.status === "concluida" && (
           <div className="corrida-resumo-final">
             <p>
@@ -249,7 +321,12 @@ function Corrida() {
             )}
           </div>
         )}
-        {corrida.status === "cancelada" && <p>Esta corrida foi cancelada.</p>}
+        {corrida.status === "cancelada" && (
+          <p>
+            Esta corrida foi cancelada
+            {corrida.motivo_cancelamento && ` (${rotuloMotivo(corrida.motivo_cancelamento).toLowerCase()})`}.
+          </p>
+        )}
       </section>
 
       {/* Quem está do outro lado: avatar, nota, carro e placa grande, contato e código de embarque */}
@@ -373,20 +450,7 @@ function Corrida() {
           </button>
         )}
         {souPassageiro && (corrida.status === "pendente" || corrida.status === "aceita") && (
-          <button
-            type="button"
-            className="app-btn app-btn-perigo"
-            onClick={() =>
-              mudarStatus("cancelada", {
-                titulo: "Cancelar esta corrida?",
-                mensagem: "Se um motorista já aceitou, ele será avisado.",
-                confirmar: "Cancelar corrida",
-                cancelar: "Manter corrida",
-                perigo: true,
-              })
-            }
-            disabled={acao}
-          >
+          <button type="button" className="app-btn app-btn-perigo" onClick={cancelarCorrida} disabled={acao}>
             Cancelar corrida
           </button>
         )}

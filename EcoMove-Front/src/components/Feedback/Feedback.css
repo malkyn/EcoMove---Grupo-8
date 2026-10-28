@@ -48,6 +48,51 @@
   color: var(--app-texto-suave);
 }
 
+/* Escolha única dentro da folha (ex.: motivo do cancelamento) */
+.folha-opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.2rem;
+}
+
+.folha-opcao {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: var(--app-toque);
+  padding: 0.6rem 0.8rem;
+  border: 1.5px solid var(--app-borda);
+  border-radius: 12px;
+  background: var(--app-fundo-leve);
+  color: var(--app-texto);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.folha-opcao::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--app-borda-forte);
+  background: var(--app-branco);
+}
+
+.folha-opcao.ativa {
+  border-color: var(--app-verde);
+  background: var(--app-verde-claro);
+}
+
+.folha-opcao.ativa::before {
+  border-color: var(--app-verde);
+  background: radial-gradient(var(--app-verde) 45%, var(--app-branco) 50%);
+}
+
 .folha-acoes {
   display: flex;
   flex-direction: column;
