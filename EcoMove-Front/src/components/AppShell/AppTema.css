@@ -7,7 +7,8 @@
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  padding: 0.85rem 1.2rem;
+  min-height: var(--app-toque);
+  padding: 0.75rem 1.2rem;
   border-radius: 999px;
   border: 1.5px solid transparent;
   font-size: 1rem;
@@ -27,27 +28,27 @@
 
 .app-btn-primario {
   background: var(--app-verde);
-  color: #ffffff;
+  color: var(--app-branco);
 }
 
 .app-btn-primario:hover:not(:disabled) {
   background: var(--app-verde-medio);
-  color: #ffffff;
+  color: var(--app-branco);
   transform: translateY(-1px);
 }
 
 .app-btn-secundario {
-  background: #eef2f0;
+  background: var(--app-fundo-suave);
   color: var(--app-texto);
 }
 
 .app-btn-secundario:hover:not(:disabled) {
-  background: #e3e8e5;
+  background: var(--app-borda);
   color: var(--app-texto);
 }
 
 .app-btn-vazado {
-  background: #ffffff;
+  background: var(--app-branco);
   border-color: var(--app-borda-forte);
   color: var(--app-verde);
 }
@@ -59,25 +60,25 @@
 }
 
 .app-btn-perigo {
-  background: #fdecea;
-  color: #b42318;
+  background: var(--app-erro-fundo);
+  color: var(--app-erro);
 }
 
 .app-btn-perigo:hover:not(:disabled) {
-  background: #f9d3d0;
-  color: #b42318;
+  background: var(--app-erro-fundo-forte);
+  color: var(--app-erro);
 }
 
-/* Versão compacta, para dentro de cartões e listas */
+/* Versão compacta, para dentro de cartões e listas: menor na largura, nunca na altura de toque */
 .app-btn-pequeno {
   align-self: flex-start;
-  padding: 0.55rem 1rem;
+  padding: 0.5rem 1rem;
   font-size: 0.9rem;
 }
 
 /* ===== Cartão ===== */
 .app-cartao {
-  background: #ffffff;
+  background: var(--app-branco);
   border: 1px solid var(--app-borda);
   border-radius: var(--app-raio);
   padding: 1rem;
@@ -107,11 +108,12 @@
   display: inline-flex;
   align-items: center;
   gap: 0.2rem;
-  padding: 0.3rem 0.8rem 0.3rem 0.6rem;
+  min-height: var(--app-toque);
+  padding: 0.4rem 0.9rem 0.4rem 0.65rem;
   border-radius: 999px;
-  background: #eef2f0;
+  background: var(--app-fundo-suave);
   color: var(--app-texto);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
   transition: background 0.2s ease, color 0.2s ease;
@@ -138,21 +140,21 @@
 }
 
 .app-alerta-erro {
-  background: #fdecea;
-  border-color: #f5c2c0;
-  color: #8a1c1c;
+  background: var(--app-erro-fundo);
+  border-color: var(--app-erro-borda);
+  color: var(--app-erro-texto);
 }
 
 .app-alerta-ok {
   background: var(--app-verde-claro);
-  border-color: #bfe6d1;
+  border-color: var(--app-verde-claro-borda);
   color: var(--app-verde-escuro);
 }
 
 .app-alerta-aviso {
-  background: #fff6e0;
-  border-color: #f3dfae;
-  color: #7a4d00;
+  background: var(--app-ambar-fundo);
+  border-color: var(--app-ambar-borda);
+  color: var(--app-ambar-texto);
 }
 
 /* ===== Chips e estados vazios ===== */
@@ -161,7 +163,7 @@
   align-items: center;
   padding: 0.35rem 0.8rem;
   border-radius: 999px;
-  background: #eef2f0;
+  background: var(--app-fundo-suave);
   color: var(--app-texto-suave);
   font-size: 0.8rem;
   font-weight: 600;
@@ -196,6 +198,11 @@
 }
 
 /* ===== Campos de formulário ===== */
+/* Campo com menos de 16 px faz o iOS dar zoom ao focar; vale para qualquer campo do app */
+.app-shell :is(input, select, textarea) {
+  font-size: 1rem;
+}
+
 .app-campo {
   display: flex;
   flex-direction: column;
@@ -215,14 +222,14 @@
   padding: 0.75rem 0.95rem;
   border: 1.5px solid var(--app-borda-forte);
   border-radius: var(--app-raio-campo);
-  background: #ffffff;
+  background: var(--app-branco);
   color: var(--app-texto);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .app-campo input::placeholder,
 .app-campo textarea::placeholder {
-  color: #9aa7a1;
+  color: var(--app-texto-fraco);
 }
 
 .app-campo input:focus,
@@ -236,14 +243,15 @@
 /* Botão "usar minha localização" ao lado de um campo de endereço */
 .app-gps {
   flex: 0 0 auto;
-  width: 46px;
+  min-width: var(--app-toque);
+  min-height: var(--app-toque);
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 1.5px solid var(--app-borda-forte);
   border-radius: var(--app-raio-campo);
-  background: #ffffff;
+  background: var(--app-branco);
   color: var(--app-verde);
   cursor: pointer;
   transition: background 0.2s ease, border-color 0.2s ease;

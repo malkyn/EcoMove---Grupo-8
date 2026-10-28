@@ -9,8 +9,8 @@
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  background: #ffffff;
-  border: 1px solid #e3e8e5;
+  background: var(--app-branco);
+  border: 1px solid var(--app-borda);
   border-radius: 16px;
   padding: 1rem;
 }
@@ -20,8 +20,8 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: #e3f5ec;
-  color: #036141;
+  background: var(--app-verde-claro);
+  color: var(--app-verde);
   font-weight: 700;
   font-size: 1.1rem;
   display: flex;
@@ -37,7 +37,7 @@
 .perfil-dados h1 {
   margin: 0;
   font-size: 1.05rem;
-  color: #1f2d27;
+  color: var(--app-texto);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -46,7 +46,7 @@
 .perfil-dados p {
   margin: 0.1rem 0 0.3rem;
   font-size: 0.85rem;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -56,9 +56,9 @@
   display: inline-block;
   padding: 0.1rem 0.6rem;
   border-radius: 999px;
-  background: #e3f5ec;
-  color: #036141;
-  font-size: 0.75rem;
+  background: var(--app-verde-claro);
+  color: var(--app-verde);
+  font-size: 0.8rem;
   font-weight: 600;
 }
 
@@ -71,13 +71,13 @@
 
 .perfil-nota strong {
   font-size: 1.5rem;
-  color: #036141;
+  color: var(--app-verde);
   line-height: 1;
 }
 
 .perfil-nota small {
-  font-size: 0.7rem;
-  color: #6b7a74;
+  font-size: 0.8rem;
+  color: var(--app-texto-suave);
   text-align: center;
 }
 
@@ -86,14 +86,14 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  background: #ffffff;
-  border: 1px solid #e3e8e5;
+  background: var(--app-branco);
+  border: 1px solid var(--app-borda);
   border-radius: 16px;
   overflow: hidden;
 }
 
 .perfil-menu li + li {
-  border-top: 1px solid #e3e8e5;
+  border-top: 1px solid var(--app-borda);
 }
 
 .perfil-item {
@@ -107,44 +107,44 @@
   border-radius: 0;
   font-size: 1rem;
   font-weight: 500;
-  color: #1f2d27;
+  color: var(--app-texto);
   text-decoration: none;
   text-align: left;
   cursor: pointer;
 }
 
 .perfil-item:hover {
-  background: #f5f7f6;
-  color: #036141;
+  background: var(--app-fundo);
+  color: var(--app-verde);
   border-color: transparent;
 }
 
 .perfil-seta {
-  color: #9aa5a0;
+  color: var(--app-texto-fraco);
   font-size: 1.3rem;
   line-height: 1;
 }
 
 .perfil-sair {
-  color: #b42318;
+  color: var(--app-erro);
 }
 
 .perfil-sair:hover {
-  color: #b42318;
-  background: #fdecea;
+  color: var(--app-erro);
+  background: var(--app-erro-fundo);
 }
 
 .perfil-dica {
   padding: 0.8rem 1rem;
   font-size: 0.85rem;
-  color: #6b7a74;
-  background: #f5f7f6;
+  color: var(--app-texto-suave);
+  background: var(--app-fundo);
 }
 
 /* ----- Avaliações recebidas ----- */
 .perfil-avaliacoes {
-  background: #ffffff;
-  border: 1px solid #e3e8e5;
+  background: var(--app-branco);
+  border: 1px solid var(--app-borda);
   border-radius: 16px;
   padding: 1rem;
   display: flex;
@@ -155,7 +155,7 @@
 .perfil-avaliacoes h2 {
   margin: 0;
   font-size: 1rem;
-  color: #1f2d27;
+  color: var(--app-texto);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -165,7 +165,7 @@
 .perfil-avaliacoes-vazio {
   margin: 0;
   font-size: 0.85rem;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
 }
 
 .perfil-avaliacoes-lista {
@@ -178,7 +178,7 @@
 }
 
 .perfil-avaliacoes-lista li {
-  border-top: 1px solid #e3e8e5;
+  border-top: 1px solid var(--app-borda);
   padding-top: 0.6rem;
   display: flex;
   flex-direction: column;
@@ -190,23 +190,23 @@
   align-items: center;
   gap: 0.6rem;
   font-size: 0.85rem;
-  color: #1f2d27;
+  color: var(--app-texto);
 }
 
 .perfil-avaliacao-topo small {
-  color: #6b7a74;
+  color: var(--app-texto-suave);
   margin-left: auto;
 }
 
 .perfil-avaliacoes-lista p {
   margin: 0;
   font-size: 0.9rem;
-  color: #1f2d27;
+  color: var(--app-texto);
 }
 
 .perfil-rodape {
   margin: 0;
   text-align: center;
-  font-size: 0.75rem;
-  color: #9aa5a0;
+  font-size: 0.8rem;
+  color: var(--app-texto-fraco);
 }

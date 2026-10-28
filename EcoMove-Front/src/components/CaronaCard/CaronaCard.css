@@ -1,6 +1,6 @@
 .carona-card {
-  background: #ffffff;
-  border: 1px solid #e3e8e5;
+  background: var(--app-branco);
+  border: 1px solid var(--app-borda);
   border-radius: 16px;
   padding: 1rem 1.2rem;
   text-align: left;
@@ -8,12 +8,12 @@
 }
 
 .carona-card.carona-lotada {
-  border-color: #cfd6d2;
+  border-color: var(--app-borda-forte);
   opacity: 0.85;
 }
 
 .carona-card.carona-recomendada {
-  border-color: #e0a800;
+  border-color: var(--app-dourado);
   box-shadow: 0 2px 12px rgba(224, 168, 0, 0.18);
 }
 
@@ -22,9 +22,9 @@
   margin-bottom: 0.6rem;
   padding: 0.15rem 0.65rem;
   border-radius: 999px;
-  background: #fff8e1;
-  color: #7a4d00;
-  font-size: 0.75rem;
+  background: var(--app-dourado-fundo);
+  color: var(--app-ambar-texto);
+  font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -42,9 +42,9 @@
 .carona-motivos li {
   padding: 0.15rem 0.6rem;
   border-radius: 999px;
-  background: #f0f3f1;
-  color: #1f2d27;
-  font-size: 0.75rem;
+  background: var(--app-fundo-suave);
+  color: var(--app-texto);
+  font-size: 0.8rem;
 }
 
 .carona-rota {
@@ -54,12 +54,12 @@
   gap: 0.5rem;
   font-weight: 600;
   font-size: 1.05rem;
-  color: #1f2d27;
+  color: var(--app-texto);
   margin-bottom: 0.75rem;
 }
 
 .carona-seta {
-  color: #036141;
+  color: var(--app-verde);
 }
 
 .carona-info {
@@ -70,15 +70,15 @@
 }
 
 .carona-info dt {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
 }
 
 .carona-info dd {
   margin: 0.1rem 0 0;
-  color: #1f2d27;
+  color: var(--app-texto);
   font-size: 0.95rem;
 }
 
@@ -87,21 +87,21 @@
   margin-left: 0.5rem;
   padding: 0.1rem 0.5rem;
   border-radius: 999px;
-  background: #e3f5ec;
-  color: #036141;
-  font-size: 0.75rem;
+  background: var(--app-verde-claro);
+  color: var(--app-verde);
+  font-size: 0.8rem;
   font-weight: 600;
 }
 
 .carona-preco {
-  color: #036141;
+  color: var(--app-verde);
   font-weight: 700;
 }
 
 .carona-compatibilidade {
   margin: 0.7rem 0 0;
   font-size: 0.8rem;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
 }
 
 .badge-categoria {
@@ -109,9 +109,9 @@
   margin-left: 0.5rem;
   padding: 0.1rem 0.5rem;
   border-radius: 999px;
-  background: #eef1ef;
-  color: #6b7a74;
-  font-size: 0.75rem;
+  background: var(--app-fundo-suave);
+  color: var(--app-texto-suave);
+  font-size: 0.8rem;
   font-weight: 600;
 }
 
