@@ -215,3 +215,27 @@
   color: var(--app-verde);
 }
 
+/* Relógio da oferta: a barra esvazia em TEMPO_OFERTA_S segundos */
+.inicio-pedido-tempo {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--app-borda);
+  overflow: hidden;
+}
+
+.inicio-pedido-tempo span {
+  display: block;
+  height: 100%;
+  background: var(--app-azul);
+  transition: width 1s linear;
+}
+
+.inicio-pedido-acoes {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.inicio-pedido-acoes .app-btn {
+  flex: 1 1 0;
+}
+
