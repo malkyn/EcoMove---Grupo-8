@@ -3,15 +3,15 @@
   inset: 0;
   display: flex;
   flex-direction: column;
-  background: #f5f7f6;
+  background: var(--app-fundo);
 }
 
 /* ----- Formulário ----- */
 .destino-formulario {
   flex: 0 0 auto;
   z-index: 2;
-  background: #ffffff;
-  border-bottom: 1px solid #e3e8e5;
+  background: var(--app-branco);
+  border-bottom: 1px solid var(--app-borda);
   padding: 0.8rem 1rem;
   display: flex;
   flex-direction: column;
@@ -27,7 +27,7 @@
 
 .destino-segmentado {
   display: inline-flex;
-  background: #f0f3f1;
+  background: var(--app-fundo-suave);
   border-radius: 999px;
   padding: 3px;
 }
@@ -35,28 +35,30 @@
 .destino-segmentado button {
   border: none;
   background: none;
-  padding: 0.45rem 1rem;
+  min-height: calc(var(--app-toque) - 6px);
+  padding: 0.4rem 1rem;
   border-radius: 999px;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
   cursor: pointer;
 }
 
 .destino-segmentado button.ativo {
-  background: #ffffff;
-  color: #036141;
+  background: var(--app-branco);
+  color: var(--app-verde);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
 }
 
 .destino-data {
   flex: 1 1 180px;
-  font-size: 0.95rem;
-  padding: 0.55rem 0.8rem;
-  border: 1.5px solid #d6ddd9;
+  min-height: var(--app-toque);
+  font-size: 1rem;
+  padding: 0.5rem 0.8rem;
+  border: 1.5px solid var(--app-borda-forte);
   border-radius: 12px;
-  background: #ffffff;
-  color: #1f2d27;
+  background: var(--app-branco);
+  color: var(--app-texto);
 }
 
 /* ----- Mapa ----- */
@@ -71,8 +73,8 @@
   flex: 0 0 auto;
   max-height: 55%;
   overflow-y: auto;
-  background: #ffffff;
-  border-top: 1px solid #e3e8e5;
+  background: var(--app-branco);
+  border-top: 1px solid var(--app-borda);
   border-radius: 24px 24px 0 0;
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
   padding: 0.9rem 1rem 1rem;
@@ -84,23 +86,23 @@
 .destino-dica,
 .destino-nota {
   margin: 0;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
   font-size: 0.85rem;
 }
 
 .destino-resumo {
   margin: 0;
   font-size: 1rem;
-  color: #1f2d27;
+  color: var(--app-texto);
 }
 
 .destino-resumo strong {
   font-size: 1.2rem;
-  color: #036141;
+  color: var(--app-verde);
 }
 
 .destino-estimada {
-  color: #6b7a74;
+  color: var(--app-texto-suave);
   font-size: 0.85rem;
 }
 
@@ -115,51 +117,51 @@
   flex-direction: column;
   gap: 0.15rem;
   padding: 0.75rem 0.85rem;
-  border: 1px solid #e3e8e5;
+  border: 1px solid var(--app-borda);
   border-radius: 14px;
-  background: #fafbfa;
+  background: var(--app-fundo-leve);
 }
 
 .destino-opcao-titulo {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
 }
 
 .destino-opcao strong {
   font-size: 1.35rem;
-  color: #1f2d27;
+  color: var(--app-texto);
 }
 
 .destino-opcao small {
-  font-size: 0.75rem;
-  color: #6b7a74;
+  font-size: 0.8rem;
+  color: var(--app-texto-suave);
 }
 
 .destino-opcao-destaque {
-  border-color: #036141;
-  background: #e3f5ec;
+  border-color: var(--app-verde);
+  background: var(--app-verde-claro);
 }
 
 .destino-opcao-destaque strong {
-  color: #036141;
+  color: var(--app-verde);
 }
 
 .destino-opcao-destaque small {
-  color: #036141;
+  color: var(--app-verde);
   font-weight: 600;
 }
 
 .destino-co2 {
   margin: 0;
   font-size: 0.9rem;
-  color: #1f2d27;
+  color: var(--app-texto);
 }
 
 .destino-co2 strong {
-  color: #036141;
+  color: var(--app-verde);
 }
 
 .destino-acoes {

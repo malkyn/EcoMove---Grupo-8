@@ -1,19 +1,52 @@
-/* Casca do app logado: ocupa a tela inteira do celular */
-.app-shell {
+/* Tokens do app logado. Ficam em :root porque todo CSS vai para o bundle global e
+   componentes compartilhados (CaronaCard, Avaliacao, CampoEndereco) também os usam.
+   Regra: nenhuma cor escrita direto nos CSS das telas; tudo passa por aqui. */
+:root {
+  /* Marca */
   --app-verde: #036141;
   --app-verde-escuro: #024b30;
   --app-verde-medio: #088b60;
   --app-verde-claro: #e3f5ec;
+  --app-verde-claro-borda: #bfe6d1;
+
+  /* Neutros */
+  --app-branco: #ffffff;
+  --app-fundo: #f5f7f6;
+  --app-fundo-leve: #fafbfa;
+  --app-fundo-suave: #eef2f0;
   --app-texto: #1f2d27;
   --app-texto-suave: #6b7a74;
+  --app-texto-fraco: #9aa5a0;
   --app-borda: #e3e8e5;
   --app-borda-forte: #d6ddd9;
-  --app-fundo: #f5f7f6;
+
+  /* Acentos com significado fixo: um uso por cor */
+  --app-azul: #1d4ed8;          /* status da corrida e motorista no mapa */
+  --app-azul-fundo: #e0ecff;
+  --app-laranja: #d9480f;       /* destino no mapa */
+  --app-dourado: #e0a800;       /* estrelas e destaque "recomendada" */
+  --app-dourado-escuro: #b8860b;
+  --app-dourado-fundo: #fff8e1;
+  --app-dourado-fundo-forte: #ffefc2;
+  --app-ambar-fundo: #fff6e0;   /* avisos */
+  --app-ambar-borda: #f3dfae;
+  --app-ambar-texto: #7a4d00;
+  --app-erro: #b42318;          /* ações destrutivas e erros */
+  --app-erro-fundo: #fdecea;
+  --app-erro-fundo-forte: #f9d3d0;
+  --app-erro-borda: #f5c2c0;
+  --app-erro-texto: #8a1c1c;
+
+  /* Medidas */
   --app-raio: 16px;
   --app-raio-campo: 12px;
+  --app-toque: 44px;            /* alvo mínimo de toque */
   --app-topo-altura: 56px;
   --app-abas-altura: 60px;
+}
 
+/* Casca do app logado: ocupa a tela inteira do celular */
+.app-shell {
   display: flex;
   flex-direction: column;
   height: 100dvh;
@@ -34,7 +67,7 @@
   gap: 0.6rem;
   padding-left: 1rem;
   padding-right: 1rem;
-  background: #ffffff;
+  background: var(--app-branco);
   border-bottom: 1px solid var(--app-borda);
 }
 
@@ -49,9 +82,9 @@
   margin-left: auto;
   padding: 0.1rem 0.55rem;
   border-radius: 999px;
-  background: #fff6e0;
-  color: #7a4d00;
-  font-size: 0.7rem;
+  background: var(--app-ambar-fundo);
+  color: var(--app-ambar-texto);
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -71,7 +104,7 @@
   height: calc(var(--app-abas-altura) + env(safe-area-inset-bottom));
   padding-bottom: env(safe-area-inset-bottom);
   display: flex;
-  background: #ffffff;
+  background: var(--app-branco);
   border-top: 1px solid var(--app-borda);
 }
 
@@ -85,7 +118,7 @@
   padding-top: 4px;
   color: var(--app-texto-suave);
   text-decoration: none;
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 500;
   transition: color 0.2s ease;
 }

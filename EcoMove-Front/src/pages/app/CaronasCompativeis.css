@@ -18,17 +18,17 @@
   align-items: center;
   gap: 0.4rem;
   font-weight: 600;
-  color: #1f2d27;
+  color: var(--app-texto);
 }
 
 .compativeis-seta {
-  color: #036141;
+  color: var(--app-verde);
 }
 
 .compativeis-quando {
   margin: 0;
   font-size: 0.85rem;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
 }
 
 .compativeis-lista {

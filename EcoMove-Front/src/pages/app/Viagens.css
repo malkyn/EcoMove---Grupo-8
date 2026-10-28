@@ -13,8 +13,8 @@
 
 /* ----- Corridas ----- */
 .corrida-resumo {
-  background: #ffffff;
-  border: 1px solid #e3e8e5;
+  background: var(--app-branco);
+  border: 1px solid var(--app-borda);
   border-radius: 16px;
   padding: 0.9rem 1rem;
   display: flex;
@@ -33,38 +33,38 @@
 .corrida-resumo-status {
   padding: 0.15rem 0.6rem;
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 700;
 }
 
 .tom-aguardando {
-  background: #fff6e0;
-  color: #7a4d00;
+  background: var(--app-ambar-fundo);
+  color: var(--app-ambar-texto);
 }
 
 .tom-andamento {
-  background: #e0ecff;
-  color: #1d4ed8;
+  background: var(--app-azul-fundo);
+  color: var(--app-azul);
 }
 
 .tom-ok {
-  background: #e3f5ec;
-  color: #036141;
+  background: var(--app-verde-claro);
+  color: var(--app-verde);
 }
 
 .tom-erro {
-  background: #fdecea;
-  color: #8a1c1c;
+  background: var(--app-erro-fundo);
+  color: var(--app-erro-texto);
 }
 
 .corrida-resumo-data {
   font-size: 0.8rem;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
 }
 
 .corrida-resumo-rota {
   font-weight: 600;
-  color: #1f2d27;
+  color: var(--app-texto);
 }
 
 .corrida-resumo-info {
@@ -72,17 +72,17 @@
   flex-wrap: wrap;
   gap: 0.3rem 1rem;
   font-size: 0.85rem;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
 }
 
 .corrida-resumo-info strong {
-  color: #036141;
+  color: var(--app-verde);
 }
 
 .viagens-passageiros {
   width: 100%;
   font-size: 0.85rem;
-  color: #1f2d27;
+  color: var(--app-texto);
   display: flex;
   flex-wrap: wrap;
   gap: 0.3rem 0.8rem;

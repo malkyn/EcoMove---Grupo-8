@@ -19,7 +19,7 @@
   z-index: 1;
   max-height: 65%;
   overflow-y: auto;
-  background: #ffffff;
+  background: var(--app-branco);
   border-radius: 24px 24px 0 0;
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
   padding: 0.6rem 1.2rem 1.2rem;
@@ -33,7 +33,7 @@
   width: 40px;
   height: 4px;
   border-radius: 2px;
-  background: #d5dcd8;
+  background: var(--app-borda-forte);
   margin: 0 auto 0.2rem;
 }
 
@@ -44,23 +44,23 @@
   gap: 0.6rem;
   font-size: 1.15rem;
   font-weight: 800;
-  color: #1f2d27;
+  color: var(--app-texto);
 }
 
 .inicio-estado {
   padding: 0.1rem 0.6rem;
   border-radius: 999px;
-  background: #eef1ef;
-  color: #6b7a74;
-  font-size: 0.72rem;
+  background: var(--app-fundo-suave);
+  color: var(--app-texto-suave);
+  font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .inicio-estado-online {
-  background: #e3f5ec;
-  color: #036141;
+  background: var(--app-verde-claro);
+  color: var(--app-verde);
 }
 
 /* Corrida ativa */
@@ -70,20 +70,20 @@
   gap: 0.2rem;
   padding: 0.8rem 1rem;
   border-radius: 16px;
-  background: #e0ecff;
-  color: #1d4ed8;
+  background: var(--app-azul-fundo);
+  color: var(--app-azul);
   text-decoration: none;
 }
 
 .inicio-corrida-status {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 .inicio-corrida-rota {
-  color: #1f2d27;
+  color: var(--app-texto);
   font-weight: 600;
 }
 
@@ -99,8 +99,8 @@
   gap: 0.7rem;
   padding: 0.95rem 1.1rem;
   border-radius: 14px;
-  background: #f0f3f1;
-  color: #1f2d27;
+  background: var(--app-fundo-suave);
+  color: var(--app-texto);
   font-size: 1.05rem;
   font-weight: 600;
   text-decoration: none;
@@ -108,14 +108,14 @@
 }
 
 .inicio-busca:hover {
-  background: #e3f5ec;
-  color: #036141;
+  background: var(--app-verde-claro);
+  color: var(--app-verde);
 }
 
 .inicio-motoristas {
   margin: 0;
   font-size: 0.85rem;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
 }
 
 /* Ações do motorista */
@@ -135,14 +135,14 @@
 .inicio-sugestoes h2 {
   margin: 0.2rem 0 0;
   font-size: 0.95rem;
-  color: #1f2d27;
+  color: var(--app-texto);
 }
 
 /* Pedidos (motorista online) */
 .inicio-pedidos h2 {
   margin: 0.3rem 0 0.5rem;
   font-size: 0.95rem;
-  color: #1f2d27;
+  color: var(--app-texto);
 }
 
 .inicio-pedidos ul {
@@ -160,7 +160,7 @@
   align-items: center;
   gap: 0.6rem;
   font-size: 0.85rem;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
 }
 
 .inicio-pulso {
@@ -168,7 +168,7 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #1d4ed8;
+  background: var(--app-azul);
   box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.5);
   animation: inicio-pulsar 1.6s ease-out infinite;
 }
@@ -189,8 +189,8 @@
 }
 
 .inicio-pedido {
-  border: 1px solid #e3e8e5;
-  border-left: 4px solid #1d4ed8;
+  border: 1px solid var(--app-borda);
+  border-left: 4px solid var(--app-azul);
   border-radius: 14px;
   padding: 0.7rem 0.9rem;
   display: flex;
@@ -200,7 +200,7 @@
 
 .inicio-pedido-rota {
   font-weight: 600;
-  color: #1f2d27;
+  color: var(--app-texto);
 }
 
 .inicio-pedido-info {
@@ -208,10 +208,10 @@
   flex-wrap: wrap;
   gap: 0.4rem 0.9rem;
   font-size: 0.8rem;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
 }
 
 .inicio-pedido-info strong {
-  color: #036141;
+  color: var(--app-verde);
 }
 

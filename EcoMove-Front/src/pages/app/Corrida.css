@@ -28,30 +28,30 @@
 }
 
 .corrida-status-aguardando {
-  background: #fff6e0;
-  color: #7a4d00;
+  background: var(--app-ambar-fundo);
+  color: var(--app-ambar-texto);
 }
 
 .corrida-status-andamento {
-  background: #e0ecff;
-  color: #1d4ed8;
+  background: var(--app-azul-fundo);
+  color: var(--app-azul);
 }
 
 .corrida-status-ok {
-  background: #e3f5ec;
-  color: #036141;
+  background: var(--app-verde-claro);
+  color: var(--app-verde);
 }
 
 .corrida-status-erro {
-  background: #fdecea;
-  color: #8a1c1c;
+  background: var(--app-erro-fundo);
+  color: var(--app-erro-texto);
 }
 
 .corrida-mapa {
   height: 200px;
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid #e3e8e5;
+  border: 1px solid var(--app-borda);
 }
 
 /* ----- Mensagens ----- */
@@ -69,7 +69,7 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #036141;
+  background: var(--app-verde);
   box-shadow: 0 0 0 0 rgba(3, 97, 65, 0.5);
   animation: corrida-pulsar 1.6s ease-out infinite;
 }
@@ -97,12 +97,12 @@
 
 .corrida-co2 strong,
 .corrida-resumo-final strong {
-  color: #036141;
+  color: var(--app-verde);
 }
 
 .corrida-nota {
   font-size: 0.8rem;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
 }
 
 .corrida-info {
@@ -113,10 +113,10 @@
 }
 
 .corrida-info dt {
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
 }
 
 .corrida-info dd {
@@ -125,11 +125,11 @@
 }
 
 .corrida-info small {
-  color: #6b7a74;
+  color: var(--app-texto-suave);
 }
 
 .corrida-preco {
-  color: #036141;
+  color: var(--app-verde);
   font-weight: 700;
 }
 

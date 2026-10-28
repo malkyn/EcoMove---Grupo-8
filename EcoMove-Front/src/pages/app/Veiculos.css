@@ -16,8 +16,8 @@
   text-align: center;
   padding: 0.15rem 0.6rem;
   border-radius: 999px;
-  background: #e3f5ec;
-  color: #036141;
+  background: var(--app-verde-claro);
+  color: var(--app-verde);
   font-weight: 700;
   font-size: 0.9rem;
 }
@@ -38,8 +38,8 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  background: #ffffff;
-  border: 1px solid #e3e8e5;
+  background: var(--app-branco);
+  border: 1px solid var(--app-borda);
   border-radius: 16px;
   padding: 0.8rem 0.9rem;
 }
@@ -49,8 +49,8 @@
   width: 44px;
   height: 44px;
   border-radius: 10px;
-  background: #e3f5ec;
-  color: #036141;
+  background: var(--app-verde-claro);
+  color: var(--app-verde);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,7 +65,7 @@
 }
 
 .veiculo-dados strong {
-  color: #1f2d27;
+  color: var(--app-texto);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -77,28 +77,28 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.8rem;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
 }
 
 .veiculo-placa {
   font-family: monospace;
   padding: 0.05rem 0.4rem;
-  border: 1px solid #e3e8e5;
+  border: 1px solid var(--app-borda);
   border-radius: 4px;
 }
 
 .veiculo-badge {
   padding: 0.05rem 0.5rem;
   border-radius: 999px;
-  background: #eef1ef;
-  color: #6b7a74;
+  background: var(--app-fundo-suave);
+  color: var(--app-texto-suave);
   font-weight: 600;
-  font-size: 0.72rem;
+  font-size: 0.8rem;
 }
 
 .veiculo-badge-verde {
-  background: #e3f5ec;
-  color: #036141;
+  background: var(--app-verde-claro);
+  color: var(--app-verde);
 }
 
 /* ----- Botões ----- */
@@ -108,7 +108,7 @@
 .veiculos-form h2 {
   margin: 0;
   font-size: 1.1rem;
-  color: #1f2d27;
+  color: var(--app-texto);
 }
 
 .veiculos-categoria {
@@ -123,7 +123,7 @@
 .veiculos-categoria legend {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #1f2d27;
+  color: var(--app-texto);
   margin-bottom: 0.4rem;
 }
 
@@ -133,9 +133,9 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.7rem;
-  border: 1.5px solid #d6ddd9;
+  border: 1.5px solid var(--app-borda-forte);
   border-radius: 14px;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
   font-weight: 600;
   cursor: pointer;
 }
@@ -148,15 +148,15 @@
 }
 
 .veiculos-opcao.selecionada {
-  border-color: #036141;
-  background: #e3f5ec;
-  color: #036141;
+  border-color: var(--app-verde);
+  background: var(--app-verde-claro);
+  color: var(--app-verde);
 }
 
 .veiculos-dica {
   margin: 0;
   font-size: 0.85rem;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
 }
 
 .veiculos-form-acoes {

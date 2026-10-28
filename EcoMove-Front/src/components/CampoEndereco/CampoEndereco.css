@@ -8,7 +8,7 @@
 .campo-endereco-rotulo {
   font-size: 0.88rem;
   font-weight: 600;
-  color: #1f2d27;
+  color: var(--app-texto);
 }
 
 .campo-endereco-linha {
@@ -21,15 +21,15 @@
   min-width: 0;
   font-size: 1rem;
   padding: 0.75rem 0.95rem;
-  border: 1.5px solid #d6ddd9;
+  border: 1.5px solid var(--app-borda-forte);
   border-radius: 12px;
-  background: #ffffff;
-  color: #1f2d27;
+  background: var(--app-branco);
+  color: var(--app-texto);
 }
 
 .campo-endereco input:focus {
   outline: none;
-  border-color: #036141;
+  border-color: var(--app-verde);
   box-shadow: 0 0 0 3px rgba(3, 97, 65, 0.15);
 }
 
@@ -42,8 +42,8 @@
   list-style: none;
   margin: 0.25rem 0 0;
   padding: 0.25rem 0;
-  background: #ffffff;
-  border: 1px solid #d6ddd9;
+  background: var(--app-branco);
+  border: 1px solid var(--app-borda-forte);
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   max-height: 260px;
@@ -56,23 +56,24 @@
   flex-direction: column;
   gap: 0.1rem;
   text-align: left;
+  min-height: var(--app-toque);
   padding: 0.6rem 0.9rem;
   background: none;
   border: none;
   border-radius: 0;
-  color: #1f2d27;
-  font-size: 0.95rem;
+  color: var(--app-texto);
+  font-size: 1rem;
   cursor: pointer;
 }
 
 .campo-endereco-lista button:hover {
-  background: #e3f5ec;
+  background: var(--app-verde-claro);
   border-color: transparent;
 }
 
 .campo-endereco-lista small {
-  color: #6b7a74;
-  font-size: 0.75rem;
+  color: var(--app-texto-suave);
+  font-size: 0.8rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -81,6 +82,6 @@
 
 .campo-endereco-info {
   padding: 0.6rem 0.9rem;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
   font-size: 0.85rem;
 }

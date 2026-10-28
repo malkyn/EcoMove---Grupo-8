@@ -9,24 +9,24 @@
   height: 200px;
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid #e3e8e5;
+  border: 1px solid var(--app-borda);
 }
 
 .oferecer-dica,
 .oferecer-nota {
   margin: 0;
-  color: #6b7a74;
+  color: var(--app-texto-suave);
   font-size: 0.85rem;
 }
 
 .oferecer-resumo {
   margin: 0;
   font-size: 0.95rem;
-  color: #1f2d27;
+  color: var(--app-texto);
 }
 
 .oferecer-resumo strong {
-  color: #036141;
+  color: var(--app-verde);
 }
 
 .oferecer-linha {
