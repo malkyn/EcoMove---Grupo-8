@@ -82,17 +82,114 @@
   }
 }
 
+/* ----- Cartão da pessoa do outro lado (motorista ou passageiro) ----- */
+.corrida-pessoa {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.corrida-pessoa-topo {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.corrida-avatar {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--app-verde-claro);
+  color: var(--app-verde);
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.corrida-pessoa-dados {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.corrida-pessoa-dados strong {
+  font-size: 1.1rem;
+}
+
+.corrida-veiculo {
+  font-size: 0.85rem;
+  color: var(--app-texto-suave);
+}
+
+/* Placa grande, como no cartão da Uber e da 99: é o que a pessoa confere na rua */
+.corrida-placa {
+  flex: 0 0 auto;
+  padding: 0.35rem 0.6rem;
+  border: 2px solid var(--app-texto);
+  border-radius: 8px;
+  background: var(--app-branco);
+  color: var(--app-texto);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
 /* Ligar e mensagem: o telefone nunca aparece na tela, só vira ação */
 .corrida-contato {
   display: flex;
   gap: 0.5rem;
-  margin-top: 0.8rem;
 }
 
 .corrida-contato .app-btn {
   flex: 1 1 0;
   padding-left: 0.6rem;
   padding-right: 0.6rem;
+}
+
+/* Código de embarque: o passageiro mostra, o motorista digita antes de iniciar */
+.corrida-codigo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.8rem;
+  border-radius: 12px;
+  background: var(--app-fundo-suave);
+  text-align: center;
+}
+
+.corrida-codigo-rotulo {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--app-texto-suave);
+}
+
+.corrida-codigo strong {
+  font-size: 2rem;
+  line-height: 1.1;
+  letter-spacing: 0.35em;
+  margin-right: -0.35em;
+  color: var(--app-verde);
+}
+
+.corrida-codigo small {
+  font-size: 0.85rem;
+  color: var(--app-texto-suave);
+}
+
+.corrida-codigo-campo input {
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
 }
 
 .corrida-resumo-final {

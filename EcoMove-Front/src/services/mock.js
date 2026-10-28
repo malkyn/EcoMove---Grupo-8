@@ -784,6 +784,8 @@ function criarCorrida({ db, body }) {
     distancia_km: distanciaKm,
     duracao_min: duracaoMin,
     categoria,
+    // Quatro dígitos que o passageiro diz ao motorista antes de embarcar
+    codigo_embarque: String(Math.floor(1000 + Math.random() * 9000)),
     preco_estimado: estimarCorridaPorCategoria(distanciaKm, duracaoMin, categoria),
     status: "pendente",
     criada_em: agoraISO(),
@@ -892,6 +894,9 @@ function atualizarStatusCorrida({ db, body, match }) {
   if (status === "em_andamento") {
     if (!ehMotorista) return erro(403, "Só o motorista inicia a corrida");
     if (corrida.status !== "aceita") return erro(409, "A corrida precisa estar aceita para iniciar");
+    if (corrida.codigo_embarque && String(body.codigo || "") !== corrida.codigo_embarque) {
+      return erro(403, "Código de embarque incorreto. Confira com o passageiro.");
+    }
     corrida.status = "em_andamento";
     corrida.iniciada_em = agoraISO();
     return responder("Corrida iniciada. Boa viagem!");
