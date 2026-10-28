@@ -45,8 +45,10 @@
   --app-abas-altura: 60px;
 }
 
-/* Casca do app logado: ocupa a tela inteira do celular */
+/* Casca do app logado: ocupa a tela inteira do celular.
+   position: relative ancora a folha de confirmação e os toasts (Feedback.css). */
 .app-shell {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100dvh;

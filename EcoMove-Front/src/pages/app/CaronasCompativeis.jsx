@@ -7,6 +7,8 @@ import { mensagemDeErro } from "../../utils/erros";
 import { agoraLocal, formatarDataHora, somarMinutos } from "../../utils/formatar";
 import { LIMIAR_RECOMENDADA, montarHistorico, recomendar } from "../../utils/recomendacao";
 import CaronaCard from "../../components/CaronaCard/CaronaCard";
+import { useToast } from "../../components/Feedback/FeedbackContext";
+import { EsqueletoLista } from "../../components/Feedback/Esqueleto";
 
 const RAIO_KM = 3; // distância máxima entre o seu ponto e o da carona
 const JANELA_AGENDAR_MIN = 90; // tolerância de horário ao agendar
@@ -18,11 +20,11 @@ function CaronasCompativeis() {
   const trajeto = location.state;
   const usuario = getUsuarioLogado();
   const idUsuario = usuario?.id_usuario;
+  const toast = useToast();
 
   const [caronas, setCaronas] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
-  const [mensagem, setMensagem] = useState("");
   const [reservando, setReservando] = useState(null);
   const [reservadas, setReservadas] = useState([]);
 
@@ -90,7 +92,6 @@ function CaronasCompativeis() {
 
   const reservar = async (carona) => {
     setErro("");
-    setMensagem("");
     setReservando(carona.id_carona);
     try {
       const resposta = await api.post(`/caronas/${carona.id_carona}/reservas`, {
@@ -102,7 +103,9 @@ function CaronasCompativeis() {
           prev.map((c) => (c.id_carona === carona.id_carona ? { ...c, ...resposta.data.carona } : c))
         );
       }
-      setMensagem(resposta.data?.mensagem || "Vaga reservada com sucesso!");
+      toast(resposta.data?.mensagem || "Vaga reservada!", {
+        acao: { rotulo: "Ver em Viagens", para: "/app/viagens" },
+      });
     } catch (err) {
       setErro(mensagemDeErro(err, "Não foi possível reservar a vaga."));
     } finally {
@@ -140,14 +143,8 @@ function CaronasCompativeis() {
           {erro}
         </p>
       )}
-      {mensagem && (
-        <p className="app-alerta app-alerta-ok" role="status">
-          {mensagem} <Link to="/app/viagens">Ver em Viagens</Link>
-        </p>
-      )}
-
       {carregando ? (
-        <p className="app-vazio">Procurando caronas...</p>
+        <EsqueletoLista itens={3} rotulo="Procurando caronas" />
       ) : caronas.length === 0 ? (
         <div className="app-vazio">
           <p>Nenhuma carona compatível por enquanto.</p>

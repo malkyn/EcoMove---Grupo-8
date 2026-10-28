@@ -4,6 +4,7 @@ import "./AppShell.css";
 import "./AppTema.css";
 import Logo from "../../pages/icons/logo.webp";
 import { usandoMock } from "../../services/api";
+import { FeedbackProvider } from "../Feedback/FeedbackProvider";
 
 const IconeInicio = () => (
   <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
@@ -53,37 +54,40 @@ const abas = [
 /**
  * Casca do app para quem está logado: barra superior compacta, conteúdo e
  * abas inferiores no padrão dos apps de mobilidade. Sem navbar nem rodapé do site.
+ * O FeedbackProvider dá às telas a folha de confirmação e os toasts (useConfirmacao, useToast).
  */
 function AppShell() {
   return (
     <div className="app-shell">
-      <header className="app-topo">
-        <img src={Logo} alt="" width="28" height="28" />
-        <span className="app-topo-titulo">EcoMove</span>
-        {usandoMock && (
-          <span className="app-topo-demo" title="Dados simulados no navegador">
-            demo
-          </span>
-        )}
-      </header>
+      <FeedbackProvider>
+        <header className="app-topo">
+          <img src={Logo} alt="" width="28" height="28" />
+          <span className="app-topo-titulo">EcoMove</span>
+          {usandoMock && (
+            <span className="app-topo-demo" title="Dados simulados no navegador">
+              demo
+            </span>
+          )}
+        </header>
 
-      <main className="app-conteudo">
-        <Outlet />
-      </main>
+        <main className="app-conteudo">
+          <Outlet />
+        </main>
 
-      <nav className="app-abas" aria-label="Navegação principal">
-        {abas.map((aba) => (
-          <NavLink
-            key={aba.para}
-            to={aba.para}
-            end={aba.fim}
-            className={({ isActive }) => `app-aba ${isActive ? "ativa" : ""}`}
-          >
-            <aba.Icone />
-            <span>{aba.rotulo}</span>
-          </NavLink>
-        ))}
-      </nav>
+        <nav className="app-abas" aria-label="Navegação principal">
+          {abas.map((aba) => (
+            <NavLink
+              key={aba.para}
+              to={aba.para}
+              end={aba.fim}
+              className={({ isActive }) => `app-aba ${isActive ? "ativa" : ""}`}
+            >
+              <aba.Icone />
+              <span>{aba.rotulo}</span>
+            </NavLink>
+          ))}
+        </nav>
+      </FeedbackProvider>
     </div>
   );
 }
