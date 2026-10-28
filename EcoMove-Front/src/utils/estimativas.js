@@ -33,6 +33,19 @@ export function estimarCorrida(distanciaKm, duracaoMin) {
   return arredondar(Math.max(TARIFA_CORRIDA.minimo, valor));
 }
 
+// Corrida sob demanda por categoria: moto custa menos e passa pelo trânsito mais rápido
+export const FATOR_CATEGORIA = { carro: 1, moto: 0.75 };
+
+export function estimarCorridaPorCategoria(distanciaKm, duracaoMin, categoria = "carro") {
+  const fator = FATOR_CATEGORIA[categoria] ?? 1;
+  return arredondar(estimarCorrida(distanciaKm, duracaoMin) * fator);
+}
+
+/** Minutos até alguém chegar, a partir da distância em linha reta e do trânsito urbano (~30 km/h). */
+export function minutosAteChegar(distanciaKm) {
+  return Math.max(1, Math.round(((distanciaKm * 1.3) / 30) * 60 + 1));
+}
+
 export function estimarCarona(distanciaKm) {
   return arredondar(Math.max(TARIFA_CARONA.minimo, distanciaKm * TARIFA_CARONA.porKm));
 }

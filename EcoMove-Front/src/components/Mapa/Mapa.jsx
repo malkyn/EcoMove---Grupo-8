@@ -6,6 +6,7 @@ import {
   Polyline,
   Popup,
   useMap,
+  useMapEvents,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "./Mapa.css";
@@ -16,6 +17,20 @@ function Recentrar({ centro, zoom }) {
   useEffect(() => {
     mapa.setView([centro.lat, centro.lng], zoom, { animate: true });
   }, [mapa, centro.lat, centro.lng, zoom]);
+  return null;
+}
+
+/**
+ * Avisa o centro do mapa sempre que a pessoa termina de arrastá-lo. Com um pino fixo
+ * desenhado sobre o centro, vira o "ajuste o ponto de encontro" dos apps de corrida.
+ */
+export function CentroDoMapa({ onMover }) {
+  const mapa = useMapEvents({
+    moveend: () => {
+      const centro = mapa.getCenter();
+      onMover({ lat: centro.lat, lng: centro.lng });
+    },
+  });
   return null;
 }
 

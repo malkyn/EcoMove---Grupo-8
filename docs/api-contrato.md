@@ -233,7 +233,7 @@ Tabela nova `corrida`: `id_corrida`, `id_passageiro`, `id_motorista` (nulo até 
 `preco_estimado` = bandeirada R$ 5,00 + R$ 2,20/km + R$ 0,30/min, mínimo R$ 8,00 (mesma regra de `utils/estimativas.js`). Na busca por proximidade, cada item ganha `distancia_ate_voce_km`.
 
 ### POST `/corridas/` — passageiro pede
-Requisição: `{ "id_passageiro": 2, "origem": "...", "destino": "...", "origem_lat", "origem_lng", "destino_lat", "destino_lng", "distancia_km": 13.0, "duracao_min": 16 }`. Coordenadas obrigatórias; distância e duração opcionais (o backend estima se faltarem).
+Requisição: `{ "id_passageiro": 2, "origem": "...", "destino": "...", "origem_lat", "origem_lng", "destino_lat", "destino_lng", "distancia_km": 13.0, "duracao_min": 16, "categoria": "carro" }`. Coordenadas obrigatórias; distância e duração opcionais (o backend estima se faltarem). `categoria` (`carro` ou `moto`) é opcional, `carro` por padrão: a corrida guarda o valor e o preço estimado da moto é 75% do carro.
 Resposta `201`: `{ "mensagem": "Corrida solicitada! Procurando motorista...", "corrida": { ... } }`.
 Erros: `400` · `403` usuário não é passageiro · `404` · `409` já tem corrida ativa.
 

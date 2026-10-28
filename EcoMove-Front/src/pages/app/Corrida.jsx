@@ -9,7 +9,7 @@ import { mensagemDeErro } from "../../utils/erros";
 import { formatarDataHora } from "../../utils/formatar";
 import { co2EvitadoKg, formatarKm, formatarMinutos, formatarReais } from "../../utils/estimativas";
 import { corridaAtiva, rotuloStatus, tomStatus } from "../../utils/corridas";
-import { rotuloPropulsao } from "../../utils/veiculos";
+import { rotuloCategoria, rotuloPropulsao } from "../../utils/veiculos";
 import Mapa, { Marcador, TracadoRota } from "../../components/Mapa/Mapa";
 import { AvaliacaoFeita, AvaliacaoForm, Estrelas } from "../../components/Avaliacao/Avaliacao";
 import { useConfirmacao, useToast } from "../../components/Feedback/FeedbackContext";
@@ -278,6 +278,12 @@ function Corrida() {
             <dt>Valor estimado</dt>
             <dd className="corrida-preco">{formatarReais(corrida.preco_estimado)}</dd>
           </div>
+          {corrida.categoria && (
+            <div>
+              <dt>Tipo</dt>
+              <dd>{rotuloCategoria(corrida.categoria)}</dd>
+            </div>
+          )}
           <div>
             <dt>Pedida em</dt>
             <dd>{formatarDataHora(corrida.criada_em)}</dd>
