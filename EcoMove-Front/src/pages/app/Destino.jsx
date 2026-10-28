@@ -9,6 +9,7 @@ import { calcularRota, enderecoDe } from "../../services/geo";
 import { useLocalizacao } from "../../hooks/useLocalizacao";
 import { mensagemDeErro } from "../../utils/erros";
 import { agoraLocal, proximaHoraCheia } from "../../utils/formatar";
+import { lugaresRecentes } from "../../utils/lugares";
 import {
   co2EvitadoKg,
   compararCorridaECarona,
@@ -29,6 +30,19 @@ const IconeAlvo = () => (
   </svg>
 );
 
+const IconeTrocar = () => (
+  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+    <path
+      d="M8 4v15m0 0-3-3m3 3 3-3M16 20V5m0 0-3 3m3-3 3 3"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 function Destino() {
   const navigate = useNavigate();
   const { obter: obterLocalizacao, posicao: posicaoUsuario, buscando: buscandoGps } = useLocalizacao();
@@ -42,9 +56,28 @@ function Destino() {
   const [calculando, setCalculando] = useState(false);
   const [erro, setErro] = useState("");
   const [pedindo, setPedindo] = useState(false);
+  const [recentes, setRecentes] = useState([]);
+  const [trocas, setTrocas] = useState(0); // remonta os campos ao trocar origem e destino
   const usuario = getUsuarioLogado();
+  const idUsuario = usuario?.id_usuario;
 
-  // Localização atual como origem (com nome da rua via geocodificação reversa)
+  // Lugares recentes (reservas e corridas) aparecem nos campos antes de digitar
+  useEffect(() => {
+    if (!idUsuario) return undefined;
+    let ativo = true;
+    Promise.all([
+      api.get(`/usuarios/${idUsuario}/reservas`).catch(() => ({ data: [] })),
+      api.get("/corridas/", { params: { id_usuario: idUsuario } }).catch(() => ({ data: [] })),
+    ]).then(([respReservas, respCorridas]) => {
+      if (ativo) setRecentes(lugaresRecentes(respReservas.data, respCorridas.data));
+    });
+    return () => {
+      ativo = false;
+    };
+  }, [idUsuario]);
+
+  // Localização atual como origem (com nome da rua via geocodificação reversa).
+  // Só no toque do botão: pedir permissão ao abrir a tela assusta e costuma ser negado.
   const usarMinhaLocalizacao = useCallback(async () => {
     setErro("");
     const ponto = await obterLocalizacao();
@@ -61,10 +94,11 @@ function Destino() {
     }
   }, [obterLocalizacao]);
 
-  // Tenta a localização atual na abertura da tela
-  useEffect(() => {
-    usarMinhaLocalizacao();
-  }, [usarMinhaLocalizacao]);
+  const trocar = () => {
+    setOrigem(destino);
+    setDestino(origem);
+    setTrocas((n) => n + 1);
+  };
 
   // Recalcula a rota sempre que origem e destino estiverem definidos
   useEffect(() => {
@@ -135,11 +169,13 @@ function Destino() {
       {/* Formulário de trajeto */}
       <section className="destino-formulario" aria-label="Trajeto">
         <CampoEndereco
+          key={`origem-${trocas}`}
           id="origem"
           rotulo="Origem"
           placeholder="De onde você sai?"
           valor={origem}
           onSelecionar={setOrigem}
+          sugestoesIniciais={recentes}
           acaoExtra={
             <button
               type="button"
@@ -154,11 +190,25 @@ function Destino() {
           }
         />
         <CampoEndereco
+          key={`destino-${trocas}`}
           id="destino"
           rotulo="Destino"
           placeholder="Para onde você vai?"
           valor={destino}
           onSelecionar={setDestino}
+          sugestoesIniciais={recentes}
+          acaoExtra={
+            <button
+              type="button"
+              className="app-gps"
+              onClick={trocar}
+              disabled={!origem && !destino}
+              aria-label="Trocar origem e destino"
+              title="Trocar origem e destino"
+            >
+              <IconeTrocar />
+            </button>
+          }
         />
 
         <div className="destino-quando">
@@ -214,8 +264,13 @@ function Destino() {
           </p>
         )}
 
-        {!destino && !erro && (
-          <p className="destino-dica">Informe o destino para ver o trajeto e as opções.</p>
+        {!origem && !erro && (
+          <p className="destino-dica">
+            Digite de onde você sai, ou toque no alvo para usar sua localização.
+          </p>
+        )}
+        {origem && !destino && !erro && (
+          <p className="destino-dica">Agora o destino: o trajeto e os preços aparecem aqui.</p>
         )}
 
         {calculando && <p className="destino-dica">Calculando rota...</p>}
@@ -252,19 +307,20 @@ function Destino() {
               <button type="button" className="app-btn app-btn-primario" onClick={verCaronas}>
                 Ver caronas compatíveis
               </button>
-              <button
-                type="button"
-                className="app-btn app-btn-secundario"
-                onClick={pedirCorrida}
-                disabled={quando !== "agora" || pedindo}
-              >
-                {pedindo
-                  ? "Solicitando..."
-                  : quando === "agora"
-                    ? "Pedir corrida agora"
-                    : "Corrida só está disponível para agora"}
-              </button>
+              {quando === "agora" && (
+                <button
+                  type="button"
+                  className="app-btn app-btn-secundario"
+                  onClick={pedirCorrida}
+                  disabled={pedindo}
+                >
+                  {pedindo ? "Solicitando..." : "Pedir corrida agora"}
+                </button>
+              )}
             </div>
+            {quando === "agendar" && (
+              <p className="destino-nota">Corrida sob demanda só para agora; para o horário agendado, as caronas.</p>
+            )}
             <p className="destino-nota">Valores estimados para comparação. Sem cobrança nesta versão.</p>
           </>
         )}
