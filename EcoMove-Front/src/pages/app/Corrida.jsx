@@ -171,15 +171,9 @@ function Corrida() {
   return (
     <div className="corrida">
       <header className="corrida-cabecalho">
-        <Link to="/app" className="app-voltar">
-          ‹ Início
-        </Link>
-        <div className="corrida-titulo-linha">
-          <h1 className="app-titulo">Corrida #{corrida.id_corrida}</h1>
-          <span className={`corrida-status corrida-status-${tomStatus(corrida.status)}`}>
-            {rotuloStatus(corrida.status)}
-          </span>
-        </div>
+        <span className={`corrida-status corrida-status-${tomStatus(corrida.status)}`}>
+          {rotuloStatus(corrida.status)}
+        </span>
       </header>
 
       <div className="corrida-mapa">

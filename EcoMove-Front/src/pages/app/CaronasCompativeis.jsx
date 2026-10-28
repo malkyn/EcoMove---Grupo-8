@@ -121,10 +121,6 @@ function CaronasCompativeis() {
   return (
     <div className="compativeis">
       <header className="compativeis-cabecalho">
-        <Link to="/app/destino" className="app-voltar">
-          ‹ Trajeto
-        </Link>
-        <h1 className="app-titulo">Caronas compatíveis</h1>
         <p className="compativeis-trajeto">
           <span>{origem.nome}</span>
           <span className="compativeis-seta" aria-hidden="true">

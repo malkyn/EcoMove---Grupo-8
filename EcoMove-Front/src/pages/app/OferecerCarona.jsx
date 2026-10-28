@@ -161,8 +161,6 @@ function OferecerCarona() {
 
   return (
     <div className="oferecer">
-      <h1 className="app-titulo">Oferecer carona</h1>
-
       {erro && (
         <p className="app-alerta app-alerta-erro" role="alert">
           {erro}
