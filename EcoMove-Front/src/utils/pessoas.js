@@ -8,6 +8,19 @@ export function primeiroNome(nome) {
   return String(nome || "").trim().split(/\s+/)[0] || "";
 }
 
+/** "Camila Ferreira" -> "CF", para o avatar sem foto. */
+export function iniciais(nome) {
+  return (
+    String(nome || "")
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((parte) => parte[0].toUpperCase())
+      .join("") || "?"
+  );
+}
+
 /**
  * Links de ligação e WhatsApp a partir de um telefone brasileiro em qualquer formato
  * ("(15) 99999-0001", "15999990001", "+55 15 ..."). Devolve null se o número for curto demais.

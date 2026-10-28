@@ -14,7 +14,7 @@ import Mapa, { Marcador, TracadoRota } from "../../components/Mapa/Mapa";
 import { AvaliacaoFeita, AvaliacaoForm, Estrelas } from "../../components/Avaliacao/Avaliacao";
 import { useConfirmacao, useToast } from "../../components/Feedback/FeedbackContext";
 import { Carregando, Esqueleto, EsqueletoCartao } from "../../components/Feedback/Esqueleto";
-import { linksDeContato, primeiroNome } from "../../utils/pessoas";
+import { iniciais, linksDeContato, primeiroNome } from "../../utils/pessoas";
 
 const COR_ORIGEM = "#036141";
 const COR_DESTINO = "#d9480f";
@@ -58,6 +58,7 @@ function Corrida() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
   const [acao, setAcao] = useState(false);
+  const [codigo, setCodigo] = useState(""); // código de embarque digitado pelo motorista
   const [avaliacaoFeita, setAvaliacaoFeita] = useState(null);
   const [avaliacaoVerificada, setAvaliacaoVerificada] = useState(false);
 
@@ -119,7 +120,11 @@ function Corrida() {
     setAcao(true);
     setErro("");
     try {
-      const resposta = await api.post(`/corridas/${id}/status`, { status, id_usuario: idUsuario });
+      const resposta = await api.post(`/corridas/${id}/status`, {
+        status,
+        id_usuario: idUsuario,
+        ...(status === "em_andamento" ? { codigo } : {}),
+      });
       setCorrida(resposta.data.corrida);
       if (resposta.data.mensagem) toast(resposta.data.mensagem);
     } catch (err) {
@@ -208,16 +213,6 @@ function Corrida() {
           <p>Vá até o passageiro. Quando ele embarcar, toque em Iniciar corrida.</p>
         )}
         {corrida.status === "em_andamento" && <p>Corrida em andamento. Boa viagem!</p>}
-        {contato && (
-          <div className="corrida-contato">
-            <a className="app-btn app-btn-vazado" href={contato.ligar} aria-label={`Ligar para ${nomeOutra}`}>
-              <IconeTelefone /> Ligar
-            </a>
-            <a className="app-btn app-btn-vazado" href={contato.whatsapp} target="_blank" rel="noopener noreferrer">
-              <IconeMensagem /> Mensagem
-            </a>
-          </div>
-        )}
         {corrida.status === "concluida" && (
           <div className="corrida-resumo-final">
             <p>
@@ -257,7 +252,55 @@ function Corrida() {
         {corrida.status === "cancelada" && <p>Esta corrida foi cancelada.</p>}
       </section>
 
-      {/* Trajeto e pessoas */}
+      {/* Quem está do outro lado: avatar, nota, carro e placa grande, contato e código de embarque */}
+      {outraPessoa && (
+        <section className="app-cartao corrida-pessoa" aria-label={souPassageiro ? "Seu motorista" : "Seu passageiro"}>
+          <div className="corrida-pessoa-topo">
+            <span className="corrida-avatar" aria-hidden="true">
+              {iniciais(outraPessoa.nome)}
+            </span>
+            <div className="corrida-pessoa-dados">
+              <strong>{nomeOutra}</strong>
+              <Estrelas media={outraPessoa.media_avaliacao} total={outraPessoa.total_avaliacoes} />
+              {souPassageiro && corrida.veiculo && (
+                <span className="corrida-veiculo">
+                  {corrida.veiculo.modelo}
+                  {corrida.veiculo.cor && ` · ${corrida.veiculo.cor}`} ·{" "}
+                  {rotuloPropulsao(corrida.veiculo.propulsao)}
+                </span>
+              )}
+            </div>
+            {souPassageiro && corrida.veiculo && (
+              <span className="corrida-placa" aria-label={`Placa ${corrida.veiculo.placa}`}>
+                {corrida.veiculo.placa}
+              </span>
+            )}
+          </div>
+
+          {contato && (
+            <div className="corrida-contato">
+              <a className="app-btn app-btn-vazado" href={contato.ligar} aria-label={`Ligar para ${nomeOutra}`}>
+                <IconeTelefone /> Ligar
+              </a>
+              <a className="app-btn app-btn-vazado" href={contato.whatsapp} target="_blank" rel="noopener noreferrer">
+                <IconeMensagem /> Mensagem
+              </a>
+            </div>
+          )}
+
+          {souPassageiro && corrida.codigo_embarque && corrida.status === "aceita" && (
+            <div className="corrida-codigo">
+              <span className="corrida-codigo-rotulo">Código de embarque</span>
+              <strong aria-label={`Código ${corrida.codigo_embarque.split("").join(" ")}`}>
+                {corrida.codigo_embarque}
+              </strong>
+              <small>Diga este código ao motorista antes de entrar no veículo.</small>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Trajeto */}
       <section className="app-cartao">
         <dl className="corrida-info">
           <div>
@@ -288,54 +331,36 @@ function Corrida() {
             <dt>Pedida em</dt>
             <dd>{formatarDataHora(corrida.criada_em)}</dd>
           </div>
-          {souPassageiro && corrida.motorista && (
-            <div>
-              <dt>Motorista</dt>
-              <dd>
-                {primeiroNome(corrida.motorista.nome)}{" "}
-                <Estrelas
-                  media={corrida.motorista.media_avaliacao}
-                  total={corrida.motorista.total_avaliacoes}
-                />
-              </dd>
-            </div>
-          )}
-          {souPassageiro && corrida.veiculo && (
-            <div>
-              <dt>Veículo</dt>
-              <dd>
-                {corrida.veiculo.modelo} · {corrida.veiculo.placa}
-                {corrida.veiculo.cor && ` · ${corrida.veiculo.cor}`}
-                <span className="badge-eletrico">{rotuloPropulsao(corrida.veiculo.propulsao)}</span>
-              </dd>
-            </div>
-          )}
-          {souMotorista && corrida.passageiro && (
-            <div>
-              <dt>Passageiro</dt>
-              <dd>
-                {primeiroNome(corrida.passageiro.nome)}{" "}
-                <Estrelas
-                  media={corrida.passageiro.media_avaliacao}
-                  total={corrida.passageiro.total_avaliacoes}
-                />
-              </dd>
-            </div>
-          )}
         </dl>
       </section>
 
       {/* Ações */}
       <div className="corrida-acoes">
         {souMotorista && corrida.status === "aceita" && (
-          <button
-            type="button"
-            className="app-btn app-btn-primario"
-            onClick={() => mudarStatus("em_andamento")}
-            disabled={acao}
-          >
-            Iniciar corrida
-          </button>
+          <>
+            {corrida.codigo_embarque && (
+              <label className="app-campo corrida-codigo-campo">
+                <span>Código de embarque do passageiro</span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  maxLength={4}
+                  placeholder="4 dígitos"
+                  value={codigo}
+                  onChange={(e) => setCodigo(e.target.value.replace(/\D/g, "").slice(0, 4))}
+                />
+              </label>
+            )}
+            <button
+              type="button"
+              className="app-btn app-btn-primario"
+              onClick={() => mudarStatus("em_andamento")}
+              disabled={acao || (Boolean(corrida.codigo_embarque) && codigo.length < 4)}
+            >
+              Iniciar corrida
+            </button>
+          </>
         )}
         {souMotorista && corrida.status === "em_andamento" && (
           <button
