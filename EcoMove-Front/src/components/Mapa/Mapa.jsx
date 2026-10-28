@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -31,6 +31,30 @@ export function CentroDoMapa({ onMover }) {
       onMover({ lat: centro.lat, lng: centro.lng });
     },
   });
+  return null;
+}
+
+/**
+ * Enquadra o mapa para mostrar todos os pontos ([{ lat, lng }]) sempre que a lista muda.
+ * Com um ponto só, centraliza nele. Lista vazia não mexe no mapa.
+ */
+export function Enquadrar({ pontos, margemInferior = 40, zoomMaximo = 15 }) {
+  const mapa = useMap();
+  // A lista costuma ser recriada a cada render; a chave evita reenquadrar sem mudança real
+  const chave = JSON.stringify((pontos || []).map((p) => [Number(p.lat.toFixed(5)), Number(p.lng.toFixed(5))]));
+  const coordenadas = useMemo(() => JSON.parse(chave), [chave]);
+  useEffect(() => {
+    if (coordenadas.length === 0) return;
+    // Um ponto só também passa por fitBounds: assim a margem inferior (a folha que cobre o
+    // mapa) desloca o ponto para a parte visível, em vez de centralizá-lo atrás dela.
+    // Sem animação: a animada depende de requestAnimationFrame e fica presa em aba oculta.
+    mapa.fitBounds(coordenadas, {
+      paddingTopLeft: [30, 30],
+      paddingBottomRight: [30, margemInferior],
+      maxZoom: zoomMaximo,
+      animate: false,
+    });
+  }, [mapa, coordenadas, margemInferior, zoomMaximo]);
   return null;
 }
 
