@@ -146,6 +146,7 @@ function Viagens() {
           idAvaliador={idUsuario}
           idAvaliado={pessoa.id_usuario}
           nomeAvaliado={primeiroNome(pessoa.nome)}
+          papelAvaliado={ehMotorista ? "passageiro" : "motorista"}
           onEnviada={aoEnviarAvaliacao}
           onCancelar={() => setAvaliando(null)}
         />

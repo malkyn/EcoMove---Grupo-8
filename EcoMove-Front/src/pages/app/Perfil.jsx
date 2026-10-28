@@ -9,6 +9,7 @@ import { formatarData } from "../../utils/formatar";
 import { Estrelas } from "../../components/Avaliacao/Avaliacao";
 import { useConfirmacao } from "../../components/Feedback/FeedbackContext";
 import { primeiroNome } from "../../utils/pessoas";
+import { rotuloChip } from "../../utils/avaliacoes";
 
 const PERFIL_MOTORISTA = 1;
 
@@ -144,6 +145,9 @@ function Perfil() {
                   <span>{primeiroNome(a.avaliador)}</span>
                   <small>{formatarData(a.criada_em)}</small>
                 </div>
+                {a.tags?.length > 0 && (
+                  <p className="perfil-avaliacao-tags">{a.tags.map(rotuloChip).join(" · ")}</p>
+                )}
                 {a.comentario && <p>“{a.comentario}”</p>}
               </li>
             ))}

@@ -312,6 +312,7 @@ function Corrida() {
                   idAvaliador={idUsuario}
                   idAvaliado={outraPessoa.id_usuario}
                   nomeAvaliado={nomeOutra}
+                  papelAvaliado={souPassageiro ? "motorista" : "passageiro"}
                   onEnviada={(avaliacao, texto) => {
                     setAvaliacaoFeita(avaliacao);
                     toast(texto || "Avaliação enviada.");
