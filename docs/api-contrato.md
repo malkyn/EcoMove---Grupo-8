@@ -199,7 +199,7 @@ Tabela nova `avaliacao`: `id_avaliacao`, `id_carona` (nulo se for corrida), `id_
 **Reputação nos resumos de usuário:** onde a API devolve um usuário resumido (`motorista` e `passageiros` da carona, `motorista` e `passageiro` da corrida), incluir `media_avaliacao` (média com 1 casa, ou `null`) e `total_avaliacoes`. O front mostra "★ 4,8 (3)" ao lado do nome.
 
 ### POST `/avaliacoes/`
-Requisição: `{ "id_carona": 4, "id_avaliador": 2, "id_avaliado": 1, "nota": 5, "comentario": "Pontual e educada." }` ou, para corrida, `{ "id_corrida": 1, ... }`. Exatamente um de `id_carona`/`id_corrida`.
+Requisição: `{ "id_carona": 4, "id_avaliador": 2, "id_avaliado": 1, "nota": 5, "tags": ["pontual", "dirige_bem"], "comentario": "Pontual e educada." }` ou, para corrida, `{ "id_corrida": 1, ... }`. Exatamente um de `id_carona`/`id_corrida`. `tags` é opcional: até 5 chaves curtas escolhidas na tela (`pontual`, `simpatia`, `boa_conversa`, `dirige_bem`, `veiculo_limpo`, `educado`, `ponto_certo`, `atrasou`, `comunicacao`, `direcao_brusca`, `veiculo_sujo`, `rota_estranha`, `nao_apareceu`, `combinado`); a avaliação devolve o mesmo array.
 
 Regras: avaliador e avaliado precisam ter participado da viagem (motorista ou passageiro com reserva; passageiro ou motorista da corrida); carona só depois do `horario`; corrida só com status `concluida`; uma avaliação por par (avaliador, avaliado) por viagem.
 

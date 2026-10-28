@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Avaliacao.css";
 import api from "../../services/api";
 import { mensagemDeErro } from "../../utils/erros";
+import { chipsPara, rotuloChip } from "../../utils/avaliacoes";
 
 const NOTAS = [1, 2, 3, 4, 5];
 const ROTULOS = { 1: "Ruim", 2: "Regular", 3: "Bom", 4: "Muito bom", 5: "Excelente" };
@@ -33,13 +34,32 @@ export function Estrelas({ media, total, semTotal = false }) {
 /**
  * Formulário de avaliação de uma viagem.
  * `viagem` é { id_carona } ou { id_corrida }; `onEnviada` recebe a avaliação criada.
+ * `papelAvaliado` ("motorista" | "passageiro") escolhe os chips de elogio ou de melhoria.
  */
-export function AvaliacaoForm({ viagem, idAvaliador, idAvaliado, nomeAvaliado, onEnviada, onCancelar }) {
+export function AvaliacaoForm({
+  viagem,
+  idAvaliador,
+  idAvaliado,
+  nomeAvaliado,
+  papelAvaliado = "motorista",
+  onEnviada,
+  onCancelar,
+}) {
   const [nota, setNota] = useState(0);
   const [passando, setPassando] = useState(0);
+  const [tags, setTags] = useState([]);
   const [comentario, setComentario] = useState("");
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState("");
+
+  // Mudar de nota alta para baixa (ou o contrário) troca o conjunto de chips: limpa a escolha
+  const escolherNota = (n) => {
+    if ((n >= 4) !== (nota >= 4)) setTags([]);
+    setNota(n);
+  };
+
+  const alternarTag = (valor) =>
+    setTags((atuais) => (atuais.includes(valor) ? atuais.filter((t) => t !== valor) : [...atuais, valor]));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,6 +75,7 @@ export function AvaliacaoForm({ viagem, idAvaliador, idAvaliado, nomeAvaliado, o
         id_avaliador: idAvaliador,
         id_avaliado: idAvaliado,
         nota,
+        tags,
         comentario: comentario.trim(),
       });
       onEnviada?.(resposta.data.avaliacao, resposta.data.mensagem);
@@ -80,7 +101,7 @@ export function AvaliacaoForm({ viagem, idAvaliador, idAvaliado, nomeAvaliado, o
             aria-checked={nota === n}
             aria-label={`${n} ${n === 1 ? "estrela" : "estrelas"}: ${ROTULOS[n]}`}
             className={`avaliacao-estrela ${n <= destaque ? "ativa" : ""}`}
-            onClick={() => setNota(n)}
+            onClick={() => escolherNota(n)}
             onMouseEnter={() => setPassando(n)}
             onMouseLeave={() => setPassando(0)}
           >
@@ -89,6 +110,25 @@ export function AvaliacaoForm({ viagem, idAvaliador, idAvaliado, nomeAvaliado, o
         ))}
         <span className="avaliacao-rotulo">{destaque ? ROTULOS[destaque] : ""}</span>
       </div>
+
+      {nota > 0 && (
+        <div className="avaliacao-chips" role="group" aria-label={nota >= 4 ? "O que foi bom" : "O que faltou"}>
+          <span className="avaliacao-chips-rotulo">{nota >= 4 ? "O que foi bom?" : "O que faltou?"}</span>
+          <div className="avaliacao-chips-lista">
+            {chipsPara(nota, papelAvaliado).map((chip) => (
+              <button
+                key={chip.valor}
+                type="button"
+                className={`avaliacao-chip ${tags.includes(chip.valor) ? "ativa" : ""}`}
+                aria-pressed={tags.includes(chip.valor)}
+                onClick={() => alternarTag(chip.valor)}
+              >
+                {chip.rotulo}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <textarea
         className="avaliacao-comentario"
@@ -133,6 +173,9 @@ export function AvaliacaoFeita({ avaliacao, nomeAvaliado }) {
         {avaliacao.nota} {avaliacao.nota === 1 ? "estrela" : "estrelas"}
       </strong>
       .{avaliacao.comentario && ` "${avaliacao.comentario}"`}
+      {avaliacao.tags?.length > 0 && (
+        <span className="avaliacao-feita-tags">{avaliacao.tags.map(rotuloChip).join(" · ")}</span>
+      )}
     </p>
   );
 }

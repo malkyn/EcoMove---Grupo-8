@@ -80,6 +80,51 @@
   min-width: 5rem;
 }
 
+/* Chips de elogio ou de melhoria, conforme a nota */
+.avaliacao-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.avaliacao-chips-rotulo {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--app-texto);
+}
+
+.avaliacao-chips-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.avaliacao-chip {
+  min-height: var(--app-toque);
+  padding: 0.4rem 0.85rem;
+  border: 1.5px solid var(--app-borda-forte);
+  border-radius: 999px;
+  background: var(--app-branco);
+  color: var(--app-texto);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.avaliacao-chip.ativa {
+  border-color: var(--app-verde);
+  background: var(--app-verde-claro);
+  color: var(--app-verde);
+}
+
+.avaliacao-feita-tags {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+}
+
 .avaliacao-comentario {
   width: 100%;
   font-size: 1rem;

@@ -658,6 +658,10 @@ function criarAvaliacao({ db, body }) {
     id_avaliador: idAvaliador,
     id_avaliado: idAvaliado,
     nota,
+    // Chips escolhidos na tela (até 5, texto curto); o rótulo fica no front
+    tags: Array.isArray(body.tags)
+      ? [...new Set(body.tags.map((t) => String(t).trim().slice(0, 30)).filter(Boolean))].slice(0, 5)
+      : [],
     comentario: String(body.comentario || "").trim().slice(0, 300),
     criada_em: agoraISO(),
   };

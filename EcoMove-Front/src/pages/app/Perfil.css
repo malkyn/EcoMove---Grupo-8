@@ -210,3 +210,11 @@
   font-size: 0.8rem;
   color: var(--app-texto-fraco);
 }
+
+/* Chips que vieram com a avaliacao (ex.: "Pontual · Dirige bem") */
+.perfil-avaliacao-tags {
+  margin: 0.2rem 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--app-verde);
+}
