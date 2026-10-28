@@ -251,7 +251,7 @@ Resposta `200`: `{ "mensagem": "Corrida aceita! Vá até o passageiro.", "corrid
 Erros: `403` não é motorista ou veículo não é dele · `404` · `409` corrida já aceita/encerrada, ou motorista já está em outra corrida.
 
 ### POST `/corridas/{id}/status` — muda o estado
-Requisição: `{ "status": "em_andamento" | "concluida" | "cancelada", "id_usuario": 1, "codigo": "4821" }`. `codigo` só em `em_andamento`: deve bater com o `codigo_embarque` da corrida (`403` se não bater).
+Requisição: `{ "status": "em_andamento" | "concluida" | "cancelada", "id_usuario": 1, "codigo": "4821" }`. `codigo` só em `em_andamento`: deve bater com o `codigo_embarque` da corrida (`403` se não bater). `motivo` (opcional) só em `cancelada` pelo passageiro: `demora`, `engano`, `outro_jeito` ou `outro`, guardado em `motivo_cancelamento`.
 Regras: `em_andamento` e `concluida` só pelo motorista da corrida, na ordem `aceita` → `em_andamento` → `concluida`. `cancelada` pelo passageiro (em `pendente` ou `aceita`) encerra; pelo motorista (em `aceita`) devolve a corrida a `pendente` sem motorista.
 Resposta `200`: `{ "mensagem": "...", "corrida": { ... } }`. Erros: `400` status inválido · `403` não participa ou não pode fazer essa transição · `409` estado não permite.
 

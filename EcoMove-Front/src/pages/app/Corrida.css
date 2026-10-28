@@ -47,7 +47,70 @@
   border: 1px solid var(--app-borda);
 }
 
-/* ----- Mensagens ----- */
+/* ----- Linha de etapas: Procurando · A caminho · Em viagem · Concluída ----- */
+.corrida-etapas {
+  list-style: none;
+  margin: 0 0 0.8rem;
+  padding: 0;
+  display: flex;
+  gap: 0.3rem;
+}
+
+.corrida-etapas li {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--app-texto-fraco);
+}
+
+.corrida-etapas li::before {
+  content: "";
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--app-borda);
+}
+
+.corrida-etapas li.feita::before,
+.corrida-etapas li.atual::before {
+  background: var(--app-verde);
+}
+
+.corrida-etapas li.feita {
+  color: var(--app-texto-suave);
+}
+
+.corrida-etapas li.atual {
+  color: var(--app-verde);
+}
+
+/* Procurando há tempo demais: aviso com as duas saídas */
+.corrida-espera {
+  margin-top: 0.8rem;
+  padding: 0.8rem;
+  border-radius: 12px;
+  background: var(--app-ambar-fundo);
+  color: var(--app-ambar-texto);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.corrida-espera p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.corrida-espera-acoes {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
 
 /* ----- Cartões ----- */
 
