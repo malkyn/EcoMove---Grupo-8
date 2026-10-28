@@ -80,6 +80,37 @@
   letter-spacing: -0.01em;
 }
 
+/* Telas internas: botão de voltar e o título da tela no lugar da marca */
+.app-topo-voltar {
+  flex: 0 0 auto;
+  width: var(--app-toque);
+  height: var(--app-toque);
+  margin-left: -0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--app-texto);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.app-topo-voltar:hover {
+  background: var(--app-fundo-suave);
+}
+
+.app-topo-titulo-tela {
+  margin: 0;
+  min-width: 0;
+  color: var(--app-texto);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .app-topo-demo {
   margin-left: auto;
   padding: 0.1rem 0.55rem;

@@ -5,18 +5,11 @@
   gap: 0.9rem;
 }
 
+/* O título ("Sua corrida") e o Voltar ficam no topo do app; aqui só o selo de status */
 .corrida-cabecalho {
   display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.corrida-titulo-linha {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 0.6rem;
-  flex-wrap: wrap;
 }
 
 /* ----- Selo de status ----- */
