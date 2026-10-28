@@ -14,10 +14,35 @@ import Mapa, { Marcador, TracadoRota } from "../../components/Mapa/Mapa";
 import { AvaliacaoFeita, AvaliacaoForm, Estrelas } from "../../components/Avaliacao/Avaliacao";
 import { useConfirmacao, useToast } from "../../components/Feedback/FeedbackContext";
 import { Carregando, Esqueleto, EsqueletoCartao } from "../../components/Feedback/Esqueleto";
+import { linksDeContato, primeiroNome } from "../../utils/pessoas";
 
 const COR_ORIGEM = "#036141";
 const COR_DESTINO = "#d9480f";
 const INTERVALO_MS = 3000;
+
+const IconeTelefone = () => (
+  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+    <path
+      d="M6.5 3h3l1.5 4-2 1.5a11 11 0 0 0 6.5 6.5L17 13l4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 5a2 2 0 0 1 2-2z"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const IconeMensagem = () => (
+  <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+    <path
+      d="M4 5h16v11H9l-5 4z"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
 /** Acompanhamento de uma corrida, para passageiro e motorista. */
 function Corrida() {
@@ -128,6 +153,14 @@ function Corrida() {
   const souPassageiro = corrida.id_passageiro === idUsuario;
   const ativa = corridaAtiva(corrida);
   const outraPessoa = souPassageiro ? corrida.motorista : souMotorista ? corrida.passageiro : null;
+  const nomeOutra = primeiroNome(outraPessoa?.nome);
+  // Ligar e mandar mensagem só enquanto a corrida está combinada ou em andamento
+  const contato =
+    outraPessoa && (corrida.status === "aceita" || corrida.status === "em_andamento")
+      ? linksDeContato(outraPessoa.telefone, {
+          mensagem: `Oi, ${nomeOutra}! Sou ${primeiroNome(usuario?.nome)}, da corrida pelo EcoMove.`,
+        })
+      : null;
   const origem = { lat: corrida.origem_lat, lng: corrida.origem_lng };
   const destino = { lat: corrida.destino_lat, lng: corrida.destino_lng };
   const pontos = rota?.pontos || [
@@ -181,6 +214,16 @@ function Corrida() {
           <p>Vá até o passageiro. Quando ele embarcar, toque em Iniciar corrida.</p>
         )}
         {corrida.status === "em_andamento" && <p>Corrida em andamento. Boa viagem!</p>}
+        {contato && (
+          <div className="corrida-contato">
+            <a className="app-btn app-btn-vazado" href={contato.ligar} aria-label={`Ligar para ${nomeOutra}`}>
+              <IconeTelefone /> Ligar
+            </a>
+            <a className="app-btn app-btn-vazado" href={contato.whatsapp} target="_blank" rel="noopener noreferrer">
+              <IconeMensagem /> Mensagem
+            </a>
+          </div>
+        )}
         {corrida.status === "concluida" && (
           <div className="corrida-resumo-final">
             <p>
@@ -201,13 +244,13 @@ function Corrida() {
 
             {outraPessoa && avaliacaoVerificada && (
               avaliacaoFeita ? (
-                <AvaliacaoFeita avaliacao={avaliacaoFeita} nomeAvaliado={outraPessoa.nome} />
+                <AvaliacaoFeita avaliacao={avaliacaoFeita} nomeAvaliado={nomeOutra} />
               ) : (
                 <AvaliacaoForm
                   viagem={{ id_corrida: corrida.id_corrida }}
                   idAvaliador={idUsuario}
                   idAvaliado={outraPessoa.id_usuario}
-                  nomeAvaliado={outraPessoa.nome}
+                  nomeAvaliado={nomeOutra}
                   onEnviada={(avaliacao, texto) => {
                     setAvaliacaoFeita(avaliacao);
                     toast(texto || "Avaliação enviada.");
@@ -249,12 +292,11 @@ function Corrida() {
             <div>
               <dt>Motorista</dt>
               <dd>
-                {corrida.motorista.nome}{" "}
+                {primeiroNome(corrida.motorista.nome)}{" "}
                 <Estrelas
                   media={corrida.motorista.media_avaliacao}
                   total={corrida.motorista.total_avaliacoes}
                 />
-                {corrida.motorista.telefone && <small> · {corrida.motorista.telefone}</small>}
               </dd>
             </div>
           )}
@@ -272,12 +314,11 @@ function Corrida() {
             <div>
               <dt>Passageiro</dt>
               <dd>
-                {corrida.passageiro.nome}{" "}
+                {primeiroNome(corrida.passageiro.nome)}{" "}
                 <Estrelas
                   media={corrida.passageiro.media_avaliacao}
                   total={corrida.passageiro.total_avaliacoes}
                 />
-                {corrida.passageiro.telefone && <small> · {corrida.passageiro.telefone}</small>}
               </dd>
             </div>
           )}

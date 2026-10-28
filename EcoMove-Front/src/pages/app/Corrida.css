@@ -89,6 +89,19 @@
   }
 }
 
+/* Ligar e mensagem: o telefone nunca aparece na tela, só vira ação */
+.corrida-contato {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+
+.corrida-contato .app-btn {
+  flex: 1 1 0;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+}
+
 .corrida-resumo-final {
   display: flex;
   flex-direction: column;
