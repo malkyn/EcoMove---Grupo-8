@@ -32,6 +32,8 @@ function Viagens() {
   const [erro, setErro] = useState("");
   const [processando, setProcessando] = useState(null);
   const avisoMostrado = useRef(false);
+  const [aba, setAba] = useState("proximas"); // "proximas" | "passadas"
+  const abaEscolhida = useRef(false); // depois que a pessoa escolhe, a tela não troca sozinha
   // Quem está sendo avaliado agora: { tipo: "carona" | "corrida", id, idAvaliado, nome }
   const [avaliando, setAvaliando] = useState(null);
 
@@ -162,9 +164,60 @@ function Viagens() {
 
   const agora = agoraLocal();
 
+  // Próximas: caronas ainda por vir e corridas ativas. Passadas: o resto.
+  const caronasProximas = caronas.filter((c) => c.horario > agora);
+  const caronasPassadas = caronas.filter((c) => c.horario <= agora);
+  const corridasProximas = corridas.filter((c) => corridaAtiva(c));
+  const corridasPassadas = corridas.filter((c) => !corridaAtiva(c));
+  const totalProximas = caronasProximas.length + corridasProximas.length;
+  const totalPassadas = caronasPassadas.length + corridasPassadas.length;
+  const mostrarProximas = aba === "proximas";
+  const caronasDaAba = mostrarProximas ? caronasProximas : caronasPassadas;
+  const corridasDaAba = mostrarProximas ? corridasProximas : corridasPassadas;
+  const abaVazia = caronasDaAba.length === 0 && corridasDaAba.length === 0;
+
+  // Sem nada à frente, abre direto em Passadas (só até a pessoa escolher uma aba)
+  useEffect(() => {
+    if (carregando || abaEscolhida.current) return;
+    if (totalProximas === 0 && totalPassadas > 0) setAba("passadas");
+  }, [carregando, totalProximas, totalPassadas]);
+
+  const escolherAba = (nova) => {
+    abaEscolhida.current = true;
+    setAba(nova);
+  };
+
+  // Repete uma corrida encerrada: abre o "Para onde?" já com o trajeto
+  const pedirDeNovo = (c) =>
+    navigate("/app/destino", {
+      state: {
+        origem: { id: `corrida-${c.id_corrida}-origem`, nome: c.origem, lat: c.origem_lat, lng: c.origem_lng },
+        destino: { id: `corrida-${c.id_corrida}-destino`, nome: c.destino, lat: c.destino_lat, lng: c.destino_lng },
+      },
+    });
+
   return (
     <div className="viagens">
       <h1 className="app-titulo">{ehMotorista ? "Minhas caronas" : "Minhas viagens"}</h1>
+
+      <div className="app-segmentado viagens-abas" aria-label="Período">
+        <button
+          type="button"
+          className={mostrarProximas ? "ativo" : ""}
+          aria-pressed={mostrarProximas}
+          onClick={() => escolherAba("proximas")}
+        >
+          Próximas{totalProximas > 0 && ` · ${totalProximas}`}
+        </button>
+        <button
+          type="button"
+          className={!mostrarProximas ? "ativo" : ""}
+          aria-pressed={!mostrarProximas}
+          onClick={() => escolherAba("passadas")}
+        >
+          Passadas{totalPassadas > 0 && ` · ${totalPassadas}`}
+        </button>
+      </div>
 
       {erro && (
         <p className="app-alerta app-alerta-erro" role="alert">
@@ -173,26 +226,30 @@ function Viagens() {
       )}
       {carregando ? (
         <EsqueletoLista itens={2} rotulo="Carregando suas viagens" />
+      ) : abaVazia ? (
+        <div className="app-vazio">
+          <p>
+            {mostrarProximas
+              ? ehMotorista
+                ? "Nenhuma carona marcada nem corrida em andamento."
+                : "Nenhuma viagem marcada por enquanto."
+              : "Nenhuma viagem realizada ainda."}
+          </p>
+          {mostrarProximas && (
+            <Link to={ehMotorista ? "/app/caronas/nova" : "/app/destino"} className="app-btn app-btn-primario app-btn-pequeno">
+              {ehMotorista ? "Oferecer carona" : "Para onde?"}
+            </Link>
+          )}
+        </div>
       ) : (
         <>
+          {caronasDaAba.length > 0 && (
           <section className="viagens-secao">
             <h2 className="app-subtitulo">
               {ehMotorista ? "Caronas oferecidas" : "Caronas reservadas"}
             </h2>
-            {caronas.length === 0 ? (
-              <div className="app-vazio">
-                <p>
-                  {ehMotorista
-                    ? "Você ainda não ofereceu nenhuma carona."
-                    : "Você ainda não reservou nenhuma carona."}
-                </p>
-                <Link to={ehMotorista ? "/app/caronas/nova" : "/app/destino"} className="app-btn app-btn-primario app-btn-pequeno">
-                  {ehMotorista ? "Oferecer carona" : "Buscar carona"}
-                </Link>
-              </div>
-            ) : (
               <div className="viagens-lista">
-                {caronas.map((c) => {
+                {caronasDaAba.map((c) => {
                   const jaAconteceu = c.horario <= agora;
                   return (
                     <CaronaCard key={c.id_carona} carona={c}>
@@ -237,20 +294,14 @@ function Viagens() {
                   );
                 })}
               </div>
-            )}
           </section>
+          )}
 
+          {corridasDaAba.length > 0 && (
           <section className="viagens-secao">
             <h2 className="app-subtitulo">Corridas</h2>
-            {corridas.length === 0 ? (
-              <p className="app-vazio">
-                {ehMotorista
-                  ? "Nenhuma corrida atendida ainda. Fique online no Início para receber pedidos."
-                  : "Nenhuma corrida pedida ainda."}
-              </p>
-            ) : (
               <div className="viagens-lista">
-                {corridas.map((c) => {
+                {corridasDaAba.map((c) => {
                   const outraPessoa = ehMotorista ? c.passageiro : c.motorista;
                   return (
                     <article key={c.id_corrida} className="corrida-resumo">
@@ -275,18 +326,33 @@ function Viagens() {
                           </span>
                         )}
                       </div>
-                      {corridaAtiva(c) && (
+                      {corridaAtiva(c) ? (
                         <Link to={`/app/corridas/${c.id_corrida}`} className="app-btn app-btn-primario app-btn-pequeno">
                           Acompanhar
                         </Link>
+                      ) : (
+                        <div className="viagens-acoes">
+                          <Link to={`/app/corridas/${c.id_corrida}`} className="app-btn app-btn-vazado app-btn-pequeno">
+                            Ver detalhes
+                          </Link>
+                          {!ehMotorista && c.status === "concluida" && (
+                            <button
+                              type="button"
+                              className="app-btn app-btn-secundario app-btn-pequeno"
+                              onClick={() => pedirDeNovo(c)}
+                            >
+                              Pedir de novo
+                            </button>
+                          )}
+                        </div>
                       )}
                       {c.status === "concluida" && renderAvaliacao("corrida", c.id_corrida, outraPessoa)}
                     </article>
                   );
                 })}
               </div>
-            )}
           </section>
+          )}
         </>
       )}
     </div>

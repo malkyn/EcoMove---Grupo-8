@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./Destino.css";
 import Mapa, { CentroDoMapa, Marcador, TracadoRota } from "../../components/Mapa/Mapa";
 import CampoEndereco from "../../components/CampoEndereco/CampoEndereco";
@@ -80,10 +80,12 @@ const IconeMoto = () => (
 
 function Destino() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { obter: obterLocalizacao, posicao: posicaoUsuario, buscando: buscandoGps } = useLocalizacao();
 
-  const [origem, setOrigem] = useState(null);
-  const [destino, setDestino] = useState(null);
+  // Trajeto trazido por outra tela ("Pedir de novo" em Viagens) já preenche os campos
+  const [origem, setOrigem] = useState(() => location.state?.origem || null);
+  const [destino, setDestino] = useState(() => location.state?.destino || null);
   const [quando, setQuando] = useState("agora"); // "agora" | "agendar"
   const [dataHora, setDataHora] = useState(proximaHoraCheia);
 

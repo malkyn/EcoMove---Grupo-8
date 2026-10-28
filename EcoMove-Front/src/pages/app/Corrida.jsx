@@ -472,6 +472,22 @@ function Corrida() {
             Sair da corrida
           </button>
         )}
+        {souPassageiro && corrida.status === "concluida" && (
+          <button
+            type="button"
+            className="app-btn app-btn-secundario"
+            onClick={() =>
+              navigate("/app/destino", {
+                state: {
+                  origem: { id: `corrida-${corrida.id_corrida}-origem`, nome: corrida.origem, ...origem },
+                  destino: { id: `corrida-${corrida.id_corrida}-destino`, nome: corrida.destino, ...destino },
+                },
+              })
+            }
+          >
+            Pedir de novo
+          </button>
+        )}
         {!ativa && (
           <button type="button" className="app-btn app-btn-primario" onClick={() => navigate("/app")}>
             Voltar ao início

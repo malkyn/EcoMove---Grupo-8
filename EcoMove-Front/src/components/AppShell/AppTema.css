@@ -157,6 +157,33 @@
   color: var(--app-ambar-texto);
 }
 
+/* ===== Controle segmentado (Agora/Agendar, Próximas/Passadas) ===== */
+.app-segmentado {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--app-fundo-suave);
+}
+
+.app-segmentado button {
+  min-height: calc(var(--app-toque) - 6px);
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 999px;
+  background: none;
+  color: var(--app-texto-suave);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.app-segmentado button.ativo {
+  background: var(--app-branco);
+  color: var(--app-verde);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
 /* ===== Chips e estados vazios ===== */
 .app-chip {
   display: inline-flex;

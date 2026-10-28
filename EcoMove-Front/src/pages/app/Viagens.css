@@ -98,3 +98,14 @@
   gap: 0.8rem;
 }
 
+.viagens-abas {
+  align-self: flex-start;
+}
+
+/* Ações de uma corrida encerrada: ver detalhes, pedir de novo, avaliar */
+.viagens-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
