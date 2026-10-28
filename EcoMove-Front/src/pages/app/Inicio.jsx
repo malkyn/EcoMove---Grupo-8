@@ -14,6 +14,7 @@ import { montarHistorico, sugerirPeloHistorico } from "../../utils/recomendacao"
 import CaronaCard from "../../components/CaronaCard/CaronaCard";
 import { useToast } from "../../components/Feedback/FeedbackContext";
 import { primeiroNome } from "../../utils/pessoas";
+import { rotuloCategoria } from "../../utils/veiculos";
 
 const PERFIL_MOTORISTA = 1;
 // Centro de Sorocaba: usado enquanto a localização do celular não chega
@@ -293,6 +294,7 @@ function Inicio() {
                         </div>
                         <div className="inicio-pedido-info">
                           <span>{primeiroNome(p.passageiro?.nome)}</span>
+                          <span>{rotuloCategoria(p.categoria || "carro")}</span>
                           <span>a {formatarKm(p.distancia_ate_voce_km)} de você</span>
                           <span>{formatarKm(p.distancia_km)} de corrida</span>
                           <strong>{formatarReais(p.preco_estimado)}</strong>

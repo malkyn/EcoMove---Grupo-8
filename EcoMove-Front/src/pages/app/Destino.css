@@ -170,3 +170,132 @@
   gap: 0.5rem;
 }
 
+/* ----- Confirmação do embarque ----- */
+.destino-trajeto-escolhido {
+  gap: 0.4rem;
+}
+
+.destino-trajeto-linha {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  color: var(--app-texto);
+}
+
+.destino-trajeto-seta {
+  color: var(--app-verde);
+}
+
+/* Pino fixo sobre o centro do mapa: a ponta marca o ponto de encontro */
+.destino-pino {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 28px;
+  height: 44px;
+  margin: -44px 0 0 -14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  z-index: 500;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+}
+
+.destino-pino-cabeca {
+  width: 28px;
+  height: 28px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: var(--app-verde);
+  border: 3px solid var(--app-branco);
+}
+
+.destino-pino-haste {
+  width: 3px;
+  height: 14px;
+  margin-top: 2px;
+  background: var(--app-verde);
+}
+
+.destino-embarque {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--app-texto);
+}
+
+.destino-embarque-rotulo {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--app-texto-suave);
+}
+
+.destino-categorias {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.destino-categoria {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  min-height: var(--app-toque);
+  padding: 0.75rem 0.85rem;
+  border: 1.5px solid var(--app-borda);
+  border-radius: 14px;
+  background: var(--app-fundo-leve);
+  color: var(--app-texto);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.destino-categoria svg {
+  color: var(--app-texto-suave);
+}
+
+.destino-categoria.ativa {
+  border-color: var(--app-verde);
+  background: var(--app-verde-claro);
+}
+
+.destino-categoria.ativa svg {
+  color: var(--app-verde);
+}
+
+.destino-categoria-nome {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.destino-categoria-descricao {
+  font-size: 0.8rem;
+  color: var(--app-texto-suave);
+}
+
+.destino-categoria strong {
+  margin-top: 0.2rem;
+  font-size: 1.15rem;
+}
+
+.destino-categoria.ativa strong {
+  color: var(--app-verde);
+}
+
+.destino-categoria small {
+  font-size: 0.8rem;
+  color: var(--app-texto-suave);
+}
+

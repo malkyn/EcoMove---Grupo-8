@@ -7,7 +7,7 @@
 // demonstração ficam em texto puro no navegador, o que é inaceitável fora daqui.
 import { AxiosError } from "axios";
 import { distanciaHaversineKm } from "./geo";
-import { estimarCarona, estimarCorrida } from "../utils/estimativas";
+import { estimarCarona, estimarCorridaPorCategoria } from "../utils/estimativas";
 
 const CHAVE_DB = "ecomove_mock_db";
 // Aumente quando o formato dos dados mudar: o banco salvo no navegador é recriado.
@@ -769,6 +769,9 @@ function criarCorrida({ db, body }) {
     numeroOuNull(body.distancia_km) ??
     Math.round(distanciaHaversineKm(origemPonto, destinoPonto) * 1.3 * 10) / 10;
   const duracaoMin = numeroOuNull(body.duracao_min) ?? Math.round((distanciaKm / 30) * 60);
+  // Categoria pedida (carro ou moto); opcional no contrato, carro por padrão
+  const categoria = body.categoria ? String(body.categoria).toLowerCase() : "carro";
+  if (!CATEGORIAS.includes(categoria)) return erro(400, "categoria deve ser carro ou moto");
 
   const nova = {
     id_corrida: db.proximoId.corrida++,
@@ -780,7 +783,8 @@ function criarCorrida({ db, body }) {
     ...coords,
     distancia_km: distanciaKm,
     duracao_min: duracaoMin,
-    preco_estimado: estimarCorrida(distanciaKm, duracaoMin),
+    categoria,
+    preco_estimado: estimarCorridaPorCategoria(distanciaKm, duracaoMin, categoria),
     status: "pendente",
     criada_em: agoraISO(),
     aceita_em: null,
