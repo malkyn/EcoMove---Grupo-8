@@ -2,12 +2,13 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Inicio.css";
 import api from "../../services/api";
-import Mapa, { Marcador } from "../../components/Mapa/Mapa";
+import Mapa, { Enquadrar, Marcador } from "../../components/Mapa/Mapa";
 import { getUsuarioLogado } from "../../services/auth";
 import { useLocalizacao } from "../../hooks/useLocalizacao";
 import { useIntervalo } from "../../hooks/useIntervalo";
 import { mensagemDeErro } from "../../utils/erros";
 import { formatarKm, formatarReais } from "../../utils/estimativas";
+import { distanciaHaversineKm } from "../../services/geo";
 import { rotuloStatus } from "../../utils/corridas";
 import { agoraLocal } from "../../utils/formatar";
 import { montarHistorico, sugerirPeloHistorico } from "../../utils/recomendacao";
@@ -22,7 +23,9 @@ const PERFIL_MOTORISTA = 1;
 // Centro de Sorocaba: usado enquanto a localização do celular não chega
 const SOROCABA = { lat: -23.5015, lng: -47.4526 };
 const COR_MOTORISTA = "#1d4ed8";
+const COR_PEDIDO = "#d9480f"; // ponto de embarque dos pedidos, no mapa da motorista
 const RAIO_PEDIDOS_KM = 10;
+const ENVIO_POSICAO_MS = 15000; // motorista online: manda a posição a cada 15 s ou quando se move
 const RAIO_MOTORISTAS_KM = 15;
 const TEMPO_OFERTA_S = 20; // quanto tempo um pedido fica na tela do motorista antes de sumir
 
@@ -43,7 +46,7 @@ function Inicio() {
   const meuNome = primeiroNome(usuario?.nome);
   const toast = useToast();
 
-  const { obter: obterLocalizacao, posicao, erro: erroGps } = useLocalizacao();
+  const { obter: obterLocalizacao, acompanhar, posicao, erro: erroGps } = useLocalizacao();
   const centro = posicao || SOROCABA;
 
   const [corridaAtual, setCorridaAtual] = useState(null);
@@ -58,6 +61,8 @@ function Inicio() {
   const recusados = useRef(new Set());
   const [agora, setAgora] = useState(() => Date.now());
   const audioRef = useRef(null);
+  const ultimoEnvio = useRef({ ponto: null, em: 0 }); // última posição enviada ao servidor
+  const folhaRef = useRef(null); // a folha cobre a base do mapa; sua altura vira margem do enquadramento
   const [erro, setErro] = useState("");
   const [sugestoes, setSugestoes] = useState([]);
   const [reservando, setReservando] = useState(null);
@@ -186,6 +191,32 @@ function Inicio() {
     }
   };
 
+  // Motorista online: segue a posição do aparelho e manda ao servidor quando se move
+  // (ou a cada ENVIO_POSICAO_MS), para o passageiro ver o carro no lugar certo
+  useEffect(() => {
+    if (!ehMotorista || !online) return undefined;
+    return acompanhar();
+  }, [ehMotorista, online, acompanhar]);
+
+  useEffect(() => {
+    if (!ehMotorista || !online || !posicao || !idUsuario) return;
+    const { ponto, em } = ultimoEnvio.current;
+    const moveu = !ponto || distanciaHaversineKm(ponto, posicao) >= 0.05;
+    if (!moveu && Date.now() - em < ENVIO_POSICAO_MS) return;
+    ultimoEnvio.current = { ponto: posicao, em: Date.now() };
+    api
+      .post("/motoristas/online", {
+        id_usuario: idUsuario,
+        online: true,
+        lat: posicao.lat,
+        lng: posicao.lng,
+        id_veiculo: veiculos[0]?.id_veiculo,
+      })
+      .catch(() => {
+        // silencioso: a próxima leitura tenta de novo
+      });
+  }, [ehMotorista, online, posicao, idUsuario, veiculos]);
+
   // Motorista online: pedidos pendentes por perto
   const buscarPedidos = useCallback(async () => {
     if (!online) return;
@@ -264,11 +295,30 @@ function Inicio() {
                 rotulo={`${primeiroNome(m.nome) || "Motorista"}${m.veiculo ? ` · ${m.veiculo.modelo}` : ""}`}
               />
             ))}
+          {/* Motorista online: onde cada pedido embarca, para decidir pelo mapa */}
+          {ehMotorista && online && !corridaAtual && (
+            <>
+              {ofertas.map((p) => (
+                <Marcador
+                  key={p.id_corrida}
+                  posicao={{ lat: p.origem_lat, lng: p.origem_lng }}
+                  cor={COR_PEDIDO}
+                  rotulo={`${primeiroNome(p.passageiro?.nome) || "Passageiro"} · a ${formatarKm(p.distancia_ate_voce_km)} · ${formatarReais(p.preco_estimado)}`}
+                />
+              ))}
+              {ofertas.length > 0 && (
+                <Enquadrar
+                  pontos={[...(posicao ? [posicao] : []), ...ofertas.map((p) => ({ lat: p.origem_lat, lng: p.origem_lng }))]}
+                  margemInferior={(folhaRef.current?.offsetHeight || 380) + 24}
+                />
+              )}
+            </>
+          )}
         </Mapa>
       </div>
 
       {/* Folha inferior, no padrão dos apps de mobilidade */}
-      <section className="inicio-folha" aria-label="Ações rápidas">
+      <section className="inicio-folha" aria-label="Ações rápidas" ref={folhaRef}>
         <div className="inicio-alca" aria-hidden="true" />
         {avisoDeRota && (
           <p className="app-alerta app-alerta-aviso" role="alert">
