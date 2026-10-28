@@ -8,6 +8,7 @@ import { useInstalarApp } from "../../hooks/useInstalarApp";
 import { formatarData } from "../../utils/formatar";
 import { Estrelas } from "../../components/Avaliacao/Avaliacao";
 import { useConfirmacao } from "../../components/Feedback/FeedbackContext";
+import { primeiroNome } from "../../utils/pessoas";
 
 const PERFIL_MOTORISTA = 1;
 
@@ -140,7 +141,7 @@ function Perfil() {
               <li key={a.id_avaliacao}>
                 <div className="perfil-avaliacao-topo">
                   <Estrelas media={a.nota} total={1} semTotal />
-                  <span>{a.avaliador}</span>
+                  <span>{primeiroNome(a.avaliador)}</span>
                   <small>{formatarData(a.criada_em)}</small>
                 </div>
                 {a.comentario && <p>“{a.comentario}”</p>}

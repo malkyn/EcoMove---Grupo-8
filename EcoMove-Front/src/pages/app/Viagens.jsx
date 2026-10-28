@@ -11,6 +11,7 @@ import CaronaCard from "../../components/CaronaCard/CaronaCard";
 import { AvaliacaoForm, Estrelas } from "../../components/Avaliacao/Avaliacao";
 import { useConfirmacao, useToast } from "../../components/Feedback/FeedbackContext";
 import { EsqueletoLista } from "../../components/Feedback/Esqueleto";
+import { primeiroNome } from "../../utils/pessoas";
 
 const PERFIL_MOTORISTA = 1;
 
@@ -134,7 +135,7 @@ function Viagens() {
   const renderAvaliacao = (tipo, id, pessoa) => {
     if (!pessoa || pessoa.id_usuario === idUsuario) return null;
     if (jaAvaliei(tipo, id, pessoa.id_usuario)) {
-      return <span className="app-chip app-chip-ok">Você avaliou {pessoa.nome}</span>;
+      return <span className="app-chip app-chip-ok">Você avaliou {primeiroNome(pessoa.nome)}</span>;
     }
     if (estaAvaliando(tipo, id, pessoa.id_usuario)) {
       return (
@@ -142,7 +143,7 @@ function Viagens() {
           viagem={tipo === "carona" ? { id_carona: id } : { id_corrida: id }}
           idAvaliador={idUsuario}
           idAvaliado={pessoa.id_usuario}
-          nomeAvaliado={pessoa.nome}
+          nomeAvaliado={primeiroNome(pessoa.nome)}
           onEnviada={aoEnviarAvaliacao}
           onCancelar={() => setAvaliando(null)}
         />
@@ -154,7 +155,7 @@ function Viagens() {
         className="avaliar-botao"
         onClick={() => setAvaliando({ tipo, id, idAvaliado: pessoa.id_usuario, nome: pessoa.nome })}
       >
-        Avaliar {pessoa.nome.split(" ")[0]}
+        Avaliar {primeiroNome(pessoa.nome)}
       </button>
     );
   };
@@ -200,7 +201,7 @@ function Viagens() {
                           Passageiros:{" "}
                           {c.passageiros.map((p) => (
                             <span key={p.id_usuario} className="viagens-passageiro">
-                              {p.nome}{" "}
+                              {primeiroNome(p.nome)}{" "}
                               <Estrelas media={p.media_avaliacao} total={p.total_avaliacoes} />
                             </span>
                           ))}
@@ -266,7 +267,7 @@ function Viagens() {
                         <strong>{formatarReais(c.preco_estimado)}</strong>
                         {outraPessoa && (
                           <span>
-                            {ehMotorista ? "Passageiro" : "Motorista"}: {outraPessoa.nome}{" "}
+                            {ehMotorista ? "Passageiro" : "Motorista"}: {primeiroNome(outraPessoa.nome)}{" "}
                             <Estrelas
                               media={outraPessoa.media_avaliacao}
                               total={outraPessoa.total_avaliacoes}

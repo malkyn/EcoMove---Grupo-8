@@ -13,6 +13,7 @@ import { agoraLocal } from "../../utils/formatar";
 import { montarHistorico, sugerirPeloHistorico } from "../../utils/recomendacao";
 import CaronaCard from "../../components/CaronaCard/CaronaCard";
 import { useToast } from "../../components/Feedback/FeedbackContext";
+import { primeiroNome } from "../../utils/pessoas";
 
 const PERFIL_MOTORISTA = 1;
 // Centro de Sorocaba: usado enquanto a localização do celular não chega
@@ -35,7 +36,7 @@ function Inicio() {
   const usuario = getUsuarioLogado();
   const idUsuario = usuario?.id_usuario;
   const ehMotorista = usuario?.id_perfil === PERFIL_MOTORISTA;
-  const primeiroNome = usuario?.nome ? String(usuario.nome).split(" ")[0] : "";
+  const meuNome = primeiroNome(usuario?.nome);
   const toast = useToast();
 
   const { obter: obterLocalizacao, posicao, erro: erroGps } = useLocalizacao();
@@ -216,7 +217,7 @@ function Inicio() {
                 key={m.id_usuario}
                 posicao={m}
                 cor={COR_MOTORISTA}
-                rotulo={`${m.nome || "Motorista"}${m.veiculo ? ` · ${m.veiculo.modelo}` : ""}`}
+                rotulo={`${primeiroNome(m.nome) || "Motorista"}${m.veiculo ? ` · ${m.veiculo.modelo}` : ""}`}
               />
             ))}
         </Mapa>
@@ -247,7 +248,7 @@ function Inicio() {
         )}
 
         <p className="inicio-saudacao">
-          Olá, {primeiroNome}
+          Olá, {meuNome}
           {ehMotorista && (
             <span className={`inicio-estado ${online ? "inicio-estado-online" : ""}`}>
               {online ? "online" : "offline"}
@@ -291,7 +292,7 @@ function Inicio() {
                           {p.origem} → {p.destino}
                         </div>
                         <div className="inicio-pedido-info">
-                          <span>{p.passageiro?.nome}</span>
+                          <span>{primeiroNome(p.passageiro?.nome)}</span>
                           <span>a {formatarKm(p.distancia_ate_voce_km)} de você</span>
                           <span>{formatarKm(p.distancia_km)} de corrida</span>
                           <strong>{formatarReais(p.preco_estimado)}</strong>
