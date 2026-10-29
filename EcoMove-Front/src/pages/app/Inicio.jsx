@@ -18,6 +18,8 @@ import { primeiroNome } from "../../utils/pessoas";
 import { rotuloCategoria } from "../../utils/veiculos";
 import { avisarPedido, prepararAudio } from "../../utils/aviso";
 import { Estrelas } from "../../components/Avaliacao/Avaliacao";
+import { TIPOS_SALVOS, lerLugaresSalvos } from "../../utils/lugares";
+import { IconeCasa, IconeMaleta } from "../../components/Icones";
 
 const PERFIL_MOTORISTA = 1;
 // Centro de Sorocaba: usado enquanto a localização do celular não chega
@@ -66,6 +68,7 @@ function Inicio() {
   const [erro, setErro] = useState("");
   const [sugestoes, setSugestoes] = useState([]);
   const [reservando, setReservando] = useState(null);
+  const [salvos] = useState(() => lerLugaresSalvos(idUsuario)); // Casa e Trabalho, do Perfil
 
   useEffect(() => {
     obterLocalizacao();
@@ -435,6 +438,39 @@ function Inicio() {
               <IconeBusca />
               <span>Para onde?</span>
             </Link>
+            {/* Atalhos de Casa e Trabalho: um toque abre o trajeto com o destino preenchido */}
+            <div className="inicio-atalhos" aria-label="Lugares salvos">
+              {TIPOS_SALVOS.map((t) => {
+                const lugar = salvos[t.tipo];
+                const Icone = t.tipo === "casa" ? IconeCasa : IconeMaleta;
+                return lugar ? (
+                  <button
+                    key={t.tipo}
+                    type="button"
+                    className="inicio-atalho"
+                    onClick={() =>
+                      navigate("/app/destino", {
+                        state: { destino: { id: `salvo-${t.tipo}`, nome: lugar.nome, lat: lugar.lat, lng: lugar.lng } },
+                      })
+                    }
+                  >
+                    <Icone />
+                    <span>
+                      <strong>{t.rotulo}</strong>
+                      <small>{lugar.nome}</small>
+                    </span>
+                  </button>
+                ) : (
+                  <Link key={t.tipo} to="/app/perfil" className="inicio-atalho inicio-atalho-vazio">
+                    <Icone />
+                    <span>
+                      <strong>Definir {t.rotulo.toLowerCase()}</strong>
+                      <small>no Perfil</small>
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
             <p className="inicio-motoristas">
               {motoristas.length === 0
                 ? "Nenhum motorista online por perto agora."

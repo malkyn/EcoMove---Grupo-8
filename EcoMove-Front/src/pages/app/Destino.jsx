@@ -9,7 +9,7 @@ import { calcularRota, distanciaHaversineKm, enderecoDe } from "../../services/g
 import { useLocalizacao } from "../../hooks/useLocalizacao";
 import { mensagemDeErro } from "../../utils/erros";
 import { agoraLocal, proximaHoraCheia } from "../../utils/formatar";
-import { lugaresRecentes } from "../../utils/lugares";
+import { lerLugaresSalvos, lugaresRecentes, salvosComoSugestoes } from "../../utils/lugares";
 import { CATEGORIAS } from "../../utils/veiculos";
 import {
   co2EvitadoKg,
@@ -107,6 +107,8 @@ function Destino() {
 
   const usuario = getUsuarioLogado();
   const idUsuario = usuario?.id_usuario;
+  // Casa e Trabalho (salvos no aparelho, pelo Perfil) vêm antes dos recentes nos campos
+  const [salvos] = useState(() => salvosComoSugestoes(lerLugaresSalvos(idUsuario)));
 
   // Lugares recentes (reservas e corridas) aparecem nos campos antes de digitar
   useEffect(() => {
@@ -307,6 +309,7 @@ function Destino() {
             valor={origem}
             onSelecionar={setOrigem}
             sugestoesIniciais={recentes}
+            sugestoesSalvas={salvos}
             acaoExtra={
               <button
                 type="button"
@@ -328,6 +331,7 @@ function Destino() {
             valor={destino}
             onSelecionar={setDestino}
             sugestoesIniciais={recentes}
+            sugestoesSalvas={salvos}
             acaoExtra={
               <button
                 type="button"

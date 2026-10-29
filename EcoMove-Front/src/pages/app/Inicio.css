@@ -239,3 +239,66 @@
   flex: 1 1 0;
 }
 
+
+/* Atalhos de Casa e Trabalho sob o "Para onde?" */
+.inicio-atalhos {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.inicio-atalho {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: var(--app-toque);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--app-borda);
+  border-radius: 12px;
+  background: var(--app-branco);
+  color: var(--app-texto);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.inicio-atalho:hover {
+  border-color: var(--app-verde);
+  background: var(--app-verde-claro);
+}
+
+.inicio-atalho svg {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  color: var(--app-verde);
+}
+
+.inicio-atalho span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.inicio-atalho strong {
+  font-size: 0.9rem;
+}
+
+.inicio-atalho small {
+  font-size: 0.8rem;
+  color: var(--app-texto-suave);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.inicio-atalho-vazio {
+  border-style: dashed;
+}
+
+.inicio-atalho-vazio svg {
+  color: var(--app-texto-suave);
+}
