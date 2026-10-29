@@ -14,10 +14,20 @@ const IconeLimpar = () => (
 /**
  * Campo de endereço com sugestões do OpenStreetMap.
  * `valor` é um lugar { nome, lat, lng } ou null; `onSelecionar` recebe o lugar escolhido
- * (ou null quando o usuário volta a editar o texto). `sugestoesIniciais` (ex.: lugares
- * recentes) aparece enquanto o campo está vazio. Setas, Enter e Esc funcionam na lista.
+ * (ou null quando o usuário volta a editar o texto). Com o campo vazio, a lista mostra
+ * `sugestoesSalvas` (Casa, Trabalho) e `sugestoesIniciais` (recentes). Setas, Enter e Esc
+ * funcionam na lista.
  */
-function CampoEndereco({ id, rotulo, placeholder, valor, onSelecionar, acaoExtra, sugestoesIniciais = [] }) {
+function CampoEndereco({
+  id,
+  rotulo,
+  placeholder,
+  valor,
+  onSelecionar,
+  acaoExtra,
+  sugestoesIniciais = [],
+  sugestoesSalvas = [],
+}) {
   const [texto, setTexto] = useState(valor?.nome || "");
   const [sugestoes, setSugestoes] = useState([]);
   const [aberto, setAberto] = useState(false);
@@ -62,9 +72,20 @@ function CampoEndereco({ id, rotulo, placeholder, valor, onSelecionar, acaoExtra
     return () => clearTimeout(timer);
   }, [texto, aberto, valor, textoCurto]);
 
-  // Com o campo vazio, a lista mostra os recentes; depois de digitar, os resultados da busca
-  const mostrandoIniciais = !valor && textoCurto && sugestoesIniciais.length > 0;
-  const opcoes = mostrandoIniciais ? sugestoesIniciais : sugestoes;
+  // Com o campo vazio, a lista mostra salvos e recentes; depois de digitar, os resultados da busca
+  // Um lugar salvo não repete nos recentes
+  const grupos = [
+    { titulo: "Salvos", itens: sugestoesSalvas },
+    {
+      titulo: "Recentes",
+      itens: sugestoesIniciais.filter(
+        (r) => !sugestoesSalvas.some((s) => s.nome.trim().toLowerCase() === r.nome.trim().toLowerCase())
+      ),
+    },
+  ];
+  const iniciais = grupos.flatMap((g) => g.itens);
+  const mostrandoIniciais = !valor && textoCurto && iniciais.length > 0;
+  const opcoes = mostrandoIniciais ? iniciais : sugestoes;
   const semResultado = !valor && !textoCurto && buscou && !buscando && sugestoes.length === 0;
   const mostrarLista =
     aberto && !valor && (mostrandoIniciais || buscando || sugestoes.length > 0 || semResultado);
@@ -117,6 +138,21 @@ function CampoEndereco({ id, rotulo, placeholder, valor, onSelecionar, acaoExtra
 
   const idOpcao = (i) => `${idLista}-opcao-${i}`;
 
+  const renderOpcao = (s, i) => (
+    <li
+      key={s.id}
+      id={idOpcao(i)}
+      role="option"
+      aria-selected={ativa === i}
+      className={ativa === i ? "ativa" : ""}
+    >
+      <button type="button" tabIndex={-1} onMouseDown={(e) => e.preventDefault()} onClick={() => escolher(s)}>
+        <strong>{s.nome}</strong>
+        <small>{s.descricao}</small>
+      </button>
+    </li>
+  );
+
   return (
     <div className="campo-endereco">
       <label htmlFor={id} className="campo-endereco-rotulo">
@@ -161,13 +197,20 @@ function CampoEndereco({ id, rotulo, placeholder, valor, onSelecionar, acaoExtra
           id={idLista}
           className="campo-endereco-lista"
           role="listbox"
-          aria-label={mostrandoIniciais ? "Lugares recentes" : "Endereços encontrados"}
+          aria-label={mostrandoIniciais ? "Lugares salvos e recentes" : "Endereços encontrados"}
         >
-          {mostrandoIniciais && (
-            <li className="campo-endereco-grupo" role="presentation">
-              Recentes
-            </li>
-          )}
+          {mostrandoIniciais &&
+            grupos.map(
+              (g) =>
+                g.itens.length > 0 && (
+                  <React.Fragment key={g.titulo}>
+                    <li className="campo-endereco-grupo" role="presentation">
+                      {g.titulo}
+                    </li>
+                    {g.itens.map((s) => renderOpcao(s, iniciais.indexOf(s)))}
+                  </React.Fragment>
+                )
+            )}
           {buscando && sugestoes.length === 0 && !mostrandoIniciais && (
             <li className="campo-endereco-info" role="presentation">
               Buscando endereços...
@@ -178,25 +221,7 @@ function CampoEndereco({ id, rotulo, placeholder, valor, onSelecionar, acaoExtra
               Nenhum endereço encontrado. Tente incluir o bairro ou a cidade.
             </li>
           )}
-          {opcoes.map((s, i) => (
-            <li
-              key={s.id}
-              id={idOpcao(i)}
-              role="option"
-              aria-selected={ativa === i}
-              className={ativa === i ? "ativa" : ""}
-            >
-              <button
-                type="button"
-                tabIndex={-1}
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => escolher(s)}
-              >
-                <strong>{s.nome}</strong>
-                <small>{s.descricao}</small>
-              </button>
-            </li>
-          ))}
+          {!mostrandoIniciais && opcoes.map((s, i) => renderOpcao(s, i))}
         </ul>
       )}
     </div>

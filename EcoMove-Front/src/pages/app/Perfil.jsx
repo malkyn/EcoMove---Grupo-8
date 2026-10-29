@@ -7,9 +7,12 @@ import { mensagemDeErro } from "../../utils/erros";
 import { useInstalarApp } from "../../hooks/useInstalarApp";
 import { formatarData } from "../../utils/formatar";
 import { Estrelas } from "../../components/Avaliacao/Avaliacao";
-import { useConfirmacao } from "../../components/Feedback/FeedbackContext";
+import { useConfirmacao, useToast } from "../../components/Feedback/FeedbackContext";
 import { primeiroNome } from "../../utils/pessoas";
 import { rotuloChip } from "../../utils/avaliacoes";
+import { TIPOS_SALVOS, lerLugaresSalvos, lugaresRecentes, removerLugar, salvarLugar } from "../../utils/lugares";
+import { IconeCasa, IconeMaleta } from "../../components/Icones";
+import CampoEndereco from "../../components/CampoEndereco/CampoEndereco";
 
 const PERFIL_MOTORISTA = 1;
 
@@ -20,9 +23,40 @@ function Perfil() {
   const ehMotorista = usuario?.id_perfil === PERFIL_MOTORISTA;
   const { jaInstalado, podeInstalar, precisaDeInstrucaoIOS, instalar } = useInstalarApp();
   const confirmar = useConfirmacao();
+  const toast = useToast();
 
   const [avaliacoes, setAvaliacoes] = useState({ media: null, total: 0, avaliacoes: [] });
   const [erro, setErro] = useState("");
+  // Lugares salvos (Casa e Trabalho) ficam no aparelho; os recentes ajudam a escolher
+  const [salvos, setSalvos] = useState(() => lerLugaresSalvos(idUsuario));
+  const [editandoLugar, setEditandoLugar] = useState(null);
+  const [recentes, setRecentes] = useState([]);
+
+  useEffect(() => {
+    if (!idUsuario) return undefined;
+    let ativo = true;
+    Promise.all([
+      api.get(`/usuarios/${idUsuario}/reservas`).catch(() => ({ data: [] })),
+      api.get("/corridas/", { params: { id_usuario: idUsuario } }).catch(() => ({ data: [] })),
+    ]).then(([respReservas, respCorridas]) => {
+      if (ativo) setRecentes(lugaresRecentes(respReservas.data, respCorridas.data));
+    });
+    return () => {
+      ativo = false;
+    };
+  }, [idUsuario]);
+
+  const salvar = (tipo, lugar) => {
+    if (!lugar) return;
+    setSalvos(salvarLugar(idUsuario, tipo, lugar));
+    setEditandoLugar(null);
+    toast(`${TIPOS_SALVOS.find((t) => t.tipo === tipo).rotulo} salvo: ${lugar.nome}`);
+  };
+
+  const remover = (tipo) => {
+    setSalvos(removerLugar(idUsuario, tipo));
+    toast(`${TIPOS_SALVOS.find((t) => t.tipo === tipo).rotulo} removido dos atalhos.`);
+  };
 
   useEffect(() => {
     if (!idUsuario) return undefined;
@@ -126,6 +160,61 @@ function Perfil() {
           </button>
         </li>
       </ul>
+
+      <section className="perfil-lugares" aria-label="Lugares salvos">
+        <h2>Lugares salvos</h2>
+        <p className="perfil-lugares-dica">
+          Casa e Trabalho viram atalhos no Início e nos campos de endereço. Ficam só neste aparelho.
+        </p>
+        {TIPOS_SALVOS.map((t) => {
+          const lugar = salvos[t.tipo];
+          const editando = editandoLugar === t.tipo;
+          const Icone = t.tipo === "casa" ? IconeCasa : IconeMaleta;
+          return (
+            <div key={t.tipo} className="perfil-lugar">
+              <div className="perfil-lugar-linha">
+                <span className="perfil-lugar-icone" aria-hidden="true">
+                  <Icone />
+                </span>
+                <span className="perfil-lugar-dados">
+                  <strong>{t.rotulo}</strong>
+                  <small>{lugar ? lugar.nome : "Não definido"}</small>
+                </span>
+                <div className="perfil-lugar-acoes">
+                  <button
+                    type="button"
+                    className="app-btn app-btn-vazado app-btn-pequeno"
+                    onClick={() => setEditandoLugar(editando ? null : t.tipo)}
+                    aria-expanded={editando}
+                  >
+                    {editando ? "Fechar" : lugar ? "Trocar" : "Definir"}
+                  </button>
+                  {lugar && !editando && (
+                    <button
+                      type="button"
+                      className="app-btn app-btn-secundario app-btn-pequeno"
+                      onClick={() => remover(t.tipo)}
+                      aria-label={`Remover ${t.rotulo.toLowerCase()} dos atalhos`}
+                    >
+                      Remover
+                    </button>
+                  )}
+                </div>
+              </div>
+              {editando && (
+                <CampoEndereco
+                  id={`lugar-${t.tipo}`}
+                  rotulo={`Endereço de ${t.rotulo.toLowerCase()}`}
+                  placeholder="Rua, número e bairro"
+                  valor={null}
+                  onSelecionar={(l) => salvar(t.tipo, l)}
+                  sugestoesIniciais={recentes}
+                />
+              )}
+            </div>
+          );
+        })}
+      </section>
 
       <section className="perfil-avaliacoes" aria-label="Avaliações recebidas">
         <h2>

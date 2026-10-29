@@ -149,3 +149,19 @@ export const IconeOlhoFechado = (p) => (
     <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
   </Svg>
 );
+
+export const IconeCasa = (p) => (
+  <Svg {...p}>
+    <path d="M3 11.5 12 4l9 7.5" />
+    <path d="M5 10v10h14V10" />
+    <path d="M10 20v-6h4v6" />
+  </Svg>
+);
+
+export const IconeMaleta = (p) => (
+  <Svg {...p}>
+    <rect x="3" y="7" width="18" height="13" rx="2" />
+    <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+    <path d="M3 12h18" />
+  </Svg>
+);

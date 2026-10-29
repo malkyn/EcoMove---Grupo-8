@@ -1,3 +1,54 @@
+/** Lugares que a pessoa salva como atalho (Início e campos de endereço). */
+export const TIPOS_SALVOS = [
+  { tipo: "casa", rotulo: "Casa" },
+  { tipo: "trabalho", rotulo: "Trabalho" },
+];
+
+const chaveSalvos = (idUsuario) => `ecomove_lugares_${idUsuario}`;
+
+/** Lugares salvos ficam no aparelho (localStorage), por usuário: { casa: lugar, trabalho: lugar }. */
+export function lerLugaresSalvos(idUsuario) {
+  if (!idUsuario) return {};
+  try {
+    return JSON.parse(localStorage.getItem(chaveSalvos(idUsuario))) || {};
+  } catch {
+    return {};
+  }
+}
+
+function gravarSalvos(idUsuario, salvos) {
+  try {
+    localStorage.setItem(chaveSalvos(idUsuario), JSON.stringify(salvos));
+  } catch {
+    // sem espaço ou armazenamento bloqueado: a tela segue com o valor em memória
+  }
+  return salvos;
+}
+
+export function salvarLugar(idUsuario, tipo, lugar) {
+  return gravarSalvos(idUsuario, {
+    ...lerLugaresSalvos(idUsuario),
+    [tipo]: { nome: lugar.nome, lat: lugar.lat, lng: lugar.lng },
+  });
+}
+
+export function removerLugar(idUsuario, tipo) {
+  const novos = { ...lerLugaresSalvos(idUsuario) };
+  delete novos[tipo];
+  return gravarSalvos(idUsuario, novos);
+}
+
+/** Casa e Trabalho definidos, no formato de sugestão do CampoEndereco. */
+export function salvosComoSugestoes(salvos) {
+  return TIPOS_SALVOS.filter((t) => salvos[t.tipo]).map((t) => ({
+    id: `salvo-${t.tipo}`,
+    nome: salvos[t.tipo].nome,
+    descricao: t.rotulo,
+    lat: salvos[t.tipo].lat,
+    lng: salvos[t.tipo].lng,
+  }));
+}
+
 /**
  * Lugares recentes do usuário, tirados das reservas de carona e das corridas:
  * origens e destinos, do mais novo para o mais antigo, sem repetir o mesmo nome.

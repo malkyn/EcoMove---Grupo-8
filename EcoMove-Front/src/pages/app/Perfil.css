@@ -218,3 +218,78 @@
   font-weight: 600;
   color: var(--app-verde);
 }
+
+/* ----- Lugares salvos (Casa e Trabalho) ----- */
+.perfil-lugares {
+  background: var(--app-branco);
+  border: 1px solid var(--app-borda);
+  border-radius: 16px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.perfil-lugares h2 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--app-texto);
+}
+
+.perfil-lugares-dica {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--app-texto-suave);
+}
+
+.perfil-lugar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--app-borda);
+}
+
+.perfil-lugar-linha {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.perfil-lugar-icone {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--app-verde-claro);
+  color: var(--app-verde);
+}
+
+.perfil-lugar-icone svg {
+  width: 22px;
+  height: 22px;
+}
+
+.perfil-lugar-dados {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.perfil-lugar-dados small {
+  font-size: 0.85rem;
+  color: var(--app-texto-suave);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.perfil-lugar-acoes {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 0.4rem;
+}
