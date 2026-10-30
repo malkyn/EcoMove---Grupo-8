@@ -319,6 +319,25 @@ function login({ db, body }) {
   return ok({ mensagem: "Login realizado com sucesso!", usuario: usuarioPublico(u) });
 }
 
+/** Edita nome e telefone (os únicos dados que a pessoa muda na tela de perfil). */
+function atualizarUsuario({ db, body, match }) {
+  const u = db.usuarios.find((x) => x.id_usuario === Number(match[1]));
+  if (!u) return erro(404, "Usuário não encontrado");
+  if (body.nome !== undefined) {
+    const nome = String(body.nome).trim();
+    if (nome.length < 2) return erro(400, "Informe o nome completo");
+    u.nome = nome;
+  }
+  if (body.telefone !== undefined) {
+    const digitos = String(body.telefone || "").replace(/\D/g, "");
+    if (digitos && (digitos.length < 10 || digitos.length > 11)) {
+      return erro(400, "Telefone deve ter DDD e número (10 ou 11 dígitos)");
+    }
+    u.telefone = digitos ? String(body.telefone).trim() : null;
+  }
+  return { ...ok({ mensagem: "Dados atualizados.", usuario: usuarioPublico(u) }), gravar: true };
+}
+
 function deletarUsuario({ db, match }) {
   const id = Number(match[1]);
   const idx = db.usuarios.findIndex((u) => u.id_usuario === id);
@@ -327,6 +346,7 @@ function deletarUsuario({ db, match }) {
   db.veiculos = db.veiculos.filter((v) => v.id_usuario !== id);
   db.caronas = db.caronas.filter((c) => c.id_usuario !== id);
   db.reservas = db.reservas.filter((r) => r.id_usuario !== id);
+  db.motoristas_online = db.motoristas_online.filter((m) => m.id_usuario !== id);
   return { ...ok({ mensagem: "Usuário deletado com sucesso!" }), gravar: true };
 }
 
@@ -1002,6 +1022,7 @@ const rotas = [
   ["POST", /^\/usuarios\/?$/, criarUsuario],
   ["POST", /^\/usuarios\/login\/?$/, login],
   ["GET", /^\/usuarios\/(\d+)\/?$/, buscarUsuario],
+  ["PUT", /^\/usuarios\/(\d+)\/?$/, atualizarUsuario],
   ["DELETE", /^\/usuarios\/(\d+)\/?$/, deletarUsuario],
   ["GET", /^\/usuarios\/(\d+)\/reservas\/?$/, listarReservasDoUsuario],
   ["GET", /^\/usuarios\/(\d+)\/avaliacoes\/?$/, listarAvaliacoesDoUsuario],

@@ -293,3 +293,27 @@
   display: flex;
   gap: 0.4rem;
 }
+
+/* ----- Editar dados (nome e telefone) ----- */
+.perfil-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1rem;
+  background: var(--app-fundo);
+}
+
+.perfil-form-acoes {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.perfil-excluir {
+  color: var(--app-erro);
+}
+
+.perfil-excluir:hover {
+  color: var(--app-erro);
+  background: var(--app-erro-fundo);
+}

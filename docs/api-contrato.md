@@ -85,8 +85,12 @@ Resposta `200`:
 ```
 `media` é `null` quando não há avaliações.
 
+### PUT `/usuarios/{id}` — editar dados
+Requisição: `{ "nome": "Camila F. Ferreira", "telefone": "(15) 99999-0001" }`. Os dois são opcionais; só o que vier é alterado. `nome` com pelo menos 2 caracteres; `telefone` com DDD e número (10 ou 11 dígitos) ou vazio para apagar.
+Resposta `200`: `{ "mensagem": "Dados atualizados.", "usuario": { ...formato público } }`. Erros: `400` valor inválido · `404` não existe.
+
 ### DELETE `/usuarios/{id}`
-Resposta `200`: `{ "mensagem": "Usuário deletado com sucesso!" }`. `404` se não existir. Deve remover em cascata veículos, caronas e reservas do usuário.
+Resposta `200`: `{ "mensagem": "Usuário deletado com sucesso!" }`. `404` se não existir. Deve remover em cascata veículos, caronas, reservas e a presença online do usuário (a Política de Privacidade promete a exclusão pela própria pessoa).
 
 ## 4. Veículos
 
