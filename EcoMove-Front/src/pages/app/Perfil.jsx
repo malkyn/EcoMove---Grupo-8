@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Perfil.css";
 import api from "../../services/api";
-import { getUsuarioLogado, logout } from "../../services/auth";
+import { atualizarUsuarioLogado, getUsuarioLogado, logout } from "../../services/auth";
 import { mensagemDeErro } from "../../utils/erros";
+import { apenasDigitos, mascaraTelefone } from "../../utils/validacao";
 import { useInstalarApp } from "../../hooks/useInstalarApp";
 import { formatarData } from "../../utils/formatar";
 import { Estrelas } from "../../components/Avaliacao/Avaliacao";
@@ -31,6 +32,73 @@ function Perfil() {
   const [salvos, setSalvos] = useState(() => lerLugaresSalvos(idUsuario));
   const [editandoLugar, setEditandoLugar] = useState(null);
   const [recentes, setRecentes] = useState([]);
+  // Editar dados: nome e telefone, salvos com PUT /usuarios/{id}
+  const [nomeExibido, setNomeExibido] = useState(usuario?.nome || "");
+  const [editandoDados, setEditandoDados] = useState(false);
+  const [formDados, setFormDados] = useState({ nome: "", telefone: "" });
+  const [salvandoDados, setSalvandoDados] = useState(false);
+  const [erroDados, setErroDados] = useState("");
+  const [excluindo, setExcluindo] = useState(false);
+
+  const abrirEdicao = async () => {
+    setErroDados("");
+    setEditandoDados(true);
+    setFormDados({ nome: nomeExibido, telefone: "" });
+    try {
+      const resposta = await api.get(`/usuarios/${idUsuario}`);
+      setFormDados({ nome: resposta.data.nome || nomeExibido, telefone: mascaraTelefone(resposta.data.telefone || "") });
+    } catch {
+      // sem o telefone atual, a pessoa digita de novo se quiser
+    }
+  };
+
+  const salvarDados = async (e) => {
+    e.preventDefault();
+    const nome = formDados.nome.trim();
+    const digitos = apenasDigitos(formDados.telefone);
+    if (nome.length < 2) {
+      setErroDados("Informe seu nome completo.");
+      return;
+    }
+    if (digitos && digitos.length < 10) {
+      setErroDados("Telefone incompleto: informe o DDD e o número.");
+      return;
+    }
+    setErroDados("");
+    setSalvandoDados(true);
+    try {
+      const resposta = await api.put(`/usuarios/${idUsuario}`, { nome, telefone: formDados.telefone });
+      const salvo = resposta.data?.usuario?.nome || nome;
+      atualizarUsuarioLogado({ nome: salvo });
+      setNomeExibido(salvo);
+      setEditandoDados(false);
+      toast(resposta.data?.mensagem || "Dados atualizados.");
+    } catch (err) {
+      setErroDados(mensagemDeErro(err, "Não foi possível salvar seus dados."));
+    } finally {
+      setSalvandoDados(false);
+    }
+  };
+
+  const excluirConta = async () => {
+    const confirmou = await confirmar({
+      titulo: "Excluir sua conta?",
+      mensagem: "Seus dados, veículos, caronas e reservas são apagados. Isso não tem volta.",
+      confirmar: "Excluir conta",
+      cancelar: "Manter conta",
+      perigo: true,
+    });
+    if (!confirmou) return;
+    setExcluindo(true);
+    try {
+      await api.delete(`/usuarios/${idUsuario}`);
+      logout();
+      navigate("/", { replace: true });
+    } catch (err) {
+      setErro(mensagemDeErro(err, "Não foi possível excluir a conta."));
+      setExcluindo(false);
+    }
+  };
 
   useEffect(() => {
     if (!idUsuario) return undefined;
@@ -88,7 +156,7 @@ function Perfil() {
 
   if (!usuario) return null;
 
-  const iniciais = String(usuario.nome || "?")
+  const iniciais = String(nomeExibido || "?")
     .split(" ")
     .filter(Boolean)
     .slice(0, 2)
@@ -102,7 +170,7 @@ function Perfil() {
           {iniciais}
         </div>
         <div className="perfil-dados">
-          <h1>{usuario.nome}</h1>
+          <h1>{nomeExibido}</h1>
           <p>{usuario.email}</p>
           <span className="perfil-tipo">{ehMotorista ? "Motorista" : "Passageiro"}</span>
         </div>
@@ -123,6 +191,66 @@ function Perfil() {
       )}
 
       <ul className="perfil-menu">
+        <li>
+          <button
+            type="button"
+            className="perfil-item"
+            onClick={() => (editandoDados ? setEditandoDados(false) : abrirEdicao())}
+            aria-expanded={editandoDados}
+          >
+            <span>Editar dados</span>
+            <span className="perfil-seta" aria-hidden="true">
+              {editandoDados ? "‹" : "›"}
+            </span>
+          </button>
+        </li>
+        {editandoDados && (
+          <li>
+            <form className="perfil-form" onSubmit={salvarDados} noValidate>
+              <label className="app-campo">
+                <span>Nome completo</span>
+                <input
+                  type="text"
+                  name="nome"
+                  autoComplete="name"
+                  maxLength={100}
+                  value={formDados.nome}
+                  onChange={(e) => setFormDados((f) => ({ ...f, nome: e.target.value }))}
+                />
+              </label>
+              <label className="app-campo">
+                <span>Celular</span>
+                <input
+                  type="tel"
+                  name="telefone"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  placeholder="(15) 99999-0000"
+                  value={formDados.telefone}
+                  onChange={(e) => setFormDados((f) => ({ ...f, telefone: mascaraTelefone(e.target.value) }))}
+                />
+              </label>
+              {erroDados && (
+                <p className="app-alerta app-alerta-erro" role="alert">
+                  {erroDados}
+                </p>
+              )}
+              <div className="perfil-form-acoes">
+                <button
+                  type="button"
+                  className="app-btn app-btn-secundario app-btn-pequeno"
+                  onClick={() => setEditandoDados(false)}
+                  disabled={salvandoDados}
+                >
+                  Cancelar
+                </button>
+                <button type="submit" className="app-btn app-btn-primario app-btn-pequeno" disabled={salvandoDados}>
+                  {salvandoDados ? "Salvando..." : "Salvar"}
+                </button>
+              </div>
+            </form>
+          </li>
+        )}
         {ehMotorista && (
           <li>
             <Link to="/app/veiculos" className="perfil-item">
@@ -157,6 +285,11 @@ function Perfil() {
         <li>
           <button type="button" className="perfil-item perfil-sair" onClick={sair}>
             <span>Sair</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" className="perfil-item perfil-excluir" onClick={excluirConta} disabled={excluindo}>
+            <span>{excluindo ? "Excluindo..." : "Excluir minha conta"}</span>
           </button>
         </li>
       </ul>

@@ -32,6 +32,13 @@ export function getUsuarioLogado() {
   }
 }
 
+/** Atualiza na sessão só o que a pessoa editou (nome, e-mail); o resto fica como está. */
+export function atualizarUsuarioLogado(parcial) {
+  const atual = getUsuarioLogado();
+  if (!atual) return null;
+  return salvarUsuario({ ...atual, ...parcial });
+}
+
 export function logout() {
   localStorage.removeItem(CHAVE);
 }
