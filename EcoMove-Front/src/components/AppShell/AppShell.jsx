@@ -6,6 +6,7 @@ import Logo from "../../pages/icons/logo.webp";
 import { usandoMock } from "../../services/api";
 import { getUsuarioLogado } from "../../services/auth";
 import { FeedbackProvider } from "../Feedback/FeedbackProvider";
+import { AvisosTopo, ConviteInstalar } from "./AvisosApp";
 
 const PERFIL_MOTORISTA = 1;
 
@@ -139,9 +140,13 @@ function AppShell() {
           )}
         </header>
 
+        <AvisosTopo />
+
         <main className="app-conteudo">
           <Outlet />
         </main>
+
+        {!tela && <ConviteInstalar />}
 
         <nav className="app-abas" aria-label="Navegação principal">
           {abas.map((aba) => (
