@@ -42,17 +42,22 @@ export default defineConfig(({ mode }) => {
       react(),
       // PWA: manifesto + service worker para o app ser instalável no celular
       VitePWA({
-        registerType: "autoUpdate",
+        // "prompt": a versão nova espera a pessoa tocar em Atualizar (services/pwa.js),
+        // em vez de recarregar a página no meio de uma corrida
+        registerType: "prompt",
         includeAssets: ["icons/apple-touch-icon.png"],
         manifest: {
           name: "EcoMove",
           short_name: "EcoMove",
           description: "Caronas e corridas sustentáveis em Sorocaba e região",
           lang: "pt-BR",
-          start_url: "/",
+          // `id` fixo em "/" mantém a identidade do app já instalado agora que o start_url mudou
+          id: "/",
+          start_url: "/app",
           scope: "/",
           display: "standalone",
           orientation: "portrait",
+          categories: ["travel", "navigation"],
           background_color: "#ffffff",
           theme_color: "#036141",
           icons: [
@@ -65,8 +70,28 @@ export default defineConfig(({ mode }) => {
               purpose: "maskable",
             },
           ],
+          // Atalhos no toque longo do ícone (Android) ou botão direito (desktop)
+          shortcuts: [
+            {
+              name: "Para onde?",
+              short_name: "Destino",
+              description: "Pedir uma corrida ou procurar carona",
+              url: "/app/destino",
+              icons: [{ src: "icons/icon-192.png", sizes: "192x192", type: "image/png" }],
+            },
+            {
+              name: "Minhas viagens",
+              short_name: "Viagens",
+              description: "Próximas viagens e histórico",
+              url: "/app/viagens",
+              icons: [{ src: "icons/icon-192.png", sizes: "192x192", type: "image/png" }],
+            },
+          ],
         },
         workbox: {
+          // Com "prompt" o SW novo só ativa depois do SKIP_WAITING (toque em Atualizar);
+          // clientsClaim faz ele assumir a página aberta na hora, e aí o app recarrega
+          clientsClaim: true,
           globPatterns: ["**/*.{js,css,html,png,webp,svg,woff2}"],
           navigateFallback: "/index.html",
           // Chamadas à API nunca devem cair no fallback do SPA

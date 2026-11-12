@@ -5,7 +5,7 @@ import api from "../../services/api";
 import { atualizarUsuarioLogado, getUsuarioLogado, logout } from "../../services/auth";
 import { mensagemDeErro } from "../../utils/erros";
 import { apenasDigitos, mascaraTelefone } from "../../utils/validacao";
-import { useInstalarApp } from "../../hooks/useInstalarApp";
+import { useInstalarApp } from "../../hooks/usePwa";
 import { formatarData } from "../../utils/formatar";
 import { Estrelas } from "../../components/Avaliacao/Avaliacao";
 import { useConfirmacao, useToast } from "../../components/Feedback/FeedbackContext";
